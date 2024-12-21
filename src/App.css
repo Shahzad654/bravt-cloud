@@ -1,0 +1,166 @@
+#root {
+  --xl-heading: 3.4rem;
+  --l-heading: 2.4rem;
+  --main-heading: 2rem;
+  --m-heading: 1.75rem;
+  --ms-heading: 1.25rem;
+  --s-heading: 1.125rem;
+  --text: 1rem;
+
+  --section-width: 70%;
+  --section-margin: 80px;
+
+  --s-radius: 6px;
+  --m-radius: 8px;
+  --l-radius: 24px;
+
+  --nav-height: 70px;
+
+
+  --primary-color: #0f7aff;
+  --bg-color:rgb(238, 245, 255);
+  --text-color: #41434d;
+
+  --price-cards-width: 50%;
+
+}
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  overflow-y: auto;
+  /* overflow-x: hidden; */
+  height: 100vh;
+}
+
+
+h1 {
+  font-size: var(--l-heading);
+  font-weight: 600;
+}
+
+h2 {
+  font-size: var(--main-heading);
+  font-weight: 600;
+}
+
+h3 {
+  font-size: var(--m-heading);
+  font-weight: 700;
+}
+
+h4 {
+  font-size: var(--ms-heading);
+  font-weight: 600;
+}
+
+h5 {
+  font-size: var(--s-heading);
+  font-weight: 500;
+}
+
+h6 {
+  font-size: var(--xl-heading);
+}
+
+p{
+  font-size: var(--text);
+}
+
+
+input {
+  outline: none;
+  border-radius: var(--s-radius);
+  color: var(--text-color);
+  padding: 6px 14px;
+  border: 2px solid var(--bg-color);
+  height: 38px;
+}
+
+button {
+  cursor: pointer;
+  outline: none;
+  color: white;
+  transition: all 0.15s ease-in-out;
+  background-color: var(--primary-color);
+  border-radius: var(--s-radius);
+  padding: 6px 14px;
+  min-width: 230px;
+  max-height: 45px;
+  border: none;
+  touch-action: pinch-zoom;
+  white-space: nowrap;
+}
+
+li,
+button,
+input,
+select,
+article,
+title,
+header,
+textarea,
+a,
+label,
+span {
+  font-size: var(--text);
+}
+
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--primary-color);
+  outline-color: var(--primary-color);
+}
+
+
+select {
+  border-radius: var(--m-radius);
+  border-color: var(--bg-color);
+  padding: 5px 8px;
+}
+
+.outline-btn {
+  border-style: none;
+  padding: 6px 18px 6px 18px;
+  border-radius: var(--s-radius);
+  color: var(--primary-color);
+  background-color: transparent;
+  border: 1px solid var(--primary-color);
+
+  &:hover {
+    background-color: var(--primary-color);
+    color: white;
+  }
+}
+
+
+.contained-btn {
+  border-style: none;
+  padding: 8px 14px 8px 14px;
+  border-radius: var(--s-radius);
+  color: white;
+  background-color: var(--primary-color);
+
+  .gift-icon {
+    color: white;
+    margin-right: 2px;
+  }
+}
+
+
+
+@media (max-width: 640px) {
+  #root {
+      --section-width: 80%;
+      --price-cards-width: 80%;
+    }
+}
+
+@media (min-width: 640px) and (max-width: 1024px) {
+  #root {
+      --section-width: 75%;
+      --price-cards-width: 60%;
+    }
+}
+
+
