@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { sendVerificationCode, verifyAndSignup, setEmailAndPassword } from '../redux/apis/authSlice';
 import styled from 'styled-components';
@@ -11,6 +11,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 export default function Signup() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { loading, error, verificationSent } = useSelector((state) => state.auth);
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
@@ -21,45 +22,67 @@ export default function Signup() {
   const [isCodeSending, setIsCodeSending] = useState(false);
   const [isSigningUp, setIsSigningUp] = useState(false); 
 
-  const handleSendCode = () => {
-    if (email) {
-      setIsCodeSending(true); // Start sending code
-      dispatch(sendVerificationCode(email))
-        .finally(() => setIsCodeSending(false)); // Reset after sending code
-    } else {
+
+  useEffect(() => {
+    if (error) {
+      setSnackbarMessage(error);
+      setSnackbarSeverity('error');
+      setOpenSnackbar(true);
+    }
+  }, [error]);
+
+
+  useEffect(() => {
+    if (verificationSent) {
+      setSnackbarMessage('Verification code sent successfully!');
+      setSnackbarSeverity('success');
+      setOpenSnackbar(true);
+    }
+  }, [verificationSent]);
+
+  const handleSendCode = async () => {
+    if (!email) {
       setSnackbarMessage('Please enter a valid email.');
       setSnackbarSeverity('error');
       setOpenSnackbar(true);
+      return;
+    }
+
+    setIsCodeSending(true);
+    try {
+      await dispatch(sendVerificationCode(email)).unwrap();
+    } catch (err) {
+      // Error handling is done through the useEffect
+    } finally {
+      setIsCodeSending(false);
     }
   };
 
-  const handleSignup = () => {
-    if (email && code && password) {
-      setIsSigningUp(true); // Start signing up
-      dispatch(setEmailAndPassword({ email, password }));
-      dispatch(verifyAndSignup({ email, code, password }))
-        .then(() => {
-          setSnackbarMessage('Signup Successful!');
-          setSnackbarSeverity('success');
-          setOpenSnackbar(true);
-          navigate('/billing-info');
-        })
-        .catch(() => {
-          setSnackbarMessage('Signup Failed! Please try again.');
-          setSnackbarSeverity('error');
-          setOpenSnackbar(true);
-        })
-        .finally(() => setIsSigningUp(false)); // Reset after signup
-    } else {
+  const handleSignup = async () => {
+    if (!email || !code || !password) {
       setSnackbarMessage('Please fill in all fields.');
       setSnackbarSeverity('error');
       setOpenSnackbar(true);
+      return;
+    }
+
+    setIsSigningUp(true);
+    try {
+      dispatch(setEmailAndPassword({ email, password }));
+      await dispatch(verifyAndSignup({ email, code, password })).unwrap();
+      setSnackbarMessage('Signup Successful!');
+      setSnackbarSeverity('success');
+      setOpenSnackbar(true);
+      navigate('/billing-info');
+    } catch (err) {
+      // Error handling is done through the useEffect
+    } finally {
+      setIsSigningUp(false);
     }
   };
 
-  const navigate = useNavigate();
+  
   const isFormValid = email && code && password;
-
   return (
     <Main>
       <img src={Logo} alt="" />

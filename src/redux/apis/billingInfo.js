@@ -1,25 +1,31 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:4000";
+
+const API_BASE_URL = "http://cloudbravt.centralindia.cloudapp.azure.com";
 
 export const saveBillingInfo = createAsyncThunk(
   "/user/BillingInfo",
   async (billingData, { rejectWithValue }) => {
     try {
+      const userEmail = getEmailFromStorage();
+      const dataWithEmail = {
+        ...billingData,
+        email: userEmail,
+      };
+
       const response = await axios.post(
         `${API_BASE_URL}/user/BillingInfo`,
-        billingData
+        dataWithEmail
       );
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      const errorMessage =
+        error.response?.data?.message || "Failed to save billing information";
+      return rejectWithValue(errorMessage);
     }
   }
 );
-
-
-
 
 const billingSlice = createSlice({
   name: "billing",
@@ -42,6 +48,7 @@ const billingSlice = createSlice({
       .addCase(saveBillingInfo.fulfilled, (state, action) => {
         state.loading = false;
         state.billingInfo = action.payload;
+        state.error = null;
       })
       .addCase(saveBillingInfo.rejected, (state, action) => {
         state.loading = false;

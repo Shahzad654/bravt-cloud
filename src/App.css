@@ -133,6 +133,22 @@ select {
   }
 }
 
+.small-btn{
+  cursor: pointer;
+  outline: none;
+  color: white;
+  transition: all 0.15s ease-in-out;
+  background-color: var(--primary-color);
+  border-radius: var(--s-radius);
+  padding: 6px 8px;
+  min-width: 100px;
+  max-height: 45px;
+  border: none;
+  touch-action: pinch-zoom;
+  white-space: nowrap;
+
+}
+
 
 .contained-btn {
   border-style: none;

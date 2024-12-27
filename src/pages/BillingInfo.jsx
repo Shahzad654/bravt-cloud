@@ -2,33 +2,39 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import LoginImg from '../assets/images/signup.jpg';
 import Logo from "../assets/images/nav.webp";
-import { Button, Form, Input, InputNumber, Select } from "antd";
+import { Button, Form, Input, InputNumber, Select, Spin } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { saveBillingInfo } from "../redux/apis/billingInfo";
-import { Snackbar, Alert } from '@mui/material'; // Import Snackbar and Alert from MUI
+import { Snackbar } from '@mui/material';
+import MuiAlert from '@mui/material/Alert';
+import { useNavigate } from 'react-router-dom';
+import { getEmailFromStorage } from '../redux/apis/authSlice';
 
 const { Option } = Select;
 
 export default function BillingInfo() {
-    const formItemLayout = {
-        labelCol: {
-            xs: { span: 24 },
-            sm: { span: 6 },
-        },
-        wrapperCol: {
-            xs: { span: 24 },
-            sm: { span: 14 },
-        },
-    };
-
+    const navigate = useNavigate();
     const [form] = Form.useForm();
     const [countries, setCountries] = useState([]);
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
-    const [snackbarType, setSnackbarType] = useState('success');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const dispatch = useDispatch();
-    const { loading, error } = useSelector((state) => state.auth);
+    const { loading, error } = useSelector((state) => state.billing);
+
+    // Check for stored email on component mount
+    useEffect(() => {
+        const userEmail = getEmailFromStorage();
+        if (!userEmail) {
+            setSnackbarMessage('Please sign up first');
+            setSnackbarSeverity('error');
+            setOpenSnackbar(true);
+            // Redirect to signup after a short delay
+            setTimeout(() => navigate('/'), 2000);
+        }
+    }, [navigate]);
 
     useEffect(() => {
         const fetchCountries = async () => {
@@ -38,7 +44,9 @@ export default function BillingInfo() {
                 const countryNames = data.map((country) => country.name.common).sort();
                 setCountries(countryNames);
             } catch (error) {
-                console.error("Error fetching countries:", error);
+                setSnackbarMessage('Failed to load countries. Please refresh the page.');
+                setSnackbarSeverity('error');
+                setOpenSnackbar(true);
             }
         };
 
@@ -46,26 +54,41 @@ export default function BillingInfo() {
     }, []);
 
     const handleSubmit = async () => {
-        const values = form.getFieldsValue();
-        console.log("Form Submitted with Values:", values);
+        try {
+            // Validate form first
+            await form.validateFields();
 
-        // Dispatch the action
-        dispatch(saveBillingInfo(values));
+            setIsSubmitting(true);
+            const values = form.getFieldsValue();
+            const userEmail = getEmailFromStorage();
 
-        // Check for error or success based on the Redux state
-        if (error) {
-            setSnackbarMessage('Error: ' + error.message);
-            setSnackbarType('error');
-        } else {
-            setSnackbarMessage('Your billing information has been successfully submitted!');
-            setSnackbarType('success');
+            // Add email to the form data
+            const formDataWithEmail = {
+                ...values,
+                email: userEmail
+            };
+
+            const result = await dispatch(saveBillingInfo(formDataWithEmail)).unwrap();
+
+            setSnackbarMessage('Billing information saved successfully!');
+            setSnackbarSeverity('success');
+            setOpenSnackbar(true);
+
+            // Optional: Redirect to next page after successful submission
+            setTimeout(() => navigate('/dashboard'), 2000);
+
+        } catch (error) {
+            setSnackbarMessage(error?.message || 'Failed to save billing information');
+            setSnackbarSeverity('error');
+            setOpenSnackbar(true);
+        } finally {
+            setIsSubmitting(false);
         }
-
-        setOpenSnackbar(true);
     };
 
-    const handleCloseSnackbar = () => {
-        setOpenSnackbar(false);
+    const formItemLayout = {
+        labelCol: { xs: { span: 24 }, sm: { span: 6 } },
+        wrapperCol: { xs: { span: 24 }, sm: { span: 14 } },
     };
 
     return (
@@ -73,82 +96,99 @@ export default function BillingInfo() {
             <img src={Logo} alt="" />
             <StyledSignUp>
                 <div className="form-container">
-                    <h3>Add Information</h3>
+                    <h3>Billing Information</h3>
                     <div className="form-detail">
-                        <div className="form">
-                            <Form {...formItemLayout} form={form} style={{ maxWidth: 600 }}>
-                                <Form.Item
-                                    label="First Name"
-                                    name="firstname"
-                                    rules={[{ required: true, message: "Please input!" }]} >
-                                    <Input style={{ marginLeft: "10px", width: "220px" }} />
-                                </Form.Item>
+                        <Form {...formItemLayout} form={form} style={{ maxWidth: 600 }}>
+                            <Form.Item
+                                label="First Name"
+                                name="firstname"
+                                rules={[{ required: true, message: "Please enter your first name" }]}
+                            >
+                                <Input style={{ marginLeft: "10px", width: "220px" }} />
+                            </Form.Item>
 
-                                <Form.Item
-                                    label="Last Name"
-                                    name="lastname"
-                                    rules={[{ required: true, message: "Please input!" }]} >
-                                    <Input style={{ marginLeft: "10px", width: "220px" }} />
-                                </Form.Item>
+                            <Form.Item
+                                label="Last Name"
+                                name="lastname"
+                                rules={[{ required: true, message: "Please enter your last name" }]}
+                            >
+                                <Input style={{ marginLeft: "10px", width: "220px" }} />
+                            </Form.Item>
 
-                                <Form.Item
-                                    label="Address"
-                                    name="address"
-                                    rules={[{ required: true, message: "Please input!" }]} >
-                                    <Input style={{ marginLeft: "10px", width: "220px" }} />
-                                </Form.Item>
+                            <Form.Item
+                                label="Address"
+                                name="address"
+                                rules={[{ required: true, message: "Please enter your address" }]}
+                            >
+                                <Input style={{ marginLeft: "10px", width: "220px" }} />
+                            </Form.Item>
 
-                                <Form.Item
-                                    label="City"
-                                    name="city"
-                                    rules={[{ required: true, message: "Please input!" }]} >
-                                    <Input style={{ marginLeft: "10px", width: "220px" }} />
-                                </Form.Item>
+                            <Form.Item
+                                label="City"
+                                name="city"
+                                rules={[{ required: true, message: "Please enter your city" }]}
+                            >
+                                <Input style={{ marginLeft: "10px", width: "220px" }} />
+                            </Form.Item>
 
-                                <Form.Item
-                                    label="Country"
-                                    name="country"
-                                    rules={[{ required: true, message: "Please input!" }]} >
-                                    <Select style={{ marginLeft: "10px", width: "220px" }}>
-                                        {countries.map((country) => (
-                                            <Option key={country} value={country}>
-                                                {country}
-                                            </Option>
-                                        ))}
-                                    </Select>
-                                </Form.Item>
+                            <Form.Item
+                                label="Country"
+                                name="country"
+                                rules={[{ required: true, message: "Please select your country" }]}
+                            >
+                                <Select style={{ marginLeft: "10px", width: "220px" }}>
+                                    {countries.map((country) => (
+                                        <Option key={country} value={country}>
+                                            {country}
+                                        </Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
 
-                                <Form.Item
-                                    label="Zip Code"
-                                    name="zipcode"
-                                    rules={[{ required: true, message: "Please input!" }]} >
-                                    <InputNumber style={{ marginLeft: "10px", width: "220px" }} />
-                                </Form.Item>
+                            <Form.Item
+                                label="Zip Code"
+                                name="zipcode"
+                                rules={[{
+                                    required: true,
+                                    message: "Please enter your zip code",
+                                    
+                                }]}
+                            >
+                                <InputNumber style={{ marginLeft: "10px", width: "220px" }} />
+                            </Form.Item>
 
-                                <Form.Item
-                                    label="Company"
-                                    name="company"
-                                    rules={[{ required: true, message: "Please input!" }]} >
-                                    <Input style={{ marginLeft: "10px", width: "220px" }} />
-                                </Form.Item>
+                            <Form.Item
+                                label="Company"
+                                name="company"
+                                rules={[{ required: true, message: "Please enter your company name" }]}
+                            >
+                                <Input style={{ marginLeft: "10px", width: "220px" }} />
+                            </Form.Item>
 
-                                <Form.Item
-                                    label="Phone"
-                                    name="phone"
-                                    rules={[{ required: true, message: "Please input!" }]} >
-                                    <InputNumber style={{ marginLeft: "10px", width: "220px" }} />
-                                </Form.Item>
+                            <Form.Item
+                                label="Phone"
+                                name="phone"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Please enter your phone number"
+                                    },
+                                ]}
+                            >
+                                <InputNumber style={{ marginLeft: "10px", width: "220px" }} />
+                            </Form.Item>
 
-                                <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
-                                    <button
-                                        type="primary"
-                                        onClick={handleSubmit}
-                                        loading={loading}>
-                                        Submit
-                                    </button>
-                                </Form.Item>
-                            </Form>
-                        </div>
+                            <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
+                                <Button
+                                    type="primary"
+                                    onClick={handleSubmit}
+                                    disabled={isSubmitting}
+                                    style={{ minWidth: "250px" }}
+                                >
+                                    {isSubmitting ? <Spin /> : 'Submit'}
+                                </Button>
+                            </Form.Item>
+                        </Form>
                     </div>
                 </div>
 
@@ -157,14 +197,19 @@ export default function BillingInfo() {
                 </div>
             </StyledSignUp>
 
-            {/* Snackbar for displaying success/error messages */}
             <Snackbar
                 open={openSnackbar}
                 autoHideDuration={3000}
-                onClose={handleCloseSnackbar}>
-                <Alert onClose={handleCloseSnackbar} severity={snackbarType}>
+                onClose={() => setOpenSnackbar(false)}
+            >
+                <MuiAlert
+                    elevation={6}
+                    variant="filled"
+                    onClose={() => setOpenSnackbar(false)}
+                    severity={snackbarSeverity}
+                >
                     {snackbarMessage}
-                </Alert>
+                </MuiAlert>
             </Snackbar>
         </Main>
     );

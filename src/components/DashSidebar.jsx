@@ -8,7 +8,7 @@ import {
   MoneyCollectOutlined,
   ProfileOutlined,
 } from "@ant-design/icons";
-import { Link } from "react-router-dom"; 
+import { Link, useNavigate } from "react-router-dom";
 
 const { Sider } = Layout;
 
@@ -17,7 +17,7 @@ function getItem(label, key, icon, children, path) {
     key,
     icon,
     children,
-    label: path ? <Link to={path} style={{textDecoration:'none'}}>{label}</Link> : label, 
+    label: path ? <Link to={path} style={{ textDecoration: 'none' }}>{label}</Link> : label,
   };
 }
 
@@ -51,14 +51,19 @@ const items = [
 
 const DashSidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const navigate = useNavigate(); 
+
+  const handleLogout = () => {
+   
+    localStorage.removeItem("user");
+    localStorage.removeItem("email");
+    localStorage.removeItem("isAuthenticated");
+    navigate("/"); 
+  };
 
   return (
     <StyledSider>
-      <Sider
-      // collapsible
-      // collapsed={collapsed}
-      // onCollapse={(value) => setCollapsed(value)}
-      >
+      <Sider>
         <div className="demo-logo-vertical" />
         <Menu
           theme="dark"
@@ -67,6 +72,13 @@ const DashSidebar = () => {
           items={items}
           style={{ backgroundColor: "#123456" }}
         />
+        <button
+          className="small-btn"
+          style={{ marginLeft: "40px", marginTop: "10px", marginBottom: "10px" }}
+          onClick={handleLogout} 
+        >
+          Logout
+        </button>
       </Sider>
     </StyledSider>
   );
@@ -80,4 +92,3 @@ const StyledSider = styled(Sider)`
     height: 250vh;
   }
 `;
-

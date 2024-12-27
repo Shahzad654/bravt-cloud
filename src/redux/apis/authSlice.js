@@ -1,9 +1,17 @@
-// authSlice.js
-
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_BASE_URL = "https://cloudbravt.centralindia.cloudapp.azure.com";
+const API_BASE_URL = "http://cloudbravt.centralindia.cloudapp.azure.com";
+
+// Helper function to save email to localStorage
+const saveEmailToStorage = (email) => {
+  localStorage.setItem("userEmail", email);
+};
+
+// Helper function to get email from localStorage
+export const getEmailFromStorage = () => {
+  return localStorage.getItem("userEmail");
+};
 
 export const sendVerificationCode = createAsyncThunk(
   "/user/otp",
@@ -12,7 +20,9 @@ export const sendVerificationCode = createAsyncThunk(
       const response = await axios.post(`${API_BASE_URL}/user/otp`, { email });
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      const errorMessage =
+        error.response?.data?.message || "Failed to send verification code";
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -21,17 +31,25 @@ export const verifyAndSignup = createAsyncThunk(
   "/user/verifyOTP",
   async ({ email, code, password }, { rejectWithValue }) => {
     try {
+      console.log("Request payload:", { email, code, password });
       const response = await axios.post(`${API_BASE_URL}/user/verifyOTP`, {
-        email,
-        code,
-        password,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: { email, code: code.trim(), password },
       });
+
+      console.log("Response data:", response.data);
+      saveEmailToStorage(email);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      console.error("Error response:", error.response?.data || error.message);
+      const errorMessage = error.response?.data?.message || "Signup failed";
+      return rejectWithValue(errorMessage);
     }
   }
 );
+
 
 const authSlice = createSlice({
   name: "auth",
@@ -40,8 +58,8 @@ const authSlice = createSlice({
     verificationSent: false,
     user: null,
     error: null,
-    email: "", 
-    password: "", 
+    email: "",
+    password: "",
   },
   reducers: {
     clearError: (state) => {
@@ -61,6 +79,7 @@ const authSlice = createSlice({
       .addCase(sendVerificationCode.fulfilled, (state) => {
         state.loading = false;
         state.verificationSent = true;
+        state.error = null;
       })
       .addCase(sendVerificationCode.rejected, (state, action) => {
         state.loading = false;
@@ -73,6 +92,7 @@ const authSlice = createSlice({
       .addCase(verifyAndSignup.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload;
+        state.error = null;
       })
       .addCase(verifyAndSignup.rejected, (state, action) => {
         state.loading = false;

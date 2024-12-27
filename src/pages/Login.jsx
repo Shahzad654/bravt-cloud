@@ -116,6 +116,7 @@ export default function Login() {
                 'Sign In'
               )}
             </button>
+            <h5 onClick={()=> navigate('/forget-password')} style={{marginLeft:'6.5rem', marginTop:'1rem', cursor:'pointer'}}>Forget Password?</h5>
             <br />
             <p>
               I'm a new user{' '}

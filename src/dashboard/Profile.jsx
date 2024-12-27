@@ -4,8 +4,26 @@ import { Breadcrumb, Layout } from "antd";
 import DashSidebar from "../components/DashSidebar";
 import DashHeader from "../components/DashHeader";
 import { Button, Form, Input, InputNumber, Select } from "antd";
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
+
 const { Content } = Layout;
 const { Option } = Select;
+
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  // border: '2px solid #000',
+  borderRadius: 4,
+  boxShadow: 24,
+  p: 4,
+};
 
 const formItemLayout = {
   labelCol: {
@@ -21,6 +39,18 @@ const formItemLayout = {
 const Profile = () => {
   const [form] = Form.useForm();
   const [countries, setCountries] = useState([]);
+  const userEmail = localStorage.getItem("email");
+  const [modalEmail, setModalEmail] = useState("");
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => {
+    const email = localStorage.getItem("email");
+    setModalEmail(email);
+    setOpen(true); 
+  };
+
+  const handleClose = () => setOpen(false);
+ 
+  console.log(userEmail)
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -39,6 +69,7 @@ const Profile = () => {
   }, []);
 
   return (
+    <>
     <Layout style={{ minHeight: "100vh" }}>
       <DashSidebar />
       <Layout style={{ padding: "0 16px", backgroundColor: "white" }}>
@@ -63,7 +94,24 @@ const Profile = () => {
             }}
           >
             <PageContent>
+              
+
               <div className="form">
+                <div className="user_email" style={{ marginLeft:'1rem' }}>
+                  <label htmlFor="email">Email</label>
+                  <input
+                    type="email"
+                    id="email"
+                    readOnly
+                    value={userEmail}
+                    // placeholder="Enter your email"
+                    style={{ marginLeft: '2.3rem', color:'gray' }}
+                  />
+                  <button className="small-btn" onClick={handleOpen}>Change</button>
+                  
+                </div>
+                <br />
+                
                 <Form {...formItemLayout} form={form} style={{ maxWidth: 600 }}>
                   <Form.Item
                     label="First Name"
@@ -156,6 +204,60 @@ const Profile = () => {
         </Content>
       </Layout>
     </Layout>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+       
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Change Email
+          </Typography>
+          <Form style={{marginTop:'2rem'}}>
+            <Form.Item
+              label="Current Email"
+              name="email"
+              rules={[{ required: true, message: "Please input!" }]}
+            >
+            
+                <Input
+                  style={{ marginLeft: "9px", width: "180px" }}
+                  readOnly
+                  defaultValue={modalEmail} 
+                />
+                
+         
+            </Form.Item>
+
+            <Form.Item
+              label="Enter OTP"
+              name="otp"
+              rules={[{ required: true, message: "Please input!" }]}
+            >
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <Input
+                  style={{ marginLeft: "10px", width: "180px" }}
+                  placeholder="Enter OTP"
+                />
+                <Button type="primary" style={{ marginLeft: "10px", minWidth: '30px' }}>
+                  Get OTP
+                </Button>
+              </div>
+            </Form.Item>
+            <div style={{display:'flex', justifyContent:'center'}}>
+              <Button type="primary" style={{ marginLeft: "10px", minWidth: '150px' }}>
+                Submit
+              </Button>
+
+            </div>
+           
+          </Form>
+        </Box>
+      </Modal>
+
+      </>
   );
 };
 

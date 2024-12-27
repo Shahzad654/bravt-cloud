@@ -8,14 +8,6 @@ export const loginAPI = async (email, password) => {
     const response = await axios.post(
       `${API_URL}/user/login`,
       { email, password },
-      // {
-      //   withCredentials: true,
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     Accept: "application/json",
-      //   },
-      //   credentials: "include",
-      // }
     );
     return response.data;
   } catch (error) {

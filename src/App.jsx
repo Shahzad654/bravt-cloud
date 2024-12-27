@@ -6,6 +6,8 @@ import Navbar from "./components/Navbar";
 import DashNav from "./components/DashNav";
 import Home from "./pages/Home";
 import Signup from './pages/Signup';
+import ForgetPassword from './pages/ForgetPassword';
+import ResetPassword from './pages/ResetPassword';
 import BillingInfo from './pages/BillingInfo'
 import Login from "./pages/Login";
 import Instance from './dashboard/Instance';
@@ -38,6 +40,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/forget-password" element={<ForgetPassword />} />
+        <Route path="/reset-password/:userId" element={<ResetPassword />} />
         <Route path="/instance" element={<PrivateRoute>
           <Instance />
         </PrivateRoute>} />
