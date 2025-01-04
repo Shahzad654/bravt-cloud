@@ -1,23 +1,18 @@
 // src/store/otpSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-
-const API_URL = "http://cloudbravt.centralindia.cloudapp.azure.com";
+import { api } from "../../utils/api";
 
 export const sendOTP = createAsyncThunk(
   "otp/send",
   async (email, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${API_URL}/user/sendOTPChangeEmail`, {
-        email,
-      });
+      const response = await api.post("/user/sendOTPChangeEmail", { email });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
   }
 );
-
 
 const otpSlice = createSlice({
   name: "otp",
@@ -49,8 +44,7 @@ const otpSlice = createSlice({
       .addCase(sendOTP.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      })
-      
+      });
   },
 });
 

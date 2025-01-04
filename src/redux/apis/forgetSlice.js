@@ -1,11 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
-
-const API_URL = "http://cloudbravt.centralindia.cloudapp.azure.com";
+import { api } from "../../utils/api";
 
 export const forgotPasswordAPI = async (email) => {
   try {
-    const response = await axios.post(`${API_URL}/user/forgotPassword`, {
+    const response = await api.post("/user/forgotPassword", {
       email,
     });
     return response.data;

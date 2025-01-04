@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import styled from "styled-components";
 import { Menu, Layout } from "antd";
 import {
@@ -9,6 +8,8 @@ import {
   ProfileOutlined,
 } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setUser, logoutUser } from "../redux/apis/userSlice";
 
 const { Sider } = Layout;
 
@@ -17,7 +18,13 @@ function getItem(label, key, icon, children, path) {
     key,
     icon,
     children,
-    label: path ? <Link to={path} style={{ textDecoration: 'none' }}>{label}</Link> : label,
+    label: path ? (
+      <Link to={path} style={{ textDecoration: "none" }}>
+        {label}
+      </Link>
+    ) : (
+      label
+    ),
   };
 }
 
@@ -50,15 +57,13 @@ const items = [
 ];
 
 const DashSidebar = () => {
-  const [collapsed, setCollapsed] = useState(false);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleLogout = () => {
-   
-    localStorage.removeItem("user");
-    localStorage.removeItem("email");
-    localStorage.removeItem("isAuthenticated");
-    navigate("/"); 
+  const handleLogout = async () => {
+    await logoutUser();
+    dispatch(setUser(null));
+    navigate("/");
   };
 
   return (
@@ -74,8 +79,12 @@ const DashSidebar = () => {
         />
         <button
           className="small-btn"
-          style={{ marginLeft: "40px", marginTop: "10px", marginBottom: "10px" }}
-          onClick={handleLogout} 
+          style={{
+            marginLeft: "40px",
+            marginTop: "10px",
+            marginBottom: "10px",
+          }}
+          onClick={handleLogout}
         >
           Logout
         </button>

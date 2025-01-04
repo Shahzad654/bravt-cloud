@@ -16,13 +16,11 @@
 
   --nav-height: 70px;
 
-
   --primary-color: #0f7aff;
-  --bg-color:rgb(238, 245, 255);
+  --bg-color: rgb(238, 245, 255);
   --text-color: #41434d;
 
   --price-cards-width: 50%;
-
 }
 body {
   font-family: Arial, Helvetica, sans-serif;
@@ -30,7 +28,6 @@ body {
   /* overflow-x: hidden; */
   height: 100vh;
 }
-
 
 h1 {
   font-size: var(--l-heading);
@@ -61,10 +58,9 @@ h6 {
   font-size: var(--xl-heading);
 }
 
-p{
+p {
   font-size: var(--text);
 }
-
 
 input {
   outline: none;
@@ -73,6 +69,7 @@ input {
   padding: 6px 14px;
   border: 2px solid var(--bg-color);
   height: 38px;
+  width: 100%;
 }
 
 button {
@@ -85,9 +82,13 @@ button {
   padding: 6px 14px;
   min-width: 230px;
   max-height: 45px;
+  height: 36px;
   border: none;
   touch-action: pinch-zoom;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 li,
@@ -104,14 +105,12 @@ span {
   font-size: var(--text);
 }
 
-
 input:focus,
 select:focus,
 textarea:focus {
   border-color: var(--primary-color);
   outline-color: var(--primary-color);
 }
-
 
 select {
   border-radius: var(--m-radius);
@@ -133,7 +132,7 @@ select {
   }
 }
 
-.small-btn{
+.small-btn {
   cursor: pointer;
   outline: none;
   color: white;
@@ -146,9 +145,7 @@ select {
   border: none;
   touch-action: pinch-zoom;
   white-space: nowrap;
-
 }
-
 
 .contained-btn {
   border-style: none;
@@ -163,20 +160,23 @@ select {
   }
 }
 
-
+.stripe-card-element {
+  width: 100%;
+  border: 2px solid var(--bg-color);
+  padding: 12px 12px;
+  border-radius: 10px;
+}
 
 @media (max-width: 640px) {
   #root {
-      --section-width: 80%;
-      --price-cards-width: 80%;
-    }
+    --section-width: 80%;
+    --price-cards-width: 80%;
+  }
 }
 
 @media (min-width: 640px) and (max-width: 1024px) {
   #root {
-      --section-width: 75%;
-      --price-cards-width: 60%;
-    }
+    --section-width: 75%;
+    --price-cards-width: 60%;
+  }
 }
-
-

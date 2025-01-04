@@ -1,31 +1,9 @@
-import {
-  FacebookAuthProvider,
-  GoogleAuthProvider,
-  signInWithRedirect,
-  GithubAuthProvider
-} from "firebase/auth";
-import { FaFacebook } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import styled from "styled-components";
-
+import { API_URL } from "../utils/constants";
 
 export default function SignInWithoutEmail() {
-  const googleProvider = new GoogleAuthProvider();
-  // const facebookProvider = new FacebookAuthProvider();
-
-  // const location = useLocation();
-  // let { from } = location.state || { from: { pathname: "/dashboard" } };
-
-  // const signInHandler = async (provider) => {
-  //   try {
-  //     // localStorage.setItem("routePath", from.pathname);
-  //     await signInWithRedirect(auth, provider);
-  //   } catch (e) {
-  //     console.log("error while redirecting", e);
-  //   }
-  // };
-
   return (
     <StyledSignIn>
       <div className="line">
@@ -34,24 +12,28 @@ export default function SignInWithoutEmail() {
         <div />
       </div>
       <button
-        // onClick={() => signInHandler(googleProvider)}
         className="google-button google-btn-gtag"
+        onClick={() =>
+          window.open(
+            `${API_URL}/user/google?redirectUrl=${window.location.origin}/instance`,
+            "_self"
+          )
+        }
       >
         <FcGoogle /> Continue with Google
       </button>
 
       <button
-        // onClick={() => signInHandler(googleProvider)}
         className="google-button google-btn-gtag"
+        onClick={() =>
+          window.open(
+            `${API_URL}/user/github?redirectUrl=${window.location.origin}/instance`,
+            "_self"
+          )
+        }
       >
         <FaGithub /> Continue with GitHub
       </button>
-      {/* <button
-        onClick={() => signInHandler(facebookProvider)}
-        className="google-button google-btn-gtag"
-      >
-        <FaFacebook color="#3877ea" /> Continue with Facebook
-      </button> */}
     </StyledSignIn>
   );
 }

@@ -1,34 +1,39 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
-import { Snackbar, Alert, CircularProgress } from '@mui/material';
-import { loginStart, loginSuccess, loginFailure } from '../redux/apis/loginSlice';
-import { loginAPI } from '../redux/apis/loginSlice';
-import LoginImg from '../assets/images/login.jpg';
-import Logo from '../assets/images/nav.webp';
-import SignInWithoutEmail from '../components/SignInwithoutEmail';
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
+import { Snackbar, Alert, CircularProgress } from "@mui/material";
+import {
+  loginStart,
+  loginSuccess,
+  loginFailure,
+} from "../redux/apis/loginSlice";
+import { loginAPI } from "../redux/apis/loginSlice";
+import LoginImg from "../assets/images/login.jpg";
+import Logo from "../assets/images/nav.webp";
+import SignInWithoutEmail from "../components/SignInwithoutEmail";
+import { setUser } from "../redux/apis/userSlice";
 
 export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error } = useSelector((state) => state.auth);
+  const { loading } = useSelector((state) => state.login);
 
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    email: "",
+    password: "",
   });
   const [snackbar, setSnackbar] = useState({
     open: false,
-    message: '',
-    severity: 'success'
+    message: "",
+    severity: "success",
   });
 
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -42,41 +47,39 @@ export default function Login() {
     if (!formData.email || !formData.password) {
       setSnackbar({
         open: true,
-        message: 'Please fill in all fields',
-        severity: 'error'
+        message: "Please fill in all fields",
+        severity: "error",
       });
       return;
     }
 
     try {
       dispatch(loginStart());
+
       const response = await loginAPI(formData.email, formData.password);
 
-      if (response?.data?.user) {
-        dispatch(loginSuccess({
-          email: formData.email,
-          user: response.data.user
-        }));
+      if (response?.user) {
+        dispatch(loginSuccess());
+        dispatch(setUser(response.user));
 
         setSnackbar({
           open: true,
-          message: 'Login successful!',
-          severity: 'success'
+          message: "Login successful!",
+          severity: "success",
         });
 
         setTimeout(() => {
-          navigate('/instance');
+          navigate("/instance");
         }, 1500);
       } else {
-        throw new Error('Invalid response from server');
+        throw new Error("Invalid response from server");
       }
-
     } catch (error) {
       dispatch(loginFailure(error.message));
       setSnackbar({
         open: true,
-        message: error.message || 'Login failed',
-        severity: 'error'
+        message: error.message || "Login failed",
+        severity: "error",
       });
     }
   };
@@ -94,6 +97,7 @@ export default function Login() {
               name="email"
               required
               placeholder="Enter your email"
+              disabled={loading}
               value={formData.email}
               onChange={handleInputChange}
             />
@@ -104,6 +108,7 @@ export default function Login() {
               type="password"
               name="password"
               required
+              disabled={loading}
               placeholder="Enter your password"
               value={formData.password}
               onChange={handleInputChange}
@@ -111,18 +116,27 @@ export default function Login() {
             <br />
             <button onClick={handleSignIn} disabled={loading}>
               {loading ? (
-                <CircularProgress size={24} style={{ marginRight: 8 }} />
+                <CircularProgress size={16} style={{ color: "white" }} />
               ) : (
-                'Sign In'
+                "Sign In"
               )}
             </button>
-            <h5 onClick={()=> navigate('/forget-password')} style={{marginLeft:'6.5rem', marginTop:'1rem', cursor:'pointer'}}>Forget Password?</h5>
+            <h5
+              onClick={() => navigate("/forget-password")}
+              style={{
+                marginLeft: "6.5rem",
+                marginTop: "1rem",
+                cursor: "pointer",
+              }}
+            >
+              Forget Password?
+            </h5>
             <br />
             <p>
-              I'm a new user{' '}
+              I&apos;m a new user{" "}
               <Link to="/signup">
                 <span>Signup</span>
-              </Link>{' '}
+              </Link>{" "}
             </p>
             <br />
             <SignInWithoutEmail />
@@ -138,7 +152,7 @@ export default function Login() {
         open={snackbar.open}
         autoHideDuration={6000}
         onClose={handleClose}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
         <Alert
           onClose={handleClose}

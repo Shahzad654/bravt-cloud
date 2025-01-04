@@ -1,14 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
-
-const API_URL = "http://cloudbravt.centralindia.cloudapp.azure.com";
+import { api } from "../../utils/api";
 
 const resetPasswordAPI = async (userId, password, confirmPassword) => {
   try {
-    const response = await axios.post(
-      `${API_URL}/user/resetPassword/${userId}`,
-      { password, confirmPassword }
-    );
+    const response = await api.post("/user/resetPassword/${userId}", {
+      password,
+      confirmPassword,
+    });
     return response.data;
   } catch (error) {
     throw (
@@ -47,18 +45,17 @@ const resetPasswordSlice = createSlice({
 
 export const resetPasswordThunk =
   (userId, password, confirmPassword) => async (dispatch) => {
-    console.log("Dispatching resetPasswordThunk"); 
+    console.log("Dispatching resetPasswordThunk");
     dispatch(resetPasswordStart());
     try {
       const data = await resetPasswordAPI(userId, password, confirmPassword);
       console.log("Password reset response:", data);
       dispatch(resetPasswordSuccess(data.message));
     } catch (error) {
-      console.error("Error during password reset:", error); 
+      console.error("Error during password reset:", error);
       dispatch(resetPasswordFailure(error.message));
     }
   };
-
 
 export const {
   resetPasswordStart,

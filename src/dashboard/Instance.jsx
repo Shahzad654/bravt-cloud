@@ -151,6 +151,7 @@ const Instance = () => {
   return (
     <LayoutWrapper>
       <DashSidebar />
+
       <Layout style={{ padding: "0 16px", backgroundColor: "white" }}>
         <DashHeader />
         <Content style={{ margin: "0 16px" }}>
@@ -183,7 +184,14 @@ const Instance = () => {
                 </select>
               </div>
 
-              <button className="add-btn" onClick={()=> {navigate('/deploy')}}>+Add</button>
+              <button
+                className="add-btn"
+                onClick={() => {
+                  navigate("/deploy");
+                }}
+              >
+                +Add
+              </button>
             </PageContent>
             <StyledTable
               columns={columns}
@@ -215,7 +223,6 @@ const StyledTable = styled(Table)`
     }
   }
 `;
-
 
 const LayoutWrapper = styled(Layout)`
   min-height: 100vh;

@@ -70,9 +70,7 @@ const onChange = (pagination, filters, sorter, extra) => {
 const BalanceRecord = () => {
   return (
     <LayoutWrapper>
-      
       <Layout style={{ padding: "0 16px", backgroundColor: "white" }}>
-        
         <Content style={{ margin: "0 16px" }}>
           <Breadcrumb
             style={{
@@ -81,20 +79,17 @@ const BalanceRecord = () => {
               color: "black",
               fontWeight: "500",
             }}
-          >
-           
-          </Breadcrumb>
-          
+          ></Breadcrumb>
+
           <div
             style={{
-            //   padding: 24,
+              //   padding: 24,
               minHeight: 360,
               // background: "#f0f2f5",
               background: "white",
               borderRadius: "8px",
             }}
           >
-
             <StyledTable
               columns={columns}
               dataSource={data}
@@ -127,7 +122,6 @@ const StyledTable = styled(Table)`
 
 const LayoutWrapper = styled(Layout)`
   min-height: 100vh;
-
 
   @media (max-width: 768px) {
     min-height: 60vh;

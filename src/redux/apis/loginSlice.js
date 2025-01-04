@@ -1,15 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
-
-const API_URL = "http://cloudbravt.centralindia.cloudapp.azure.com";
+import { api } from "../../utils/api";
+import { setUser } from "./userSlice";
 
 export const loginAPI = async (email, password) => {
   try {
-    const response = await axios.post(
-      `${API_URL}/user/login`,
-      { email, password },
-    );
-    return response.data;
+    const response = await api.post("/user/login", { email, password });
+    setUser(response.data.data.user);
+    return response.data.data;
   } catch (error) {
     if (error.code === "ERR_NETWORK") {
       throw new Error(
@@ -25,11 +22,8 @@ export const loginAPI = async (email, password) => {
 };
 
 const initialState = {
-  email: localStorage.getItem("email") || null,
-  isAuthenticated: localStorage.getItem("isAuthenticated") === "true",
   loading: false,
   error: null,
-  user: JSON.parse(localStorage.getItem("user")) || null,
 };
 
 const loginSlice = createSlice({
@@ -40,26 +34,15 @@ const loginSlice = createSlice({
       state.loading = true;
       state.error = null;
     },
-    loginSuccess: (state, action) => {
+    loginSuccess: (state) => {
       state.loading = false;
-      state.isAuthenticated = true;
-      state.email = action.payload.email;
-      state.user = action.payload.user;
-
-     
-      localStorage.setItem("email", action.payload.email);
-      localStorage.setItem("isAuthenticated", "true");
-      localStorage.setItem("user", JSON.stringify(action.payload.user));
     },
     loginFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
-      state.isAuthenticated = false;
     },
-    
   },
 });
 
-export const { loginStart, loginSuccess, loginFailure } =
-  loginSlice.actions;
+export const { loginStart, loginSuccess, loginFailure } = loginSlice.actions;
 export default loginSlice.reducer;

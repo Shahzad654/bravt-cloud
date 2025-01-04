@@ -1,10 +1,7 @@
-import React, { useState } from "react";
 import styled from "styled-components";
 import { Breadcrumb, Layout } from "antd";
 import DashSidebar from "../components/DashSidebar";
 import DashHeader from "../components/DashHeader";
-import { Table } from "antd";
-import AlertImg from "../assets/images/alerting.png";
 import { Tabs } from "antd";
 import MakePayment from "./MakePayment";
 import BalanceRecord from "./BalanceRecord";
@@ -15,20 +12,16 @@ const items = [
   {
     key: "1",
     label: "Make Payment",
-    children: <MakePayment/>
+    children: <MakePayment />,
   },
   {
     key: "2",
     label: "Balance Record",
-    children: <BalanceRecord/>
+    children: <BalanceRecord />,
   },
-  
 ];
 
 const Payment = () => {
-    const onChange = (key) => {
-      console.log(key);
-    };
   return (
     <LayoutWrapper>
       <DashSidebar />
@@ -56,7 +49,7 @@ const Payment = () => {
             }}
           >
             <PageContent>
-              <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
+              <Tabs defaultActiveKey="1" items={items} />
             </PageContent>
           </div>
         </Content>
@@ -66,7 +59,6 @@ const Payment = () => {
 };
 
 export default Payment;
-
 
 const LayoutWrapper = styled(Layout)`
   min-height: 100vh;

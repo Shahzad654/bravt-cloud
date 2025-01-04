@@ -1,4 +1,3 @@
-import React, {useState, useEffect} from "react";
 import styled from "styled-components";
 import Logo from "../assets/images/logo.png";
 import { Layout, theme } from "antd";
@@ -7,23 +6,13 @@ import { MdEmail } from "react-icons/md";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { GrLanguage } from "react-icons/gr";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
+import { useSelector } from "react-redux";
+import { LuUser } from "react-icons/lu";
 
 const { Header } = Layout;
 
 const DashHeader = () => {
-  const [credit, setCredit] = useState(0);
-  const [email, setEmail] = useState("");
-
- 
-  useEffect(() => {
-    const userData = localStorage.getItem("user");
-    if (userData) {
-      const parsedData = JSON.parse(userData);
-      setCredit(parsedData.credit);
-      setEmail(parsedData.email);
-    }
-  }, []);
-
+  const { user } = useSelector((state) => state.user);
 
   const {
     token: { colorBgContainer },
@@ -57,18 +46,18 @@ const DashHeader = () => {
           </div>
           English
         </Link>
-        <Link to="/" className="link">
+        <Link to="/payment" className="link">
           <div className="icon-border">
             <RiMoneyDollarCircleLine className="icon" />
           </div>
-          {credit.toFixed(2)}
+          {user.credit}
         </Link>
 
-        <Link to="/" className="link">
+        <Link to="/profile" className="link">
           <div className="icon-border">
-            <RiMoneyDollarCircleLine className="icon" />
+            <LuUser className="icon" />
           </div>
-          {email}
+          {user.email}
         </Link>
       </NavLinks>
     </StyledHeader>
@@ -76,7 +65,6 @@ const DashHeader = () => {
 };
 
 export default DashHeader;
-
 
 const StyledHeader = styled(Header)`
   display: flex;

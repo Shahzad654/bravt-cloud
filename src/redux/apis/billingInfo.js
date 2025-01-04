@@ -1,23 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-
-
-const API_BASE_URL = "http://cloudbravt.centralindia.cloudapp.azure.com";
+import { api } from "../../utils/api";
 
 export const saveBillingInfo = createAsyncThunk(
   "/user/BillingInfo",
   async (billingData, { rejectWithValue }) => {
     try {
-      const userEmail = getEmailFromStorage();
-      const dataWithEmail = {
-        ...billingData,
-        email: userEmail,
-      };
-
-      const response = await axios.post(
-        `${API_BASE_URL}/user/BillingInfo`,
-        dataWithEmail
-      );
+      const response = await api.post("/user/BillingInfo", billingData);
       return response.data;
     } catch (error) {
       const errorMessage =

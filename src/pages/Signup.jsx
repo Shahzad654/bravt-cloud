@@ -1,49 +1,52 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { sendVerificationCode, verifyAndSignup, setEmailAndPassword } from '../redux/apis/authSlice';
-import styled from 'styled-components';
-import LoginImg from '../assets/images/signup.jpg';
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  sendVerificationCode,
+  verifyAndSignup,
+  setEmailAndPassword,
+} from "../redux/apis/authSlice";
+import styled from "styled-components";
+import LoginImg from "../assets/images/signup.jpg";
 import Logo from "../assets/images/nav.webp";
 import { Link, useNavigate } from "react-router-dom";
-import { Snackbar } from '@mui/material';
-import MuiAlert from '@mui/material/Alert';
-import CircularProgress from '@mui/material/CircularProgress';
+import { Snackbar } from "@mui/material";
+import MuiAlert from "@mui/material/Alert";
+import CircularProgress from "@mui/material/CircularProgress";
+import { setUser } from "../redux/apis/userSlice";
 
 export default function Signup() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error, verificationSent } = useSelector((state) => state.auth);
-  const [email, setEmail] = useState('');
-  const [code, setCode] = useState('');
-  const [password, setPassword] = useState('');
+  const { error, verificationSent } = useSelector((state) => state.auth);
+  const [email, setEmail] = useState("");
+  const [code, setCode] = useState("");
+  const [password, setPassword] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('error');
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("error");
   const [isCodeSending, setIsCodeSending] = useState(false);
-  const [isSigningUp, setIsSigningUp] = useState(false); 
-
+  const [isSigningUp, setIsSigningUp] = useState(false);
 
   useEffect(() => {
     if (error) {
       setSnackbarMessage(error);
-      setSnackbarSeverity('error');
+      setSnackbarSeverity("error");
       setOpenSnackbar(true);
     }
   }, [error]);
 
-
   useEffect(() => {
     if (verificationSent) {
-      setSnackbarMessage('Verification code sent successfully!');
-      setSnackbarSeverity('success');
+      setSnackbarMessage("Verification code sent successfully!");
+      setSnackbarSeverity("success");
       setOpenSnackbar(true);
     }
   }, [verificationSent]);
 
   const handleSendCode = async () => {
     if (!email) {
-      setSnackbarMessage('Please enter a valid email.');
-      setSnackbarSeverity('error');
+      setSnackbarMessage("Please enter a valid email.");
+      setSnackbarSeverity("error");
       setOpenSnackbar(true);
       return;
     }
@@ -51,7 +54,7 @@ export default function Signup() {
     setIsCodeSending(true);
     try {
       await dispatch(sendVerificationCode(email)).unwrap();
-    } catch (err) {
+    } catch {
       // Error handling is done through the useEffect
     } finally {
       setIsCodeSending(false);
@@ -60,8 +63,8 @@ export default function Signup() {
 
   const handleSignup = async () => {
     if (!email || !code || !password) {
-      setSnackbarMessage('Please fill in all fields.');
-      setSnackbarSeverity('error');
+      setSnackbarMessage("Please fill in all fields.");
+      setSnackbarSeverity("error");
       setOpenSnackbar(true);
       return;
     }
@@ -69,19 +72,22 @@ export default function Signup() {
     setIsSigningUp(true);
     try {
       dispatch(setEmailAndPassword({ email, password }));
-      await dispatch(verifyAndSignup({ email, code, password })).unwrap();
-      setSnackbarMessage('Signup Successful!');
-      setSnackbarSeverity('success');
+      const response = await dispatch(
+        verifyAndSignup({ email, code, password })
+      ).unwrap();
+
+      dispatch(setUser(response.user));
+      setSnackbarMessage("Signup Successful!");
+      setSnackbarSeverity("success");
       setOpenSnackbar(true);
-      navigate('/billing-info');
-    } catch (err) {
+      navigate("/billing-info");
+    } catch {
       // Error handling is done through the useEffect
     } finally {
       setIsSigningUp(false);
     }
   };
 
-  
   const isFormValid = email && code && password;
   return (
     <Main>
@@ -113,8 +119,18 @@ export default function Signup() {
             <button
               onClick={handleSendCode}
               disabled={isCodeSending || !email}
-              style={{ marginTop: '5%', minWidth: '2px', paddingTop: '3px', paddingBottom: '3px' }} >
-              {isCodeSending ? <CircularProgress size={24} sx={{ color: 'white' }} /> : 'Send Code'}
+              style={{
+                marginTop: "5%",
+                minWidth: "2px",
+                paddingTop: "3px",
+                paddingBottom: "3px",
+              }}
+            >
+              {isCodeSending ? (
+                <CircularProgress size={24} sx={{ color: "white" }} />
+              ) : (
+                "Send Code"
+              )}
             </button>
 
             <br />
@@ -133,8 +149,13 @@ export default function Signup() {
             <button
               onClick={handleSignup}
               disabled={!isFormValid || isSigningUp}
-              style={{ marginTop: '20px' }} >
-              {isSigningUp ? <CircularProgress size={24} sx={{ color: 'white' }} /> : 'Signup'}
+              style={{ marginTop: "20px" }}
+            >
+              {isSigningUp ? (
+                <CircularProgress size={24} sx={{ color: "white" }} />
+              ) : (
+                "Signup"
+              )}
             </button>
 
             <br />

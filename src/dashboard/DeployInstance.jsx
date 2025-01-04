@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import { Breadcrumb, Layout } from "antd";
 import DashSidebar from "../components/DashSidebar";
@@ -9,26 +9,19 @@ import { FaWindows, FaDocker, FaCpanel, FaCentos } from "react-icons/fa";
 import { GrArchlinux } from "react-icons/gr";
 import { SiRockylinux, SiAlmalinux, SiPlesk } from "react-icons/si";
 
-
 const { Content } = Layout;
 
 const DeployInstance = () => {
-     const [selectedCountry, setSelectedCountry] = useState(null);
-     const [activeSystem, setActiveSystem] = useState(null); 
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [activeSystem, setActiveSystem] = useState(null);
 
-     const handleCountrySelect = (countryCode) => {
-       setSelectedCountry(countryCode);
-     };
+  const handleCountrySelect = (countryCode) => {
+    setSelectedCountry(countryCode);
+  };
 
-      
-
-   
-      const handleSystemClick = (system) => {
-        setActiveSystem((prevSystem) =>
-          prevSystem === system ? null : system
-        );
-      };
-    
+  const handleSystemClick = (system) => {
+    setActiveSystem((prevSystem) => (prevSystem === system ? null : system));
+  };
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -268,7 +261,7 @@ const PageContent = styled.div`
       border-radius: 5%;
       border: 2px solid var(--primary-color);
 
-      p{
+      p {
         font-weight: bold;
       }
 

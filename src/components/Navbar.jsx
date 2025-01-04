@@ -1,49 +1,42 @@
-import React, {useState} from 'react'
-import styled from 'styled-components'
-import { Link } from 'react-router-dom'
-import Logo from '../assets/images/nav.webp'
+import { useState } from "react";
+import styled from "styled-components";
+import { Link } from "react-router-dom";
+import Logo from "../assets/images/nav.webp";
 import { IoIosGift } from "react-icons/io";
 import { GiHamburgerMenu } from "react-icons/gi";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
-import Button from "@mui/material/Button";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 
 export default function Navbar() {
-   const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
-   const toggleDrawer = (newOpen) => () => {
-     setOpen(newOpen);
-   };
+  const toggleDrawer = (newOpen) => () => {
+    setOpen(newOpen);
+  };
 
-   const DrawerList = (
-     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
-       <List>
-         {["Home", "Products", "Locations", "About", "Doc"].map(
-           (text, index) => (
-             <ListItem key={text}>
-               <ListItemText primary={text} />
-             </ListItem>
-           )
-         )}
-       </List>
-       <Divider />
-       <List>
-         {["Sign In", "Sign Up"].map(
-           (text, index) => (
-             <ListItem key={text}>
-               <ListItemText primary={text} />
-             </ListItem>
-           )
-         )}
-       </List>
-     </Box>
-   );
+  const DrawerList = (
+    <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
+      <List>
+        {["Home", "Products", "Locations", "About", "Doc"].map((text) => (
+          <ListItem key={text}>
+            <ListItemText primary={text} />
+          </ListItem>
+        ))}
+      </List>
+      <Divider />
+      <List>
+        {["Sign In", "Sign Up"].map((text) => (
+          <ListItem key={text}>
+            <ListItemText primary={text} />
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
 
   return (
     <>

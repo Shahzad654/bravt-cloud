@@ -1,24 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-
-const API_BASE_URL = "http://cloudbravt.centralindia.cloudapp.azure.com";
-
-// Helper function to save email to localStorage
-const saveEmailToStorage = (email) => {
-  localStorage.setItem("userEmail", email);
-};
-
-// Helper function to get email from localStorage
-export const getEmailFromStorage = () => {
-  return localStorage.getItem("userEmail");
-};
+import { api } from "../../utils/api";
 
 export const sendVerificationCode = createAsyncThunk(
   "/user/otp",
   async (email, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/user/otp`, { email });
-      return response.data;
+      const response = await api.post("/user/otp", { email });
+      return response.data.data;
     } catch (error) {
       const errorMessage =
         error.response?.data?.message || "Failed to send verification code";
@@ -31,17 +19,13 @@ export const verifyAndSignup = createAsyncThunk(
   "/user/verifyOTP",
   async ({ email, code, password }, { rejectWithValue }) => {
     try {
-      console.log("Request payload:", { email, code, password });
-      const response = await axios.post(`${API_BASE_URL}/user/verifyOTP`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        data: { email, code: code.trim(), password },
+      const response = await api.post("/user/verifyOTP", {
+        email,
+        otp: code.trim(),
+        password,
       });
 
-      console.log("Response data:", response.data);
-      saveEmailToStorage(email);
-      return response.data;
+      return response.data.data;
     } catch (error) {
       console.error("Error response:", error.response?.data || error.message);
       const errorMessage = error.response?.data?.message || "Signup failed";
@@ -49,7 +33,6 @@ export const verifyAndSignup = createAsyncThunk(
     }
   }
 );
-
 
 const authSlice = createSlice({
   name: "auth",

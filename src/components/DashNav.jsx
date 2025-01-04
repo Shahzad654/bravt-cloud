@@ -1,23 +1,18 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import Logo from "../assets/images/logo.png";
-import { IoIosGift } from "react-icons/io";
 import { GiHamburgerMenu } from "react-icons/gi";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
-import Button from "@mui/material/Button";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { MdEmail } from "react-icons/md";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { GrLanguage } from "react-icons/gr";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
-import { FaUser } from "react-icons/fa6";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -29,17 +24,15 @@ export default function Navbar() {
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
       <List>
-        {["Home", "Products", "Locations", "About", "Doc"].map(
-          (text, index) => (
-            <ListItem key={text}>
-              <ListItemText primary={text} />
-            </ListItem>
-          )
-        )}
+        {["Home", "Products", "Locations", "About", "Doc"].map((text) => (
+          <ListItem key={text}>
+            <ListItemText primary={text} />
+          </ListItem>
+        ))}
       </List>
       <Divider />
       <List>
-        {["Sign In", "Sign Up"].map((text, index) => (
+        {["Sign In", "Sign Up"].map((text) => (
           <ListItem key={text}>
             <ListItemText primary={text} />
           </ListItem>
@@ -81,8 +74,6 @@ export default function Navbar() {
             0.00
           </Link>
         </div>
-
-        
 
         <div className="mobile-menu">
           <GiHamburgerMenu className="ham-icon" onClick={toggleDrawer(true)} />
