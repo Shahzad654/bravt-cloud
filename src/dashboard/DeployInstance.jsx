@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Breadcrumb, Layout } from "antd";
 import DashSidebar from "../components/DashSidebar";
@@ -8,20 +8,27 @@ import { FaUbuntu, FaDebian } from "react-icons/fa6";
 import { FaWindows, FaDocker, FaCpanel, FaCentos } from "react-icons/fa";
 import { GrArchlinux } from "react-icons/gr";
 import { SiRockylinux, SiAlmalinux, SiPlesk } from "react-icons/si";
+import { useDispatch } from "react-redux";
+import { getRegions } from "../redux/apis/regionsSlice";
+import { useSelector } from "react-redux";
 
 const { Content } = Layout;
 
 const DeployInstance = () => {
-  const [selectedCountry, setSelectedCountry] = useState(null);
+  const dispatch = useDispatch();
+
+  const [selectedRegion, setSelectedRegion] = useState(null);
   const [activeSystem, setActiveSystem] = useState(null);
 
-  const handleCountrySelect = (countryCode) => {
-    setSelectedCountry(countryCode);
-  };
+  const { regions, status } = useSelector((state) => state.regions);
 
   const handleSystemClick = (system) => {
     setActiveSystem((prevSystem) => (prevSystem === system ? null : system));
   };
+
+  useEffect(() => {
+    dispatch(getRegions());
+  }, [dispatch]);
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -49,161 +56,120 @@ const DeployInstance = () => {
           >
             <PageContent>
               <h4>Location</h4>
-              <div className="countries">
-                {[
-                  "US",
-                  "PK",
-                  "BR",
-                  "SA",
-                  "FR",
-                  "GR",
-                  "JP",
-                  "KR",
-                  "PH",
-                  "QA",
-                  "GB",
-                  "TR",
-                  "RU",
-                  "OM",
-                  "MX",
-                ].map((countryCode) => (
-                  <div
-                    key={countryCode}
-                    className={`country ${selectedCountry === countryCode ? "active" : ""}`}
-                    onClick={() => handleCountrySelect(countryCode)}
-                  >
-                    <ReactCountryFlag
-                      countryCode={countryCode}
-                      svg
-                      style={{ width: "3rem", height: "3rem" }}
-                      className="flag"
-                    />
-                    <div className="content">
-                      <p>{countryCode}</p>
-                    </div>
-                  </div>
-                ))}
+              <div className="grid-layout">
+                {status === "loading"
+                  ? Array.from({ length: 32 }).map((_, index) => (
+                      <div
+                        key={index}
+                        className="grid-item animate-pulse"
+                        style={{ backgroundColor: "#d1d5db" }}
+                      >
+                        <div style={{ width: "40px", height: "40px" }} />
+                      </div>
+                    ))
+                  : regions.map((region) => (
+                      <div
+                        key={region.id}
+                        className={`grid-item ${selectedRegion === region.id ? "active" : ""}`}
+                        onClick={() => setSelectedRegion(region.id)}
+                      >
+                        <ReactCountryFlag
+                          svg
+                          className="flag"
+                          countryCode={region.country}
+                          style={{
+                            width: "40px",
+                            height: "40px",
+                            flexGrow: "0",
+                            flexShrink: "0",
+                          }}
+                        />
+                        <div className="content">
+                          {region.city} <sub>({region.country})</sub>
+                        </div>
+                      </div>
+                    ))}
               </div>
               <h4 style={{ marginTop: "40px" }}>System Images</h4>
-              <div className="system-images">
+              <div className="grid-layout">
                 <div
-                  className={`systme-container ${activeSystem === "ubuntu" ? "active" : ""}`}
+                  className={`grid-item ${activeSystem === "ubuntu" ? "active" : ""}`}
                   onClick={() => handleSystemClick("ubuntu")}
                 >
-                  <FaUbuntu
-                    style={{ width: "50px", height: "50px", color: "blue" }}
-                  />
-                  <div className="content">
-                    <p>Ubuntu</p>
-                  </div>
+                  <FaUbuntu color="#E95420" size={36} />
+                  <div className="content">Ubuntu</div>
                 </div>
 
                 <div
-                  className={`systme-container ${activeSystem === "debian" ? "active" : ""}`}
+                  className={`grid-item ${activeSystem === "debian" ? "active" : ""}`}
                   onClick={() => handleSystemClick("debian")}
                 >
-                  <FaDebian
-                    style={{ width: "50px", height: "50px", color: "blue" }}
-                  />
-                  <div className="content">
-                    <p>Debian</p>
-                  </div>
+                  <FaDebian color="#D70A53" size={36} />
+                  <div className="content">Debian</div>
                 </div>
 
                 <div
-                  className={`systme-container ${activeSystem === "windows" ? "active" : ""}`}
+                  className={`grid-item ${activeSystem === "windows" ? "active" : ""}`}
                   onClick={() => handleSystemClick("windows")}
                 >
-                  <FaWindows
-                    style={{ width: "50px", height: "50px", color: "blue" }}
-                  />
-                  <div className="content">
-                    <p>Windows</p>
-                  </div>
+                  <FaWindows color="#357EC7" size={36} />
+                  <div className="content">Windows</div>
                 </div>
 
                 <div
-                  className={`systme-container ${activeSystem === "archlinux" ? "active" : ""}`}
+                  className={`grid-item ${activeSystem === "archlinux" ? "active" : ""}`}
                   onClick={() => handleSystemClick("archlinux")}
                 >
-                  <GrArchlinux
-                    style={{ width: "50px", height: "50px", color: "blue" }}
-                  />
-                  <div className="content">
-                    <p>Arch Linux</p>
-                  </div>
+                  <GrArchlinux color="#1793D1" size={36} />
+                  <div className="content">Arch Linux</div>
                 </div>
 
                 <div
-                  className={`systme-container ${activeSystem === "docker" ? "active" : ""}`}
+                  className={`grid-item ${activeSystem === "docker" ? "active" : ""}`}
                   onClick={() => handleSystemClick("docker")}
                 >
-                  <FaDocker
-                    style={{ width: "50px", height: "50px", color: "blue" }}
-                  />
-                  <div className="content">
-                    <p>Docker</p>
-                  </div>
+                  <FaDocker color="#0DB7ED" size={36} />
+                  <div className="content">Docker</div>
                 </div>
 
                 <div
-                  className={`systme-container ${activeSystem === "cpanel" ? "active" : ""}`}
+                  className={`grid-item ${activeSystem === "cpanel" ? "active" : ""}`}
                   onClick={() => handleSystemClick("cpanel")}
                 >
-                  <FaCpanel
-                    style={{ width: "50px", height: "50px", color: "blue" }}
-                  />
-                  <div className="content">
-                    <p>cPanel</p>
-                  </div>
+                  <FaCpanel color="#FF6C2C" size={36} />
+                  <div className="content">cPanel</div>
                 </div>
 
                 <div
-                  className={`systme-container ${activeSystem === "rockylinux" ? "active" : ""}`}
+                  className={`grid-item ${activeSystem === "rockylinux" ? "active" : ""}`}
                   onClick={() => handleSystemClick("rockylinux")}
                 >
-                  <SiRockylinux
-                    style={{ width: "50px", height: "50px", color: "blue" }}
-                  />
-                  <div className="content">
-                    <p>Rocky Linux</p>
-                  </div>
+                  <SiRockylinux color="#44B118" size={36} />
+                  <div className="content">Rocky Linux</div>
                 </div>
 
                 <div
-                  className={`systme-container ${activeSystem === "almalinux" ? "active" : ""}`}
+                  className={`grid-item ${activeSystem === "almalinux" ? "active" : ""}`}
                   onClick={() => handleSystemClick("almalinux")}
                 >
-                  <SiAlmalinux
-                    style={{ width: "50px", height: "50px", color: "blue" }}
-                  />
-                  <div className="content">
-                    <p>Alma Linux</p>
-                  </div>
+                  <SiAlmalinux color="#6BFC45" size={36} />
+                  <div className="content">Alma Linux</div>
                 </div>
 
                 <div
-                  className={`systme-container ${activeSystem === "centos" ? "active" : ""}`}
+                  className={`grid-item ${activeSystem === "centos" ? "active" : ""}`}
                   onClick={() => handleSystemClick("centos")}
                 >
-                  <FaCentos
-                    style={{ width: "50px", height: "50px", color: "blue" }}
-                  />
-                  <div className="content">
-                    <p>CentosOS</p>
-                  </div>
+                  <FaCentos color="#932178" size={36} />
+                  <div className="content">CentosOS</div>
                 </div>
 
                 <div
-                  className={`systme-container ${activeSystem === "plesk" ? "active" : ""}`}
+                  className={`grid-item ${activeSystem === "plesk" ? "active" : ""}`}
                   onClick={() => handleSystemClick("plesk")}
                 >
-                  <SiPlesk
-                    style={{ width: "50px", height: "50px", color: "blue" }}
-                  />
-                  <div className="content">
-                    <p>Plesk</p>
-                  </div>
+                  <SiPlesk color="#53BCE6" size={36} />
+                  <div className="content">Plesk</div>
                 </div>
               </div>
             </PageContent>
@@ -217,57 +183,55 @@ const DeployInstance = () => {
 export default DeployInstance;
 
 const PageContent = styled.div`
-  .countries {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 2rem;
-    flex-wrap: wrap;
-    .country {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1rem;
-      width: 170px;
-      height: 100px;
-      border-radius: 5%;
-      border: 2px solid var(--primary-color);
-      p {
-        text-align: center;
-        font-weight: bold;
-      }
+  .grid-layout {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
 
-      &.active {
-        border: 2px solid var(--primary-color);
-        background-color: var(--primary-color);
-      }
+    @media (min-width: 640px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-  }
 
-  .system-images {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 2rem;
-    flex-wrap: wrap;
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
 
-    .systme-container {
+    @media (min-width: 1024px) {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    @media (min-width: 1280px) {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .grid-item {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 1rem;
-      width: 170px;
-      height: 100px;
+      gap: 10px;
+      width: full;
+      padding: 16px;
+      min-height: 100px;
       border-radius: 5%;
-      border: 2px solid var(--primary-color);
+      border: 2px solid #d1d5db;
+      cursor: pointer;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      transition-property: color, background-color, border-color;
+      text-decoration-color; fill, stroke;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition-duration: 300ms;
 
-      p {
+      .content {
         font-weight: bold;
+        font-size: 16px;
+        sub {
+          color: #52525b;
+        }
       }
 
       &.active {
-        background: var(--primary-color);
-        color: white;
+        background: #bfdbfe;
+        border-color: var(--primary-color);
       }
     }
   }
