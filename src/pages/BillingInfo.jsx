@@ -102,11 +102,12 @@ export default function BillingInfo() {
               <Form.Item
                 label="First Name"
                 name="firstname"
+                
                 rules={[
                   { required: true, message: "Please enter your first name" },
                 ]}
               >
-                <Input style={{ marginLeft: "10px", width: "220px" }} />
+                <Input style={{ marginLeft: "10px", width: "220px" }} placeholder="Enter your first name"/>
               </Form.Item>
 
               <Form.Item
@@ -116,7 +117,7 @@ export default function BillingInfo() {
                   { required: true, message: "Please enter your last name" },
                 ]}
               >
-                <Input style={{ marginLeft: "10px", width: "220px" }} />
+                <Input style={{ marginLeft: "10px", width: "220px" }} placeholder="Enter your last name" />
               </Form.Item>
 
               <Form.Item
@@ -126,7 +127,7 @@ export default function BillingInfo() {
                   { required: true, message: "Please enter your address" },
                 ]}
               >
-                <Input style={{ marginLeft: "10px", width: "220px" }} />
+                <Input style={{ marginLeft: "10px", width: "220px" }} placeholder="Enter your address" />
               </Form.Item>
 
               <Form.Item
@@ -134,7 +135,7 @@ export default function BillingInfo() {
                 name="city"
                 rules={[{ required: true, message: "Please enter your city" }]}
               >
-                <Input style={{ marginLeft: "10px", width: "220px" }} />
+                <Input style={{ marginLeft: "10px", width: "220px" }} placeholder="Enter your city" />
               </Form.Item>
 
               <Form.Item
@@ -144,7 +145,7 @@ export default function BillingInfo() {
                   { required: true, message: "Please select your country" },
                 ]}
               >
-                <Select style={{ marginLeft: "10px", width: "220px" }}>
+                <Select style={{ marginLeft: "10px", width: "220px" }} placeholder="select your country">
                   {countries.map((country) => (
                     <Option key={country} value={country}>
                       {country}
@@ -163,7 +164,7 @@ export default function BillingInfo() {
                   },
                 ]}
               >
-                <InputNumber style={{ marginLeft: "10px", width: "220px" }} />
+                <InputNumber style={{ marginLeft: "10px", width: "220px" }} placeholder="Enter your zip code" />
               </Form.Item>
 
               <Form.Item
@@ -173,7 +174,7 @@ export default function BillingInfo() {
                   { required: true, message: "Please enter your company name" },
                 ]}
               >
-                <Input style={{ marginLeft: "10px", width: "220px" }} />
+                <Input style={{ marginLeft: "10px", width: "220px" }} placeholder="Enter your company name" />
               </Form.Item>
 
               <Form.Item
@@ -186,7 +187,7 @@ export default function BillingInfo() {
                   },
                 ]}
               >
-                <InputNumber style={{ marginLeft: "10px", width: "220px" }} />
+                <InputNumber style={{ marginLeft: "10px", width: "220px" }} placeholder="Enter your phone number" />
               </Form.Item>
 
               <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
