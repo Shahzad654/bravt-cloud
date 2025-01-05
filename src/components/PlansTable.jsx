@@ -22,11 +22,14 @@ const MyTable = () => {
         <div
           style={{
             cursor: "pointer",
-            backgroundColor: selectedRowKey === record.key ? "#6ABBE9" : "transparent", // Highlight the selected row
+            backgroundColor:
+              selectedRowKey === record.name ? "#6ABBE9" : "transparent", // Highlight the selected row
             padding: "8px",
           }}
-          onClick={() => handleRowClick(record.key)} // Handle the row click
+          onClick={() => handleRowClick(record.name)} // Handle the row click
         >
+          {console.log("record", record)}
+
           {text}
         </div>
       ),
@@ -39,10 +42,11 @@ const MyTable = () => {
         <div
           style={{
             cursor: "pointer",
-            backgroundColor: selectedRowKey === record.key ? "#6ABBE9" : "transparent", // Highlight the selected row
+            backgroundColor:
+              selectedRowKey === record.name ? "#6ABBE9" : "transparent", // Highlight the selected row
             padding: "8px",
           }}
-          onClick={() => handleRowClick(record.key)} // Handle the row click
+          onClick={() => handleRowClick(record.name)} // Handle the row click
         >
           {text}
         </div>
@@ -56,10 +60,11 @@ const MyTable = () => {
         <div
           style={{
             cursor: "pointer",
-            backgroundColor: selectedRowKey === record.key ? "#6ABBE9" : "transparent", // Highlight the selected row
+            backgroundColor:
+              selectedRowKey === record.name ? "#6ABBE9" : "transparent", // Highlight the selected row
             padding: "8px",
           }}
-          onClick={() => handleRowClick(record.key)} // Handle the row click
+          onClick={() => handleRowClick(record.name)} // Handle the row click
         >
           {text}
         </div>
@@ -73,11 +78,12 @@ const MyTable = () => {
         <div
           style={{
             cursor: "pointer",
-            backgroundColor: selectedRowKey === record.key ? "#6ABBE9" : "transparent", // Highlight the selected row
+            backgroundColor:
+              selectedRowKey === record.name ? "#6ABBE9" : "transparent", // Highlight the selected row
             textAlign: "center",
             // padding: "8px",
           }}
-          onClick={() => handleRowClick(record.key)} // Handle the row click
+          onClick={() => handleRowClick(record.name)} // Handle the row click
         >
           <div>
             <strong>{record.monthly_cost}/mon</strong>
@@ -89,7 +95,7 @@ const MyTable = () => {
   ];
 
   // Loading state and data handling
-  if (status === "loading") return <Spin tip="Loading..." />;
+  if (status === "loading") return <Spin tip='Loading...' />;
   if (status === "error") return <p>Error: {error}</p>;
 
   // Format data if necessary (assuming planId contains data for table rows)
@@ -108,16 +114,15 @@ const MyTable = () => {
   const handleRowClick = (key) => {
     setSelectedRowKey(key === selectedRowKey ? null : key); // Toggle selection on click
   };
+//   console.log("selectedRowKey", selectedRowKey);
 
   return (
-    <div>
-      <Table
-        columns={columns}
-        dataSource={formattedData}
-        rowSelection={null} // Disable built-in row selection
-        style={{ margin: "0 38px" }}
-      />
-    </div>
+    <Table
+      columns={columns}
+      dataSource={formattedData}
+      rowSelection={null} // Disable built-in row selection
+      style={{ margin: "0 38px" }}
+    />
   );
 };
 

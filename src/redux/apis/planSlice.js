@@ -21,28 +21,28 @@ const planSlice = createSlice({
   name: "plan",
   initialState: {
     plan: [],
-    status: "loading", // 'idle' | 'loading' | 'succeeded' | 'error'
+    planStatus: "loading", // 'idle' | 'loading' | 'succeeded' | 'error'
     error: null,
   },
   reducers: {
     clearPlan: (state) => {
       state.plan = null;
-      state.status = "idle";
+      state.planStatus = "idle";
       state.error = null;
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchPlanId.pending, (state) => {
-        state.status = "loading";
+        state.planStatus = "loading";
         state.error = null;
       })
       .addCase(fetchPlanId.fulfilled, (state, action) => {
-        state.status = "succeeded";
+        state.planStatus = "succeeded";
         state.plan = action.payload;
       })
       .addCase(fetchPlanId.rejected, (state, action) => {
-        state.status = "error";
+        state.planStatus = "error";
         state.error = action.payload;
       });
   },

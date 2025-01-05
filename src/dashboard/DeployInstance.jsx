@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Breadcrumb, Layout } from "antd";
+import { Breadcrumb, Layout, Spin, Table } from "antd";
 import DashSidebar from "../components/DashSidebar";
 import DashHeader from "../components/DashHeader";
 import ReactCountryFlag from "react-country-flag";
@@ -8,9 +8,10 @@ import { FaUbuntu, FaDebian } from "react-icons/fa6";
 import { FaWindows, FaDocker, FaCpanel, FaCentos } from "react-icons/fa";
 import { GrArchlinux } from "react-icons/gr";
 import { SiRockylinux, SiAlmalinux, SiPlesk } from "react-icons/si";
-import MyTable from "../components/PlansTable";
+// import MyTable from "../components/PlansTable";
 import { useDispatch, useSelector } from "react-redux";
 import { getRegions } from "../redux/apis/regionsSlice";
+import { fetchPlanId } from "../redux/apis/planSlice";
 
 const { Content } = Layout;
 
@@ -29,7 +30,119 @@ const DeployInstance = () => {
   useEffect(() => {
     dispatch(getRegions());
   }, [dispatch]);
-console.log("regions",regions);
+
+  //plans table
+  // const dispatch = useDispatch();
+  const { plan, planStatus, error } = useSelector((state) => state.plan); // Select plan state from Redux
+  const [selectedRowKey, setSelectedRowKey] = useState(null); // State to manage the selected row key
+
+  useEffect(() => {
+    dispatch(fetchPlanId("fra")); // Dispatch the fetchPlanId thunk with the "fra" region
+  }, [dispatch]);
+
+  // Table columns
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      render: (text, record) => (
+        <div
+          style={{
+            cursor: "pointer",
+            backgroundColor:
+              selectedRowKey === record.name ? "#6ABBE9" : "transparent", // Highlight the selected row
+            padding: "8px",
+          }}
+          onClick={() => handleRowClick(record.name)} // Handle the row click
+        >
+          {console.log("record", record)}
+
+          {text}
+        </div>
+      ),
+    },
+    {
+      title: "Cores",
+      dataIndex: "cores",
+      key: "cores",
+      render: (text, record) => (
+        <div
+          style={{
+            cursor: "pointer",
+            backgroundColor:
+              selectedRowKey === record.name ? "#6ABBE9" : "transparent", // Highlight the selected row
+            padding: "8px",
+          }}
+          onClick={() => handleRowClick(record.name)} // Handle the row click
+        >
+          {text}
+        </div>
+      ),
+    },
+    {
+      title: "Memory",
+      dataIndex: "memory",
+      key: "memory",
+      render: (text, record) => (
+        <div
+          style={{
+            cursor: "pointer",
+            backgroundColor:
+              selectedRowKey === record.name ? "#6ABBE9" : "transparent", // Highlight the selected row
+            padding: "8px",
+          }}
+          onClick={() => handleRowClick(record.name)} // Handle the row click
+        >
+          {text}
+        </div>
+      ),
+    },
+    {
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
+      render: (text, record) => (
+        <div
+          style={{
+            cursor: "pointer",
+            backgroundColor:
+              selectedRowKey === record.name ? "#6ABBE9" : "transparent", // Highlight the selected row
+            textAlign: "center",
+            // padding: "8px",
+          }}
+          onClick={() => handleRowClick(record.name)} // Handle the row click
+        >
+          <div>
+            <strong>{record.monthly_cost}/mon</strong>
+          </div>
+          <div>{record.hourly_cost}/hr</div>
+        </div>
+      ),
+    },
+  ];
+
+  // Loading state and data handling
+  if (planStatus === "loading") return <Spin tip='Loading...' />;
+  if (planStatus === "error") return <p>Error: {error}</p>;
+
+  // Format data if necessary (assuming planId contains data for table rows)
+  const formattedData = Array.isArray(plan.data)
+    ? plan.data.map((item, index) => ({
+        key: index,
+        name: item.id,
+        cores: item.type,
+        memory: item.id.split("-")[2].toUpperCase(),
+        monthly_cost: item.monthly_cost, // Add this field
+        hourly_cost: item.hourly_cost.toFixed(3),
+      }))
+    : [];
+
+  // Handle row click
+  const handleRowClick = (key) => {
+    setSelectedRowKey(key === selectedRowKey ? null : key); // Toggle selection on click
+  };
+// console.log("selectedRowKey",selectedRowKey);
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -57,12 +170,12 @@ console.log("regions",regions);
           >
             <PageContent>
               <h4>Location</h4>
-              <div className="grid-layout">
+              <div className='grid-layout'>
                 {status === "loading"
                   ? Array.from({ length: 32 }).map((_, index) => (
                       <div
                         key={index}
-                        className="grid-item animate-pulse"
+                        className='grid-item animate-pulse'
                         style={{ backgroundColor: "#d1d5db" }}
                       >
                         <div style={{ width: "40px", height: "40px" }} />
@@ -76,7 +189,7 @@ console.log("regions",regions);
                       >
                         <ReactCountryFlag
                           svg
-                          className="flag"
+                          className='flag'
                           countryCode={region.country}
                           style={{
                             width: "40px",
@@ -85,99 +198,104 @@ console.log("regions",regions);
                             flexShrink: "0",
                           }}
                         />
-                        <div className="content">
+                        <div className='content'>
                           {region.city} <sub>({region.country})</sub>
                         </div>
                       </div>
                     ))}
               </div>
               <h4 style={{ marginTop: "40px" }}>System Images</h4>
-              <div className="grid-layout">
+              <div className='grid-layout'>
                 <div
                   className={`grid-item ${activeSystem === "ubuntu" ? "active" : ""}`}
                   onClick={() => handleSystemClick("ubuntu")}
                 >
-                  <FaUbuntu color="#E95420" size={36} />
-                  <div className="content">Ubuntu</div>
+                  <FaUbuntu color='#E95420' size={36} />
+                  <div className='content'>Ubuntu</div>
                 </div>
 
                 <div
                   className={`grid-item ${activeSystem === "debian" ? "active" : ""}`}
                   onClick={() => handleSystemClick("debian")}
                 >
-                  <FaDebian color="#D70A53" size={36} />
-                  <div className="content">Debian</div>
+                  <FaDebian color='#D70A53' size={36} />
+                  <div className='content'>Debian</div>
                 </div>
 
                 <div
                   className={`grid-item ${activeSystem === "windows" ? "active" : ""}`}
                   onClick={() => handleSystemClick("windows")}
                 >
-                  <FaWindows color="#357EC7" size={36} />
-                  <div className="content">Windows</div>
+                  <FaWindows color='#357EC7' size={36} />
+                  <div className='content'>Windows</div>
                 </div>
 
                 <div
                   className={`grid-item ${activeSystem === "archlinux" ? "active" : ""}`}
                   onClick={() => handleSystemClick("archlinux")}
                 >
-                  <GrArchlinux color="#1793D1" size={36} />
-                  <div className="content">Arch Linux</div>
+                  <GrArchlinux color='#1793D1' size={36} />
+                  <div className='content'>Arch Linux</div>
                 </div>
 
                 <div
                   className={`grid-item ${activeSystem === "docker" ? "active" : ""}`}
                   onClick={() => handleSystemClick("docker")}
                 >
-                  <FaDocker color="#0DB7ED" size={36} />
-                  <div className="content">Docker</div>
+                  <FaDocker color='#0DB7ED' size={36} />
+                  <div className='content'>Docker</div>
                 </div>
 
                 <div
                   className={`grid-item ${activeSystem === "cpanel" ? "active" : ""}`}
                   onClick={() => handleSystemClick("cpanel")}
                 >
-                  <FaCpanel color="#FF6C2C" size={36} />
-                  <div className="content">cPanel</div>
+                  <FaCpanel color='#FF6C2C' size={36} />
+                  <div className='content'>cPanel</div>
                 </div>
 
                 <div
                   className={`grid-item ${activeSystem === "rockylinux" ? "active" : ""}`}
                   onClick={() => handleSystemClick("rockylinux")}
                 >
-                  <SiRockylinux color="#44B118" size={36} />
-                  <div className="content">Rocky Linux</div>
+                  <SiRockylinux color='#44B118' size={36} />
+                  <div className='content'>Rocky Linux</div>
                 </div>
 
                 <div
                   className={`grid-item ${activeSystem === "almalinux" ? "active" : ""}`}
                   onClick={() => handleSystemClick("almalinux")}
                 >
-                  <SiAlmalinux color="#6BFC45" size={36} />
-                  <div className="content">Alma Linux</div>
+                  <SiAlmalinux color='#6BFC45' size={36} />
+                  <div className='content'>Alma Linux</div>
                 </div>
 
                 <div
                   className={`grid-item ${activeSystem === "centos" ? "active" : ""}`}
                   onClick={() => handleSystemClick("centos")}
                 >
-                  <FaCentos color="#932178" size={36} />
-                  <div className="content">CentosOS</div>
+                  <FaCentos color='#932178' size={36} />
+                  <div className='content'>CentosOS</div>
                 </div>
 
                 <div
                   className={`grid-item ${activeSystem === "plesk" ? "active" : ""}`}
                   onClick={() => handleSystemClick("plesk")}
                 >
-                  <SiPlesk color="#53BCE6" size={36} />
-                  <div className="content">Plesk</div>
+                  <SiPlesk color='#53BCE6' size={36} />
+                  <div className='content'>Plesk</div>
                 </div>
               </div>
             </PageContent>
           </div>
         </Content>
-        <h4 className="mx-5 mt-2">Plans</h4>
-        <MyTable/>
+        <h4 className='mx-5 mt-2'>Plans</h4>
+        <Table
+          columns={columns}
+          dataSource={formattedData}
+          rowSelection={null} // Disable built-in row selection
+          style={{ margin: "0 38px" }}
+        />
       </Layout>
     </Layout>
   );
