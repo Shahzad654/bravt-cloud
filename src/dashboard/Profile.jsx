@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useTransition } from "react";
 import styled from "styled-components";
-import { Breadcrumb, Layout } from "antd";
+import { Breadcrumb, Layout, message } from "antd";
 import DashSidebar from "../components/DashSidebar";
 import DashHeader from "../components/DashHeader";
 import { Button, Form, Input, InputNumber, Select } from "antd";
@@ -8,6 +8,10 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setUser } from "../redux/apis/userSlice";
+import { updateProfileInfo } from "../redux/apis/updateProfileSlice";
 
 const { Content } = Layout;
 const { Option } = Select;
@@ -37,9 +41,12 @@ const formItemLayout = {
 };
 
 const Profile = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [form] = Form.useForm();
   const [countries, setCountries] = useState([]);
   const [modalEmail, setModalEmail] = useState("");
+  const [isPending, startTransition] = useTransition();
   const [open, setOpen] = useState(false);
 
   const { user } = useSelector((state) => state.user);
@@ -66,6 +73,35 @@ const Profile = () => {
 
     fetchCountries();
   }, []);
+
+  const handleSubmit = () => {
+    startTransition(async () => {
+      try {
+        // Validate form first
+        await form.validateFields();
+
+        const values = form.getFieldsValue();
+
+        // Add email to the form data
+        const formDataWithEmail = {
+          ...values,
+          email: user.email,
+        };
+
+        const response = await dispatch(
+          updateProfileInfo(formDataWithEmail)
+        ).unwrap();
+
+        dispatch(setUser(response.data));
+
+        message.success("Profile updated successfully!");
+        // Optional: Redirect to next page after successful submission
+        setTimeout(() => navigate("/instance"), 2000);
+      } catch (error) {
+        message.error(error?.message || "Failed to save billing information");
+      }
+    });
+  };
 
   return (
     <>
@@ -111,24 +147,31 @@ const Profile = () => {
                   <br />
 
                   <Form
-                    {...formItemLayout}
                     form={form}
                     style={{ maxWidth: 600 }}
+                    initialValues={user}
+                    {...formItemLayout}
                   >
                     <Form.Item
                       label="First Name"
-                      name="firstname"
+                      name="firstName"
                       rules={[{ required: true, message: "Please input!" }]}
                     >
-                      <Input style={{ marginLeft: "10px", width: "220px" }} />
+                      <Input
+                        disabled={isPending}
+                        style={{ marginLeft: "10px", width: "220px" }}
+                      />
                     </Form.Item>
 
                     <Form.Item
                       label="Last Name"
-                      name="lastname"
+                      name="lastName"
                       rules={[{ required: true, message: "Please input!" }]}
                     >
-                      <Input style={{ marginLeft: "10px", width: "220px" }} />
+                      <Input
+                        disabled={isPending}
+                        style={{ marginLeft: "10px", width: "220px" }}
+                      />
                     </Form.Item>
 
                     <Form.Item
@@ -136,7 +179,10 @@ const Profile = () => {
                       name="address"
                       rules={[{ required: true, message: "Please input!" }]}
                     >
-                      <Input style={{ marginLeft: "10px", width: "220px" }} />
+                      <Input
+                        disabled={isPending}
+                        style={{ marginLeft: "10px", width: "220px" }}
+                      />
                     </Form.Item>
 
                     <Form.Item
@@ -144,7 +190,10 @@ const Profile = () => {
                       name="city"
                       rules={[{ required: true, message: "Please input!" }]}
                     >
-                      <Input style={{ marginLeft: "10px", width: "220px" }} />
+                      <Input
+                        disabled={isPending}
+                        style={{ marginLeft: "10px", width: "220px" }}
+                      />
                     </Form.Item>
 
                     <Form.Item
@@ -152,7 +201,10 @@ const Profile = () => {
                       name="country"
                       rules={[{ required: true, message: "Please input!" }]}
                     >
-                      <Select style={{ marginLeft: "10px", width: "220px" }}>
+                      <Select
+                        disabled={isPending}
+                        style={{ marginLeft: "10px", width: "220px" }}
+                      >
                         {countries.map((country) => (
                           <Option key={country} value={country}>
                             {country}
@@ -163,28 +215,33 @@ const Profile = () => {
 
                     <Form.Item
                       label="Zip Code"
-                      name="zipcode"
+                      name="zipCode"
                       rules={[{ required: true, message: "Please input!" }]}
                     >
                       <InputNumber
+                        disabled={isPending}
                         style={{ marginLeft: "10px", width: "220px" }}
                       />
                     </Form.Item>
 
                     <Form.Item
                       label="Company"
-                      name="company"
+                      name="companyName"
                       rules={[{ required: true, message: "Please input!" }]}
                     >
-                      <Input style={{ marginLeft: "10px", width: "220px" }} />
+                      <Input
+                        disabled={isPending}
+                        style={{ marginLeft: "10px", width: "220px" }}
+                      />
                     </Form.Item>
 
                     <Form.Item
                       label="Phone"
-                      name="phone"
+                      name="phoneNumber"
                       rules={[{ required: true, message: "Please input!" }]}
                     >
                       <InputNumber
+                        disabled={isPending}
                         style={{ marginLeft: "10px", width: "220px" }}
                       />
                     </Form.Item>
@@ -195,7 +252,12 @@ const Profile = () => {
                         span: 16,
                       }}
                     >
-                      <Button type="primary" htmlType="submit">
+                      <Button
+                        type="primary"
+                        htmlType="submit"
+                        onClick={handleSubmit}
+                        loading={isPending}
+                      >
                         Save Changes
                       </Button>
                     </Form.Item>

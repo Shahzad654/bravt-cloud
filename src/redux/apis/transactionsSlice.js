@@ -19,16 +19,8 @@ const transactionsSlice = createSlice({
   name: "transactions",
   initialState: {
     transactions: [],
-    status: "loading", // 'idle' | 'loading' | 'succeeded' | 'error'
+    status: "loading",
     error: null,
-  },
-  reducers: {
-    addTransaction: (state, action) => {
-      state.transactions = [
-        { ...action.payload, createdAt: new Date() },
-        ...state.transactions,
-      ];
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -46,7 +38,5 @@ const transactionsSlice = createSlice({
       });
   },
 });
-
-export const { addTransaction } = transactionsSlice.actions;
 
 export default transactionsSlice.reducer;
