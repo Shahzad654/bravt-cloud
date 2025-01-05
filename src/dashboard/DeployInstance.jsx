@@ -8,6 +8,7 @@ import { FaUbuntu, FaDebian } from "react-icons/fa6";
 import { FaWindows, FaDocker, FaCpanel, FaCentos } from "react-icons/fa";
 import { GrArchlinux } from "react-icons/gr";
 import { SiRockylinux, SiAlmalinux, SiPlesk } from "react-icons/si";
+import MyTable from "../components/PlansTable";
 
 const { Content } = Layout;
 
@@ -49,7 +50,7 @@ const DeployInstance = () => {
           >
             <PageContent>
               <h4>Location</h4>
-              <div className="countries">
+              <div className='countries'>
                 {[
                   "US",
                   "PK",
@@ -76,16 +77,16 @@ const DeployInstance = () => {
                       countryCode={countryCode}
                       svg
                       style={{ width: "3rem", height: "3rem" }}
-                      className="flag"
+                      className='flag'
                     />
-                    <div className="content">
+                    <div className='content'>
                       <p>{countryCode}</p>
                     </div>
                   </div>
                 ))}
               </div>
               <h4 style={{ marginTop: "40px" }}>System Images</h4>
-              <div className="system-images">
+              <div className='system-images'>
                 <div
                   className={`systme-container ${activeSystem === "ubuntu" ? "active" : ""}`}
                   onClick={() => handleSystemClick("ubuntu")}
@@ -93,7 +94,7 @@ const DeployInstance = () => {
                   <FaUbuntu
                     style={{ width: "50px", height: "50px", color: "blue" }}
                   />
-                  <div className="content">
+                  <div className='content'>
                     <p>Ubuntu</p>
                   </div>
                 </div>
@@ -105,7 +106,7 @@ const DeployInstance = () => {
                   <FaDebian
                     style={{ width: "50px", height: "50px", color: "blue" }}
                   />
-                  <div className="content">
+                  <div className='content'>
                     <p>Debian</p>
                   </div>
                 </div>
@@ -117,7 +118,7 @@ const DeployInstance = () => {
                   <FaWindows
                     style={{ width: "50px", height: "50px", color: "blue" }}
                   />
-                  <div className="content">
+                  <div className='content'>
                     <p>Windows</p>
                   </div>
                 </div>
@@ -129,7 +130,7 @@ const DeployInstance = () => {
                   <GrArchlinux
                     style={{ width: "50px", height: "50px", color: "blue" }}
                   />
-                  <div className="content">
+                  <div className='content'>
                     <p>Arch Linux</p>
                   </div>
                 </div>
@@ -141,7 +142,7 @@ const DeployInstance = () => {
                   <FaDocker
                     style={{ width: "50px", height: "50px", color: "blue" }}
                   />
-                  <div className="content">
+                  <div className='content'>
                     <p>Docker</p>
                   </div>
                 </div>
@@ -153,7 +154,7 @@ const DeployInstance = () => {
                   <FaCpanel
                     style={{ width: "50px", height: "50px", color: "blue" }}
                   />
-                  <div className="content">
+                  <div className='content'>
                     <p>cPanel</p>
                   </div>
                 </div>
@@ -165,7 +166,7 @@ const DeployInstance = () => {
                   <SiRockylinux
                     style={{ width: "50px", height: "50px", color: "blue" }}
                   />
-                  <div className="content">
+                  <div className='content'>
                     <p>Rocky Linux</p>
                   </div>
                 </div>
@@ -177,7 +178,7 @@ const DeployInstance = () => {
                   <SiAlmalinux
                     style={{ width: "50px", height: "50px", color: "blue" }}
                   />
-                  <div className="content">
+                  <div className='content'>
                     <p>Alma Linux</p>
                   </div>
                 </div>
@@ -189,7 +190,7 @@ const DeployInstance = () => {
                   <FaCentos
                     style={{ width: "50px", height: "50px", color: "blue" }}
                   />
-                  <div className="content">
+                  <div className='content'>
                     <p>CentosOS</p>
                   </div>
                 </div>
@@ -201,7 +202,7 @@ const DeployInstance = () => {
                   <SiPlesk
                     style={{ width: "50px", height: "50px", color: "blue" }}
                   />
-                  <div className="content">
+                  <div className='content'>
                     <p>Plesk</p>
                   </div>
                 </div>
@@ -209,6 +210,7 @@ const DeployInstance = () => {
             </PageContent>
           </div>
         </Content>
+        <MyTable/>
       </Layout>
     </Layout>
   );
