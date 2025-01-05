@@ -19,6 +19,8 @@ const columns = [
     render: (amt) => (
       <span style={{ fontWeight: "600" }}>{formatPrice(amt)}</span>
     ),
+    showSorterTooltip: { target: "full-header" },
+    sorter: (a, b) => a.amount - b.amount,
   },
   {
     title: "Status",
@@ -50,6 +52,11 @@ const columns = [
         {method}
       </div>
     ),
+    filters: [
+      { text: "Card", value: "Card" },
+      { text: "PayPal", value: "PayPal" },
+    ],
+    onFilter: (value, record) => record.paymentMethod.indexOf(value) === 0,
   },
   {
     title: "Time",
@@ -57,6 +64,8 @@ const columns = [
     render: (value) => (
       <span style={{ fontSize: "14px" }}>{format(value, "PPP")}</span>
     ),
+    showSorterTooltip: { target: "full-header" },
+    sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
   },
 ];
 

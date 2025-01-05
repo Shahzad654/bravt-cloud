@@ -73,7 +73,15 @@ function Form({ credits }) {
       <form style={{ width: "100%" }} onSubmit={handleSubmit}>
         <CardElement
           onReady={(e) => e.focus()}
-          className="stripe-card-element"
+          options={{
+            hidePostalCode: true,
+            disabled: status === "loading",
+            classes: {
+              base: "stripe-card-element",
+              focus: "stripe-card-element-focused",
+              invalid: "stripe-card-element-invalid",
+            },
+          }}
         />
         <button
           disabled={status === "loading"}
