@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Breadcrumb, Layout, Spin, Table } from "antd";
+import { Breadcrumb, Button, Layout, Spin, Table } from "antd";
 import DashSidebar from "../components/DashSidebar";
 import DashHeader from "../components/DashHeader";
 import ReactCountryFlag from "react-country-flag";
@@ -12,6 +12,7 @@ import { SiRockylinux, SiAlmalinux, SiPlesk } from "react-icons/si";
 import { useDispatch, useSelector } from "react-redux";
 import { getRegions } from "../redux/apis/regionsSlice";
 import { fetchPlanId } from "../redux/apis/planSlice";
+import { createInstance } from "../redux/apis/createInstanceSlice";
 
 const { Content } = Layout;
 
@@ -30,6 +31,7 @@ const DeployInstance = () => {
   useEffect(() => {
     dispatch(getRegions());
   }, [dispatch]);
+console.log("selectedRegion",selectedRegion);
 
   //plans table
   // const dispatch = useDispatch();
@@ -143,6 +145,12 @@ const DeployInstance = () => {
     setSelectedRowKey(key === selectedRowKey ? null : key); // Toggle selection on click
   };
 // console.log("selectedRowKey",selectedRowKey);
+//create instance
+const handleCreateInstance = () => {
+  if (selectedRowKey && selectedRegion) {
+    dispatch(createInstance({ region: selectedRegion, plan: selectedRowKey }));
+  }
+};
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -296,6 +304,13 @@ const DeployInstance = () => {
           rowSelection={null} // Disable built-in row selection
           style={{ margin: "0 38px" }}
         />
+         <Button
+        type="primary"
+        onClick={handleCreateInstance}
+        disabled={!selectedRowKey} // Disable button if no plan is selected
+      >
+        Create Instance
+      </Button>
       </Layout>
     </Layout>
   );
