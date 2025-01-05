@@ -6,12 +6,12 @@ export const createInstance = createAsyncThunk(
   "/vultr/createInstance", // Define the endpoint
   async (instanceData, { rejectWithValue }) => {
     try {
-        console.log("instanceData",instanceData);
-        
+      console.log("instanceData", instanceData);
+
       // Send request to create the instance
       const response = await api.post("/vultr/createInstance", instanceData);
-      console.log("response",response);
-      
+      console.log("response", response);
+
       return response.data; // Adjust based on your API's response structure
     } catch (error) {
       return rejectWithValue(

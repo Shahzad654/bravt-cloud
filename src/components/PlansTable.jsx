@@ -114,7 +114,7 @@ const MyTable = () => {
   const handleRowClick = (key) => {
     setSelectedRowKey(key === selectedRowKey ? null : key); // Toggle selection on click
   };
-//   console.log("selectedRowKey", selectedRowKey);
+  //   console.log("selectedRowKey", selectedRowKey);
 
   return (
     <Table

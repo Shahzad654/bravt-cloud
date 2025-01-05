@@ -148,12 +148,16 @@ const DeployInstance = () => {
   const handleRowClick = (key) => {
     setSelectedRowKey(key === selectedRowKey ? null : key); // Toggle selection on click
   };
-  console.log("selectedRowKey",selectedRowKey);
+  console.log("selectedRowKey", selectedRowKey);
   //create instance
   const handleCreateInstance = () => {
     if (selectedRowKey && selectedRegion) {
       dispatch(
-        createInstance({ region: selectedRegion, plan: selectedRowKey,os_id:activeSystem })
+        createInstance({
+          region: selectedRegion,
+          plan: selectedRowKey,
+          os_id: activeSystem,
+        })
       );
     }
   };
