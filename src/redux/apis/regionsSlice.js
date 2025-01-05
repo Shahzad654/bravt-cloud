@@ -6,7 +6,9 @@ export const getRegions = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("/vultr/getRegions");
-      return response.data.data;
+      return response.data.data.sort((a, b) =>
+        b.country.localeCompare(a.country)
+      );
     } catch (error) {
       return rejectWithValue(
         error.response?.data.message || "Failed to fetch regions"

@@ -9,6 +9,7 @@ import emailChangeReducer from "./apis/changeEmail";
 import transactionsReducer from "./apis/transactionsSlice";
 import regionsReducer from "./apis/regionsSlice";
 import planReducer from "./apis/planSlice";
+import imagesReducer from "./apis/imagesSlice";
 
 const store = configureStore({
   reducer: {
@@ -22,6 +23,7 @@ const store = configureStore({
     transactions: transactionsReducer,
     regions: regionsReducer,
     plan: planReducer,
+    images: imagesReducer,
   },
 });
 

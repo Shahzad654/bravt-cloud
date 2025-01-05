@@ -4,15 +4,19 @@ import { Breadcrumb, Button, Layout, Spin, Table } from "antd";
 import DashSidebar from "../components/DashSidebar";
 import DashHeader from "../components/DashHeader";
 import ReactCountryFlag from "react-country-flag";
-import { FaUbuntu, FaDebian } from "react-icons/fa6";
-import { FaWindows, FaDocker, FaCpanel, FaCentos } from "react-icons/fa";
-import { GrArchlinux } from "react-icons/gr";
-import { SiRockylinux, SiAlmalinux, SiPlesk } from "react-icons/si";
+// import { FaUbuntu, FaDebian } from "react-icons/fa6";
+// import { FaWindows, FaDocker, FaCpanel, FaCentos } from "react-icons/fa";
+// import { GrArchlinux } from "react-icons/gr";
+// import { SiRockylinux, SiAlmalinux, SiPlesk } from "react-icons/si";
 // import MyTable from "../components/PlansTable";
 import { useDispatch, useSelector } from "react-redux";
 import { getRegions } from "../redux/apis/regionsSlice";
 import { fetchPlanId } from "../redux/apis/planSlice";
 import { createInstance } from "../redux/apis/createInstanceSlice";
+// import { useDispatch, useSelector } from "react-redux";
+// import { getRegions } from "../redux/apis/regionsSlice";
+import { getImages } from "../redux/apis/imagesSlice";
+import { Icons } from "../components/icons";
 
 const { Content } = Layout;
 
@@ -22,25 +26,25 @@ const DeployInstance = () => {
   const [selectedRegion, setSelectedRegion] = useState(null);
   const [activeSystem, setActiveSystem] = useState(null);
 
-  const { regions, status } = useSelector((state) => state.regions);
+  const { regions, status: regionsStatus } = useSelector(
+    (state) => state.regions
+  );
 
-  const handleSystemClick = (system) => {
-    setActiveSystem((prevSystem) => (prevSystem === system ? null : system));
-  };
+  const { images, status: imagesStatus } = useSelector((state) => state.images);
 
   useEffect(() => {
     dispatch(getRegions());
+    dispatch(fetchPlanId("fra")); // Dispatch the fetchPlanId thunk with the "fra" region
+    dispatch(getImages());
   }, [dispatch]);
-console.log("selectedRegion",selectedRegion);
+  console.log("selectedRegion", selectedRegion);
+  console.log("image", activeSystem);
+  // console.log("plan", selectedRowKey);
 
   //plans table
   // const dispatch = useDispatch();
   const { plan, planStatus, error } = useSelector((state) => state.plan); // Select plan state from Redux
   const [selectedRowKey, setSelectedRowKey] = useState(null); // State to manage the selected row key
-
-  useEffect(() => {
-    dispatch(fetchPlanId("fra")); // Dispatch the fetchPlanId thunk with the "fra" region
-  }, [dispatch]);
 
   // Table columns
   const columns = [
@@ -144,13 +148,19 @@ console.log("selectedRegion",selectedRegion);
   const handleRowClick = (key) => {
     setSelectedRowKey(key === selectedRowKey ? null : key); // Toggle selection on click
   };
-// console.log("selectedRowKey",selectedRowKey);
-//create instance
-const handleCreateInstance = () => {
-  if (selectedRowKey && selectedRegion) {
-    dispatch(createInstance({ region: selectedRegion, plan: selectedRowKey }));
-  }
-};
+  console.log("selectedRowKey",selectedRowKey);
+  //create instance
+  const handleCreateInstance = () => {
+    if (selectedRowKey && selectedRegion) {
+      dispatch(
+        createInstance({ region: selectedRegion, plan: selectedRowKey,os_id:activeSystem })
+      );
+    }
+  };
+
+  // useEffect(() => {
+  //   dispatch(getImages());
+  // }, [dispatch]);
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -177,16 +187,16 @@ const handleCreateInstance = () => {
             }}
           >
             <PageContent>
-              <h4>Location</h4>
+              <h4>Regions</h4>
               <div className='grid-layout'>
-                {status === "loading"
+                {regionsStatus === "loading"
                   ? Array.from({ length: 32 }).map((_, index) => (
                       <div
                         key={index}
                         className='grid-item animate-pulse'
                         style={{ backgroundColor: "#d1d5db" }}
                       >
-                        <div style={{ width: "40px", height: "40px" }} />
+                        <div style={{ width: "36px", height: "36px" }} />
                       </div>
                     ))
                   : regions.map((region) => (
@@ -199,12 +209,7 @@ const handleCreateInstance = () => {
                           svg
                           className='flag'
                           countryCode={region.country}
-                          style={{
-                            width: "40px",
-                            height: "40px",
-                            flexGrow: "0",
-                            flexShrink: "0",
-                          }}
+                          style={{ width: "36px", height: "36px" }}
                         />
                         <div className='content'>
                           {region.city} <sub>({region.country})</sub>
@@ -212,87 +217,26 @@ const handleCreateInstance = () => {
                       </div>
                     ))}
               </div>
+
               <h4 style={{ marginTop: "40px" }}>System Images</h4>
+
               <div className='grid-layout'>
-                <div
-                  className={`grid-item ${activeSystem === "ubuntu" ? "active" : ""}`}
-                  onClick={() => handleSystemClick("ubuntu")}
-                >
-                  <FaUbuntu color='#E95420' size={36} />
-                  <div className='content'>Ubuntu</div>
-                </div>
-
-                <div
-                  className={`grid-item ${activeSystem === "debian" ? "active" : ""}`}
-                  onClick={() => handleSystemClick("debian")}
-                >
-                  <FaDebian color='#D70A53' size={36} />
-                  <div className='content'>Debian</div>
-                </div>
-
-                <div
-                  className={`grid-item ${activeSystem === "windows" ? "active" : ""}`}
-                  onClick={() => handleSystemClick("windows")}
-                >
-                  <FaWindows color='#357EC7' size={36} />
-                  <div className='content'>Windows</div>
-                </div>
-
-                <div
-                  className={`grid-item ${activeSystem === "archlinux" ? "active" : ""}`}
-                  onClick={() => handleSystemClick("archlinux")}
-                >
-                  <GrArchlinux color='#1793D1' size={36} />
-                  <div className='content'>Arch Linux</div>
-                </div>
-
-                <div
-                  className={`grid-item ${activeSystem === "docker" ? "active" : ""}`}
-                  onClick={() => handleSystemClick("docker")}
-                >
-                  <FaDocker color='#0DB7ED' size={36} />
-                  <div className='content'>Docker</div>
-                </div>
-
-                <div
-                  className={`grid-item ${activeSystem === "cpanel" ? "active" : ""}`}
-                  onClick={() => handleSystemClick("cpanel")}
-                >
-                  <FaCpanel color='#FF6C2C' size={36} />
-                  <div className='content'>cPanel</div>
-                </div>
-
-                <div
-                  className={`grid-item ${activeSystem === "rockylinux" ? "active" : ""}`}
-                  onClick={() => handleSystemClick("rockylinux")}
-                >
-                  <SiRockylinux color='#44B118' size={36} />
-                  <div className='content'>Rocky Linux</div>
-                </div>
-
-                <div
-                  className={`grid-item ${activeSystem === "almalinux" ? "active" : ""}`}
-                  onClick={() => handleSystemClick("almalinux")}
-                >
-                  <SiAlmalinux color='#6BFC45' size={36} />
-                  <div className='content'>Alma Linux</div>
-                </div>
-
-                <div
-                  className={`grid-item ${activeSystem === "centos" ? "active" : ""}`}
-                  onClick={() => handleSystemClick("centos")}
-                >
-                  <FaCentos color='#932178' size={36} />
-                  <div className='content'>CentosOS</div>
-                </div>
-
-                <div
-                  className={`grid-item ${activeSystem === "plesk" ? "active" : ""}`}
-                  onClick={() => handleSystemClick("plesk")}
-                >
-                  <SiPlesk color='#53BCE6' size={36} />
-                  <div className='content'>Plesk</div>
-                </div>
+                {images.map((image) => {
+                  const { icon: Icon, color } = Icons[image.family];
+                  return (
+                    <div
+                      key={image.id}
+                      style={{ flexDirection: "column" }}
+                      className={`grid-item ${activeSystem === image.id ? "active" : ""}`}
+                      onClick={() => setActiveSystem(image.id)}
+                    >
+                      <Icon color={color} size={36} />
+                      <div className='content' style={{ textAlign: "center" }}>
+                        {image.name}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </PageContent>
           </div>
@@ -304,13 +248,13 @@ const handleCreateInstance = () => {
           rowSelection={null} // Disable built-in row selection
           style={{ margin: "0 38px" }}
         />
-         <Button
-        type="primary"
-        onClick={handleCreateInstance}
-        disabled={!selectedRowKey} // Disable button if no plan is selected
-      >
-        Create Instance
-      </Button>
+        <Button
+          type='primary'
+          onClick={handleCreateInstance}
+          disabled={!selectedRowKey} // Disable button if no plan is selected
+        >
+          Create Instance
+        </Button>
       </Layout>
     </Layout>
   );
@@ -346,7 +290,7 @@ const PageContent = styled.div`
       align-items: center;
       gap: 10px;
       width: full;
-      padding: 16px;
+      padding: 16px 8px;
       min-height: 100px;
       border-radius: 5%;
       border: 2px solid #d1d5db;
@@ -362,6 +306,7 @@ const PageContent = styled.div`
         font-size: 16px;
         sub {
           color: #52525b;
+          font-size: 10px;
         }
       }
 

@@ -9,8 +9,10 @@ export const createInstance = createAsyncThunk(
         console.log("instanceData",instanceData);
         
       // Send request to create the instance
-    //   const response = await api.post("/vultr/createInstance", instanceData);
-    //   return response.data; // Adjust based on your API's response structure
+      const response = await api.post("/vultr/createInstance", instanceData);
+      console.log("response",response);
+      
+      return response.data; // Adjust based on your API's response structure
     } catch (error) {
       return rejectWithValue(
         error.response?.data.message || "Failed to create instance"
