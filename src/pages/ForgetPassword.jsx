@@ -1,65 +1,65 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { Snackbar, Alert, CircularProgress } from "@mui/material";
 import { forgotPasswordThunk } from "../redux/apis/forgetSlice";
 
 export default function ForgotPassword() {
-    const dispatch = useDispatch();
-    const { loading, success, error } = useSelector((state) => state.forgetPassword);
+  const dispatch = useDispatch();
+  const { loading, success, error } = useSelector(
+    (state) => state.forgetPassword
+  );
 
+  const [email, setEmail] = useState("");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-    const [email, setEmail] = useState("");
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(forgotPasswordThunk(email));
+    setSnackbarOpen(true);
+  };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        dispatch(forgotPasswordThunk(email));
-        setSnackbarOpen(true);
-    };
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
 
-    const handleCloseSnackbar = () => {
-        setSnackbarOpen(false);
-    };
+  return (
+    <Main>
+      <StyledForm>
+        <h3>Forgot Password</h3>
+        <form onSubmit={handleSubmit}>
+          <label htmlFor="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <button type="submit" disabled={loading}>
+            {loading ? <CircularProgress size={20} /> : "Send Email"}
+          </button>
+        </form>
+      </StyledForm>
 
-    return (
-        <Main>
-            <StyledForm>
-                <h3>Forgot Password</h3>
-                <form onSubmit={handleSubmit}>
-                    <label htmlFor="email">Email</label>
-                    <input
-                        type="email"
-                        id="email"
-                        placeholder="Enter your email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                    <button type="submit" disabled={loading}>
-                        {loading ? <CircularProgress size={20} /> : "Send Email"}
-                    </button>
-                </form>
-            </StyledForm>
-
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={5000}
-          onClose={handleCloseSnackbar}
-        >
-          {success ? (
-            <Alert onClose={handleCloseSnackbar} severity="success">
-              {success}
-            </Alert>
-          ) : error ? (
-            <Alert onClose={handleCloseSnackbar} severity="error">
-              {error}
-            </Alert>
-          ) : null}
-        </Snackbar>
-
-        </Main>
-    );
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={5000}
+        onClose={handleCloseSnackbar}
+      >
+        {success ? (
+          <Alert onClose={handleCloseSnackbar} severity="success">
+            {success}
+          </Alert>
+        ) : error ? (
+          <Alert onClose={handleCloseSnackbar} severity="error">
+            {error}
+          </Alert>
+        ) : null}
+      </Snackbar>
+    </Main>
+  );
 }
 
 const Main = styled.div`

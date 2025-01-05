@@ -1,10 +1,8 @@
-import React, { useState } from "react";
-import styled from 'styled-components'
-import BGIMG from '../assets/images/main-bg.webp'
+import { useState } from "react";
+import styled from "styled-components";
+import BGIMG from "../assets/images/main-bg.webp";
 import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -18,18 +16,15 @@ import Box from "@mui/material/Box";
 import { MdEmail } from "react-icons/md";
 import { FcGoogle } from "react-icons/fc";
 import { VscGithub } from "react-icons/vsc";
-import Node1 from '../assets/images/node1.webp'
+import Node1 from "../assets/images/node1.webp";
 import Node2 from "../assets/images/node2.webp";
 import Node3 from "../assets/images/node3.webp";
-import Node4 from '../assets/images/node4.webp'
-import TabImg1 from '../assets/images/demo-img.webp'
+import Node4 from "../assets/images/node4.webp";
+import TabImg1 from "../assets/images/demo-img.webp";
 import TabImg2 from "../assets/images/demo-img2.webp";
 import TabImg3 from "../assets/images/demo-img3.webp";
 import TabImg4 from "../assets/images/demo-img4.webp";
-import Logo from '../assets/images/nav.webp'
-import Logo2 from "../assets/images/logo2.webp";
-import Logo3 from "../assets/images/logo3.webp";
-
+import Logo from "../assets/images/nav.webp";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -51,18 +46,13 @@ function TabPanel(props) {
   );
 }
 
-
-
-
 export default function Home() {
-
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  
   return (
     <>
       <StyledHome>
@@ -487,7 +477,6 @@ const StyledHome = styled.div`
   }
 `;
 
-
 const NodeStyled = styled.div`
   width: var(--section-width);
   margin: var(--section-margin) auto;
@@ -514,7 +503,6 @@ const NodeStyled = styled.div`
   }
 `;
 
-
 const PlatformStyled = styled.div`
   width: var(--section-width);
   margin: var(--section-margin) auto;
@@ -532,7 +520,6 @@ const PlatformStyled = styled.div`
   }
 `;
 
-
 const PricingStyled = styled.div`
   width: var(--section-width);
   margin: var(--section-margin) auto;
@@ -546,6 +533,5 @@ const PricingStyled = styled.div`
   }
 
   .pricing-cards {
-    
   }
 `;

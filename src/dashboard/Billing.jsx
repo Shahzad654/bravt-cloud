@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import styled from "styled-components";
 import { Breadcrumb, Layout } from "antd";
 import DashSidebar from "../components/DashSidebar";
@@ -34,34 +33,34 @@ const columns = [
 ];
 
 const data = [
-//   {
-//     key: "1",
-//     rule: "Rule 1",
-//     status: "deactive",
-//     date: "20-8-25",
-//     operation: "Success",
-//   },
-//   {
-//     key: "2",
-//     rule: "Rule 1",
-//     status: "deactive",
-//     date: "20-8-25",
-//     operation: "Success",
-//   },
-//   {
-//     key: "3",
-//     rule: "Rule 1",
-//     status: "deactive",
-//     date: "20-8-25",
-//     operation: "Success",
-//   },
-//   {
-//     key: "4",
-//     rule: "Rule 1",
-//     status: "deactive",
-//     date: "20-8-25",
-//     operation: "Success",
-//   },
+  //   {
+  //     key: "1",
+  //     rule: "Rule 1",
+  //     status: "deactive",
+  //     date: "20-8-25",
+  //     operation: "Success",
+  //   },
+  //   {
+  //     key: "2",
+  //     rule: "Rule 1",
+  //     status: "deactive",
+  //     date: "20-8-25",
+  //     operation: "Success",
+  //   },
+  //   {
+  //     key: "3",
+  //     rule: "Rule 1",
+  //     status: "deactive",
+  //     date: "20-8-25",
+  //     operation: "Success",
+  //   },
+  //   {
+  //     key: "4",
+  //     rule: "Rule 1",
+  //     status: "deactive",
+  //     date: "20-8-25",
+  //     operation: "Success",
+  //   },
 ];
 
 const onChange = (pagination, filters, sorter, extra) => {
@@ -206,8 +205,6 @@ const Billing = () => {
 
 export default Billing;
 
-
-
 const StyledTable = styled(Table)`
   .ant-table-thead > tr > th {
     background-color: var(--bg-color);
@@ -222,8 +219,6 @@ const StyledTable = styled(Table)`
 
 const LayoutWrapper = styled(Layout)`
   min-height: 100vh;
-
-  
 `;
 
 const PageContent = styled.div`

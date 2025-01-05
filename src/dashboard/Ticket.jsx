@@ -1,6 +1,5 @@
-import React, { useState } from "react";
 import styled from "styled-components";
-import { Breadcrumb, Layout, theme } from "antd";
+import { Breadcrumb, Layout } from "antd";
 import DashSidebar from "../components/DashSidebar";
 import DashHeader from "../components/DashHeader";
 import Backdrop from "@mui/material/Backdrop";
@@ -106,7 +105,6 @@ const onChange = (pagination, filters, sorter, extra) => {
 };
 
 const Ticket = () => {
-
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <DashSidebar />
@@ -155,7 +153,7 @@ const Ticket = () => {
           </div>
 
           <div className="faq">
-            <h4 style={{marginBottom:'2rem'}}>Frequently Asked Questions</h4>
+            <h4 style={{ marginBottom: "2rem" }}>Frequently Asked Questions</h4>
             <FAQ />
           </div>
         </Content>

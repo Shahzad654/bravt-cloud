@@ -1,4 +1,3 @@
-import React from "react";
 import { CaretRightOutlined } from "@ant-design/icons";
 import { Collapse, theme } from "antd";
 const text1 = `

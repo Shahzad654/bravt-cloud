@@ -1,65 +1,62 @@
-import React, { useState } from "react";
 import styled from "styled-components";
-import { Breadcrumb, Layout } from "antd";
-import DashSidebar from "../components/DashSidebar";
-import DashHeader from "../components/DashHeader";
+import { Breadcrumb, Layout, Spin, Tag } from "antd";
 import { Table } from "antd";
-import AlertImg from "../assets/images/alerting.png";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getTransactions } from "../redux/apis/transactionsSlice";
+import { useDispatch } from "react-redux";
+import { format } from "date-fns";
+import { formatPrice, toSentenceCase } from "../utils/helpers";
+import { BsCreditCard2FrontFill } from "react-icons/bs";
+import { FaPaypal } from "react-icons/fa";
 
 const { Content } = Layout;
 
 const columns = [
   {
-    title: "Payment Account",
-    dataIndex: "account",
-    showSorterTooltip: {
-      target: "full-header",
-    },
+    title: "Amount",
+    dataIndex: "amount",
+    render: (amt) => (
+      <span style={{ fontWeight: "600" }}>{formatPrice(amt)}</span>
+    ),
   },
-
+  {
+    title: "Status",
+    dataIndex: "status",
+    render: (status) => (
+      <Tag
+        color={
+          status === "processing" || status === "pending"
+            ? "processing"
+            : status === "succeeded" || status === "COMPLETED"
+              ? "success"
+              : "error"
+        }
+      >
+        {toSentenceCase(status.toLowerCase())}
+      </Tag>
+    ),
+  },
+  {
+    title: "Method",
+    dataIndex: "paymentMethod",
+    render: (method) => (
+      <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+        {method === "Card" ? (
+          <BsCreditCard2FrontFill size={18} style={{ color: "#003366" }} />
+        ) : (
+          <FaPaypal size={18} style={{ color: "var(--primary-color)" }} />
+        )}
+        {method}
+      </div>
+    ),
+  },
   {
     title: "Time",
-    dataIndex: "date",
-  },
-
-  {
-    title: "Recharge Ammount",
-    dataIndex: "amount",
-  },
-  {
-    title: "Operation",
-    dataIndex: "operation",
-  },
-];
-
-const data = [
-  {
-    key: "1",
-    account: "account 1",
-    amount: "$50",
-    date: "20-8-25",
-    operation: "Success",
-  },
-  {
-    key: "2",
-    account: "account 1",
-    amount: "$50",
-    date: "20-8-25",
-    operation: "Success",
-  },
-  {
-    key: "3",
-    account: "account 1",
-    amount: "$50",
-    date: "20-8-25",
-    operation: "Success",
-  },
-  {
-    key: "4",
-    account: "account 1",
-    amount: "$50",
-    date: "20-8-25",
-    operation: "Success",
+    dataIndex: "createdAt",
+    render: (value) => (
+      <span style={{ fontSize: "14px" }}>{format(value, "PPP")}</span>
+    ),
   },
 ];
 
@@ -68,6 +65,29 @@ const onChange = (pagination, filters, sorter, extra) => {
 };
 
 const BalanceRecord = () => {
+  const dispatch = useDispatch();
+  const { status, transactions } = useSelector((state) => state.transactions);
+
+  useEffect(() => {
+    dispatch(getTransactions());
+  }, [dispatch]);
+
+  if (status === "loading") {
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "509px",
+          padding: "180px 16px",
+        }}
+      >
+        <Spin size="small" />
+      </div>
+    );
+  }
+
   return (
     <LayoutWrapper>
       <Layout style={{ padding: "0 16px", backgroundColor: "white" }}>
@@ -79,7 +99,7 @@ const BalanceRecord = () => {
               color: "black",
               fontWeight: "500",
             }}
-          ></Breadcrumb>
+          />
 
           <div
             style={{
@@ -92,7 +112,7 @@ const BalanceRecord = () => {
           >
             <StyledTable
               columns={columns}
-              dataSource={data}
+              dataSource={transactions}
               onChange={onChange}
               showSorterTooltip={{
                 target: "sorter-icon",

@@ -6,6 +6,7 @@ import userReducer from "./apis/userSlice";
 import forgotPasswordReducer from "./apis/forgetSlice";
 import resetPasswordReducer from "./apis/resetSlice";
 import emailChangeReducer from "./apis/changeEmail";
+import transactionsReducer from "./apis/transactionsSlice";
 
 const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
     forgetPassword: forgotPasswordReducer,
     resetPassword: resetPasswordReducer,
     emailChange: emailChangeReducer,
+    transactions: transactionsReducer,
   },
 });
 

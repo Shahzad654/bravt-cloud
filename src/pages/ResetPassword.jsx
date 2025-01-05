@@ -1,43 +1,45 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
-import styled from 'styled-components';
-import { resetPasswordThunk } from '../redux/apis/resetSlice';
-import { Snackbar, Button } from '@mui/material';
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import styled from "styled-components";
+import { resetPasswordThunk } from "../redux/apis/resetSlice";
+import { Snackbar, Button } from "@mui/material";
 
 export default function ResetPassword() {
   const { userId } = useParams();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
-  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
-  const { loading, success, error: resetPasswordError } = useSelector(
-    (state) => state.resetPassword || { loading: false, success: false, error: null }
+  const {
+    loading,
+    success,
+    error: resetPasswordError,
+  } = useSelector(
+    (state) =>
+      state.resetPassword || { loading: false, success: false, error: null }
   );
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
-  
   const handleSubmit = (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return;
     }
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters');
+      setError("Password must be at least 6 characters");
       return;
     }
 
-    setError('');
+    setError("");
     dispatch(resetPasswordThunk(userId, password, confirmPassword));
   };
-
 
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
@@ -46,7 +48,6 @@ export default function ResetPassword() {
     // }
   };
 
- 
   useEffect(() => {
     if (resetPasswordError) {
       setSnackbarMessage(resetPasswordError);
@@ -56,7 +57,7 @@ export default function ResetPassword() {
 
   useEffect(() => {
     if (success) {
-      setSnackbarMessage('Password reset successful!');
+      setSnackbarMessage("Password reset successful!");
       setOpenSnackbar(true);
     }
   }, [success]);
@@ -90,10 +91,10 @@ export default function ResetPassword() {
             />
             <br />
 
-            {error && <span style={{ color: 'red' }}>{error}</span>}
+            {error && <span style={{ color: "red" }}>{error}</span>}
 
             <button type="submit" onClick={handleSubmit} disabled={loading}>
-              {loading ? 'Resetting...' : 'Reset'}
+              {loading ? "Resetting..." : "Reset"}
             </button>
           </div>
         </div>

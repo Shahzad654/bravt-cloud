@@ -1,10 +1,9 @@
-import React, { useState } from "react";
 import styled from "styled-components";
 import { Breadcrumb, Layout } from "antd";
 import DashSidebar from "../components/DashSidebar";
 import DashHeader from "../components/DashHeader";
 import { Table } from "antd";
-import AlertImg from '../assets/images/alerting.png'
+import AlertImg from "../assets/images/alerting.png";
 
 const { Content } = Layout;
 
@@ -92,7 +91,8 @@ const Monitoring = () => {
             <div className="alerting_img">
               <img src={AlertImg} alt="" />
               <p>
-                No rules have been created yet, let's get started right away
+                No rules have been created yet, let&apos;s get started right
+                away
               </p>
             </div>
           </div>
@@ -113,9 +113,7 @@ const Monitoring = () => {
                   <option value="">Rule Name</option>
                 </select>
               </div>
-              <button className="add-btn" >
-                +Add
-              </button>
+              <button className="add-btn">+Add</button>
             </PageContent>
 
             <StyledTable
@@ -141,7 +139,6 @@ const StyledTable = styled(Table)`
     background-color: var(--bg-color);
   }
 
-  
   @media (max-width: 767px) {
     .ant-table-wrapper {
       overflow-x: auto;
@@ -181,7 +178,7 @@ const LayoutWrapper = styled(Layout)`
     min-height: 60vh;
     .alerting {
       .alerting_img {
-       padding-left: 200px;
+        padding-left: 200px;
       }
     }
   }

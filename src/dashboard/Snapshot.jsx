@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import styled from "styled-components";
 import { Breadcrumb, Layout } from "antd";
 import DashSidebar from "../components/DashSidebar";
@@ -132,8 +131,6 @@ const Snapshot = () => {
                   <option value="">Disk ID</option>
                 </select>
               </div>
-
-              
             </PageContent>
             <StyledTable
               columns={columns}

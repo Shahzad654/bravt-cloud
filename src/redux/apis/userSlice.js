@@ -4,7 +4,7 @@ import { api } from "../../utils/api";
 
 // Async thunk for fetching the current user
 export const fetchCurrentUser = createAsyncThunk(
-  "user/getCurrentUser",
+  "user/fetchCurrentUser",
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("/user/getCurrentUser");

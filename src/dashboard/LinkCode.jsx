@@ -1,26 +1,20 @@
-import React, { useState } from "react";
 import styled from "styled-components";
 import { Breadcrumb, Layout } from "antd";
 import DashSidebar from "../components/DashSidebar";
 import DashHeader from "../components/DashHeader";
 import { Timeline } from "antd";
-import LinkImg from '../assets/images/commission-img.png'
+import LinkImg from "../assets/images/commission-img.png";
 
 const { Content } = Layout;
 
-
 const LinkCode = () => {
- 
   return (
     <LayoutWrapper>
       <DashSidebar />
       <LayoutComp>
         <DashHeader />
         <ContentComp>
-          <BreadcrumbComp
-          >
-            Link Code
-          </BreadcrumbComp>
+          <BreadcrumbComp>Link Code</BreadcrumbComp>
 
           <div
             style={{
@@ -94,7 +88,6 @@ const LayoutWrapper = styled(Layout)`
   }
 `;
 
-
 const LayoutComp = styled(Layout)`
   padding: 0 16px;
   background-color: white;
@@ -105,11 +98,10 @@ const LayoutComp = styled(Layout)`
 `;
 
 const BreadcrumbComp = styled(Breadcrumb)`
-    margin: 16px 0;
-    font-size: var(--m-heading);
-    color: black;
-    font-weight: 500;
-    
+  margin: 16px 0;
+  font-size: var(--m-heading);
+  color: black;
+  font-weight: 500;
 `;
 
 const ContentComp = styled(Content)`
@@ -119,9 +111,3 @@ const ContentComp = styled(Content)`
     width: 200%;
   }
 `;
-
-
-
-
-
-

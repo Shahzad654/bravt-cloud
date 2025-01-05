@@ -1,6 +1,5 @@
-import React from "react";
 import styled from "styled-components";
-import { Breadcrumb, Layout, theme } from "antd";
+import { Breadcrumb, Layout } from "antd";
 import DashSidebar from "../components/DashSidebar";
 import DashHeader from "../components/DashHeader";
 import { Table } from "antd";
@@ -205,7 +204,7 @@ export default Network;
 
 const StyledTable = styled(Table)`
   .ant-table-thead > tr > th {
-    background-color: var(--bg-color); 
+    background-color: var(--bg-color);
   }
 `;
 
@@ -214,7 +213,6 @@ const PageContent = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 2rem;
- 
 
   .search {
     display: flex;

@@ -1,6 +1,5 @@
-import React from "react";
 import styled from "styled-components";
-import { Breadcrumb, Layout, theme } from "antd";
+import { Breadcrumb, Layout } from "antd";
 import DashSidebar from "../components/DashSidebar";
 import DashHeader from "../components/DashHeader";
 import { Table } from "antd";
@@ -55,38 +54,38 @@ const columns = [
 ];
 
 const data = [
-//   {
-//     key: "1",
-//     server: "Server 1",
-//     location: "New York",
-//     instance: "192.1.1..178",
-//     linetype: "active",
-//     operation: "Success",
-//   },
-//   {
-//     key: "2",
-//     server: "Server 2",
-//     location: "New York",
-//     instance: "192.1.1..178",
-//     linetype: "active",
-//     operation: "Success",
-//   },
-//   {
-//     key: "3",
-//     server: "Server 3",
-//     location: "New York",
-//     instance: "192.1.1..178",
-//     linetype: "active",
-//     operation: "Success",
-//   },
-//   {
-//     key: "4",
-//     server: "Server 4",
-//     location: "New York",
-//     instance: "192.1.1..178",
-//     linetype: "active",
-//     operation: "Success",
-//   },
+  //   {
+  //     key: "1",
+  //     server: "Server 1",
+  //     location: "New York",
+  //     instance: "192.1.1..178",
+  //     linetype: "active",
+  //     operation: "Success",
+  //   },
+  //   {
+  //     key: "2",
+  //     server: "Server 2",
+  //     location: "New York",
+  //     instance: "192.1.1..178",
+  //     linetype: "active",
+  //     operation: "Success",
+  //   },
+  //   {
+  //     key: "3",
+  //     server: "Server 3",
+  //     location: "New York",
+  //     instance: "192.1.1..178",
+  //     linetype: "active",
+  //     operation: "Success",
+  //   },
+  //   {
+  //     key: "4",
+  //     server: "Server 4",
+  //     location: "New York",
+  //     instance: "192.1.1..178",
+  //     linetype: "active",
+  //     operation: "Success",
+  //   },
 ];
 const onChange = (pagination, filters, sorter, extra) => {
   console.log("params", pagination, filters, sorter, extra);

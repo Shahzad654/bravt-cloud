@@ -1,10 +1,8 @@
-import React, { useState } from "react";
 import styled from "styled-components";
 import { Breadcrumb, Layout } from "antd";
 import DashSidebar from "../components/DashSidebar";
 import DashHeader from "../components/DashHeader";
 import { Table } from "antd";
-import AlertImg from "../assets/images/alerting.png";
 
 const { Content } = Layout;
 
@@ -36,34 +34,34 @@ const columns = [
 ];
 
 const data = [
-//   {
-//     key: "1",
-//     rule: "Rule 1",
-//     status: "deactive",
-//     date: "20-8-25",
-//     operation: "Success",
-//   },
-//   {
-//     key: "2",
-//     rule: "Rule 1",
-//     status: "deactive",
-//     date: "20-8-25",
-//     operation: "Success",
-//   },
-//   {
-//     key: "3",
-//     rule: "Rule 1",
-//     status: "deactive",
-//     date: "20-8-25",
-//     operation: "Success",
-//   },
-//   {
-//     key: "4",
-//     rule: "Rule 1",
-//     status: "deactive",
-//     date: "20-8-25",
-//     operation: "Success",
-//   },
+  //   {
+  //     key: "1",
+  //     rule: "Rule 1",
+  //     status: "deactive",
+  //     date: "20-8-25",
+  //     operation: "Success",
+  //   },
+  //   {
+  //     key: "2",
+  //     rule: "Rule 1",
+  //     status: "deactive",
+  //     date: "20-8-25",
+  //     operation: "Success",
+  //   },
+  //   {
+  //     key: "3",
+  //     rule: "Rule 1",
+  //     status: "deactive",
+  //     date: "20-8-25",
+  //     operation: "Success",
+  //   },
+  //   {
+  //     key: "4",
+  //     rule: "Rule 1",
+  //     status: "deactive",
+  //     date: "20-8-25",
+  //     operation: "Success",
+  //   },
 ];
 
 const onChange = (pagination, filters, sorter, extra) => {
@@ -94,9 +92,7 @@ const Authentication = () => {
                 <option value="Google Auth">Google Auth</option>
               </select>
               <input type="text" placeholder="Description" />
-              <button className="add-btn" >
-                Add 2FA
-              </button>
+              <button className="add-btn">Add 2FA</button>
             </div>
           </div>
           <div
