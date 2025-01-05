@@ -6,8 +6,9 @@ export const getImages = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("/vultr/getOS");
-      console.log(response.data.data);
-      return response.data.data;
+      return response.data.data.sort((a, b) =>
+        b.family.localeCompare(a.family)
+      );
     } catch (error) {
       return rejectWithValue(
         error.response?.data.message || "Failed to fetch images"
