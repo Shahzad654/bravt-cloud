@@ -76,11 +76,11 @@ export default function Signup() {
         verifyAndSignup({ email, code, password })
       ).unwrap();
 
-      dispatch(setUser(response.user));
+      navigate("/billing-info");
       setSnackbarMessage("Signup Successful!");
       setSnackbarSeverity("success");
       setOpenSnackbar(true);
-      navigate("/billing-info");
+      dispatch(setUser(response.user));
     } catch {
       // Error handling is done through the useEffect
     } finally {

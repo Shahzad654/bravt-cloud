@@ -5,6 +5,7 @@ import Logo from "../assets/images/nav.webp";
 import { Button, Form, Input, InputNumber, Select, Spin } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { saveBillingInfo } from "../redux/apis/billingInfo";
+import { setUser } from "../redux/apis/userSlice";
 import { Snackbar } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import { useNavigate } from "react-router-dom";
@@ -25,7 +26,7 @@ export default function BillingInfo() {
 
   // Check for stored email on component mount
   useEffect(() => {
-    if (!user.email) {
+    if (!user) {
       setSnackbarMessage("Please sign up first");
       setSnackbarSeverity("error");
       setOpenSnackbar(true);
@@ -55,10 +56,10 @@ export default function BillingInfo() {
 
   const handleSubmit = async () => {
     try {
+      setIsSubmitting(true);
       // Validate form first
       await form.validateFields();
 
-      setIsSubmitting(true);
       const values = form.getFieldsValue();
 
       // Add email to the form data
@@ -67,14 +68,18 @@ export default function BillingInfo() {
         email: user.email,
       };
 
-      await dispatch(saveBillingInfo(formDataWithEmail)).unwrap();
+      const response = await dispatch(
+        saveBillingInfo(formDataWithEmail)
+      ).unwrap();
+
+      dispatch(setUser(response.data.user));
 
       setSnackbarMessage("Billing information saved successfully!");
       setSnackbarSeverity("success");
       setOpenSnackbar(true);
 
       // Optional: Redirect to next page after successful submission
-      setTimeout(() => navigate("/dashboard"), 2000);
+      setTimeout(() => navigate("/instance"), 2000);
     } catch (error) {
       setSnackbarMessage(
         error?.message || "Failed to save billing information"
@@ -98,11 +103,15 @@ export default function BillingInfo() {
         <div className="form-container">
           <h3>Billing Information</h3>
           <div className="form-detail">
-            <Form {...formItemLayout} form={form} style={{ maxWidth: 600 }}>
+            <Form
+              form={form}
+              style={{ maxWidth: 600 }}
+              initialValues={user}
+              {...formItemLayout}
+            >
               <Form.Item
                 label="First Name"
-                name="firstname"
-                
+                name="firstName"
                 rules={[
                   { required: true, message: "Please enter your first name" },
                 ]}
@@ -112,7 +121,7 @@ export default function BillingInfo() {
 
               <Form.Item
                 label="Last Name"
-                name="lastname"
+                name="lastName"
                 rules={[
                   { required: true, message: "Please enter your last name" },
                 ]}
@@ -156,7 +165,7 @@ export default function BillingInfo() {
 
               <Form.Item
                 label="Zip Code"
-                name="zipcode"
+                name="zipCode"
                 rules={[
                   {
                     required: true,
@@ -169,7 +178,7 @@ export default function BillingInfo() {
 
               <Form.Item
                 label="Company"
-                name="company"
+                name="companyName"
                 rules={[
                   { required: true, message: "Please enter your company name" },
                 ]}
@@ -179,7 +188,7 @@ export default function BillingInfo() {
 
               <Form.Item
                 label="Phone"
-                name="phone"
+                name="phoneNumber"
                 rules={[
                   {
                     required: true,

@@ -1,42 +1,42 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { api } from "../../utils/api";
 
-export const getTransactions = createAsyncThunk(
-  "payment/transactions",
+export const getRegions = createAsyncThunk(
+  "vultr/getRegions",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get("/payment/transactions");
+      const response = await api.get("/vultr/getRegions");
       return response.data.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data.message || "Failed to fetch transactions"
+        error.response?.data.message || "Failed to fetch regions"
       );
     }
   }
 );
 
-const transactionsSlice = createSlice({
-  name: "transactions",
+const regionsSlice = createSlice({
+  name: "regions",
   initialState: {
-    transactions: [],
+    regions: [],
     status: "loading",
     error: null,
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getTransactions.pending, (state) => {
+      .addCase(getRegions.pending, (state) => {
         state.status = "loading";
         state.error = null;
       })
-      .addCase(getTransactions.fulfilled, (state, action) => {
+      .addCase(getRegions.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.transactions = action.payload;
+        state.regions = action.payload;
       })
-      .addCase(getTransactions.rejected, (state, action) => {
+      .addCase(getRegions.rejected, (state, action) => {
         state.status = "error";
         state.error = action.payload;
       });
   },
 });
 
-export default transactionsSlice.reducer;
+export default regionsSlice.reducer;
