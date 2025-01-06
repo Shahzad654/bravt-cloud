@@ -8,7 +8,6 @@ import { MdInstallDesktop } from "react-icons/md";
 import { BsDatabaseCheck, BsDatabaseSlash } from "react-icons/bs";
 import { TbServerBolt, TbServerCog, TbTrash } from "react-icons/tb";
 import styled from "styled-components";
-import ReactCountryFlag from "react-country-flag";
 import { toSentenceCase } from "../utils/helpers";
 
 const InstancesTable = () => {
@@ -59,14 +58,26 @@ function useInstancesTableColumns() {
       showSorterTooltip: {
         target: "full-header",
       },
-      sorter: (a, b) => a.server.length - b.server.length,
+      render: (val) => (
+        <>
+          {val || (
+            <span
+              style={{ fontStyle: "italic", color: "gray", fontSize: "14px" }}
+            >
+              Unlabeled instance
+            </span>
+          )}
+        </>
+      ),
+      sorter: (a, b) => a.server - b.server,
     },
     {
       title: "Region",
       dataIndex: "region",
-      render: (_, record) => (
-        <ReactCountryFlag svg className="flag" countryCode={record.region} />
-      ),
+      showSorterTooltip: {
+        target: "full-header",
+      },
+      sorter: (a, b) => a.region - b.region,
     },
     {
       title: "IP Address",
