@@ -9,6 +9,7 @@ import { BsDatabaseCheck, BsDatabaseSlash } from "react-icons/bs";
 import { TbServerBolt, TbServerCog, TbTrash } from "react-icons/tb";
 import styled from "styled-components";
 import { toSentenceCase } from "../utils/helpers";
+import { Icons } from "../components/Icons";
 
 const InstancesTable = () => {
   const dispatch = useDispatch();
@@ -59,15 +60,13 @@ function useInstancesTableColumns() {
         target: "full-header",
       },
       render: (val) => (
-        <>
-          {val || (
-            <span
-              style={{ fontStyle: "italic", color: "gray", fontSize: "14px" }}
-            >
-              Unlabeled instance
-            </span>
-          )}
-        </>
+        <div
+          style={{ display: "flex", flexDirection: "column", rowGap: "3px" }}
+        >
+          <span style={!val && { fontStyle: "italic", color: "gray" }}>
+            {val || "Unlabeled instance"}
+          </span>
+        </div>
       ),
       sorter: (a, b) => a.server - b.server,
     },
@@ -84,6 +83,15 @@ function useInstancesTableColumns() {
       dataIndex: "main_ip",
     },
     {
+      title: "OS",
+      dataIndex: "os",
+      render: (val) => {
+        const name = val.split(" ")?.[0]?.toLowerCase();
+        const { icon: Icon, color } = Icons[name];
+        return Icon ? <Icon color={color} size={25} /> : null;
+      },
+    },
+    {
       title: "Status",
       dataIndex: "power_status",
       render: (status) => (
@@ -98,7 +106,6 @@ function useInstancesTableColumns() {
         },
         {
           text: "Stopped",
-          //   TODO:
           value: "stopped",
         },
       ],
