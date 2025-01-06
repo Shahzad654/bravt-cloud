@@ -10,6 +10,7 @@ import transactionsReducer from "./apis/transactionsSlice";
 import regionsReducer from "./apis/regionsSlice";
 import planReducer from "./apis/planSlice";
 import imagesReducer from "./apis/imagesSlice";
+import allInstanceReducer from "./apis/getAllInstanceSlice";
 
 const store = configureStore({
   reducer: {
@@ -24,6 +25,7 @@ const store = configureStore({
     regions: regionsReducer,
     plan: planReducer,
     images: imagesReducer,
+    allInstance:allInstanceReducer
   },
 });
 

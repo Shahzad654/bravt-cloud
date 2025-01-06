@@ -1,11 +1,15 @@
 import styled from "styled-components";
-import { Breadcrumb, Layout } from "antd";
+import { Breadcrumb, Layout, Spin } from "antd";
 import DashSidebar from "../components/DashSidebar";
 import DashHeader from "../components/DashHeader";
 import { Table } from "antd";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { clearInstances, fetchAllInstances } from "../redux/apis/getAllInstanceSlice";
 
 const { Content } = Layout;
+
 
 const columns = [
   {
@@ -72,6 +76,7 @@ const columns = [
       },
     ],
     onFilter: (value, record) => record.address.indexOf(value) === 0,
+    
   },
   {
     title: "Status",
@@ -145,7 +150,27 @@ const onChange = (pagination, filters, sorter, extra) => {
 };
 
 const Instance = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { instances, instancesStatus, error } = useSelector((state) => {
+    console.log("state",state)
+    return state.allInstance});
+
+  useEffect(() => {
+    dispatch(fetchAllInstances());
+  }, [dispatch]);
+
+  if (instancesStatus === "loading") return <Spin tip="Loading instances..." />;
+  if (instancesStatus === "error") return <p>Error: {error}</p>;
+
+  console.log("instances",instances);
+  const formattedData = instances.map((instance, index) => ({
+    key: index,
+    server: instance.hostname, // Adjust according to API response
+    location: instance.region, // Adjust according to API response
+    ipaddress: instance.main_ip, // Adjust according to API response
+    status: instance.status || "inactive", // Adjust according to API response
+  }));
 
   return (
     <LayoutWrapper>
@@ -194,7 +219,7 @@ const Instance = () => {
             </PageContent>
             <StyledTable
               columns={columns}
-              dataSource={data}
+              dataSource={formattedData}
               onChange={onChange}
               showSorterTooltip={{
                 target: "sorter-icon",
