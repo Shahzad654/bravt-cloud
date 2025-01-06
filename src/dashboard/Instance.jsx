@@ -2,147 +2,10 @@ import styled from "styled-components";
 import { Breadcrumb, Layout } from "antd";
 import DashSidebar from "../components/DashSidebar";
 import DashHeader from "../components/DashHeader";
-import { Table } from "antd";
 import { useNavigate } from "react-router-dom";
+import InstancesTable from "./InstancesTable";
 
 const { Content } = Layout;
-
-const columns = [
-  {
-    title: "Server",
-    dataIndex: "server",
-    showSorterTooltip: {
-      target: "full-header",
-    },
-    filters: [
-      {
-        text: "Joe",
-        value: "Joe",
-      },
-      {
-        text: "Jim",
-        value: "Jim",
-      },
-      {
-        text: "Submenu",
-        value: "Submenu",
-        children: [
-          {
-            text: "Green",
-            value: "Green",
-          },
-          {
-            text: "Black",
-            value: "Black",
-          },
-        ],
-      },
-    ],
-
-    onFilter: (value, record) => record.server.indexOf(value) === 0,
-    sorter: (a, b) => a.server.length - b.server.length,
-    sortDirections: ["descend"],
-  },
-  {
-    title: "Location",
-    dataIndex: "location",
-    filters: [
-      {
-        text: "London",
-        value: "London",
-      },
-      {
-        text: "New York",
-        value: "New York",
-      },
-    ],
-    onFilter: (value, record) => record.address.indexOf(value) === 0,
-  },
-  {
-    title: "IP Address",
-    dataIndex: "ipaddress",
-    filters: [
-      {
-        text: "London",
-        value: "London",
-      },
-      {
-        text: "New York",
-        value: "New York",
-      },
-    ],
-    onFilter: (value, record) => record.address.indexOf(value) === 0,
-  },
-  {
-    title: "Status",
-    dataIndex: "status",
-    filters: [
-      {
-        text: "London",
-        value: "London",
-      },
-      {
-        text: "New York",
-        value: "New York",
-      },
-    ],
-    onFilter: (value, record) => record.address.indexOf(value) === 0,
-  },
-  {
-    title: "Operation",
-    dataIndex: "operation",
-    filters: [
-      {
-        text: "London",
-        value: "London",
-      },
-      {
-        text: "New York",
-        value: "New York",
-      },
-    ],
-    onFilter: (value, record) => record.address.indexOf(value) === 0,
-  },
-];
-
-const data = [
-  {
-    key: "1",
-    server: "Server 1",
-    location: "New York",
-    ipaddress: "192.1.1.178",
-    status: "active",
-    operation: "Success",
-  },
-  {
-    key: "2",
-    server: "Server 2",
-    location: "New York",
-    ipaddress: "192.1.1.178",
-    status: "active",
-    operation: "Success",
-  },
-  {
-    key: "3",
-    server: "Server 3",
-    location: "New York",
-    ipaddress: "192.1.1.178",
-    status: "active",
-    operation: "Success",
-  },
-  {
-    key: "4",
-    server: "Server 4",
-    location: "New York",
-    ipaddress: "192.1.1.178",
-    status: "active",
-    operation: "Success",
-  },
-];
-
-const onChange = (pagination, filters, sorter, extra) => {
-  console.log("params", pagination, filters, sorter, extra);
-};
 
 const Instance = () => {
   const navigate = useNavigate();
@@ -168,7 +31,6 @@ const Instance = () => {
             style={{
               padding: 24,
               minHeight: 360,
-              // background: "#f0f2f5",
               background: "white",
               borderRadius: "8px",
             }}
@@ -184,7 +46,7 @@ const Instance = () => {
               </div>
 
               <button
-                className="add-btn"
+                className="btn add-btn"
                 onClick={() => {
                   navigate("/deploy");
                 }}
@@ -192,15 +54,7 @@ const Instance = () => {
                 +Add
               </button>
             </PageContent>
-            <StyledTable
-              columns={columns}
-              dataSource={data}
-              onChange={onChange}
-              showSorterTooltip={{
-                target: "sorter-icon",
-              }}
-              style={{ marginTop: "25px" }}
-            />
+            <InstancesTable />
           </div>
         </Content>
       </Layout>
@@ -209,19 +63,6 @@ const Instance = () => {
 };
 
 export default Instance;
-
-const StyledTable = styled(Table)`
-  .ant-table-thead > tr > th {
-    background-color: var(--bg-color);
-  }
-
-  // Make table responsive for smaller screens
-  @media (max-width: 767px) {
-    .ant-table-wrapper {
-      overflow-x: auto;
-    }
-  }
-`;
 
 const LayoutWrapper = styled(Layout)`
   min-height: 100vh;

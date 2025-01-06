@@ -158,7 +158,7 @@ const Storage = () => {
                 </select>
               </div>
 
-              <button className="add-btn" onClick={handleOpen}>
+              <button className="btn add-btn" onClick={handleOpen}>
                 +Add
               </button>
               <Modal

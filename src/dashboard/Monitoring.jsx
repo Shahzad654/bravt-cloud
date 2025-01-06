@@ -113,7 +113,7 @@ const Monitoring = () => {
                   <option value="">Rule Name</option>
                 </select>
               </div>
-              <button className="add-btn">+Add</button>
+              <button className="btn add-btn">+Add</button>
             </PageContent>
 
             <StyledTable

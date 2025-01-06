@@ -119,6 +119,7 @@ export default function Signup() {
             <button
               onClick={handleSendCode}
               disabled={isCodeSending || !email}
+              className="btn"
               style={{
                 marginTop: "5%",
                 minWidth: "2px",
@@ -147,6 +148,7 @@ export default function Signup() {
             <br />
 
             <button
+              className="btn"
               onClick={handleSignup}
               disabled={!isFormValid || isSigningUp}
               style={{ marginTop: "20px" }}

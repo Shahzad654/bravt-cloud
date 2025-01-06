@@ -1,13 +1,21 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Breadcrumb, Layout } from "antd";
+import { Breadcrumb, Button, Layout, Spin, Table } from "antd";
 import DashSidebar from "../components/DashSidebar";
 import DashHeader from "../components/DashHeader";
 import ReactCountryFlag from "react-country-flag";
+// import { FaUbuntu, FaDebian } from "react-icons/fa6";
+// import { FaWindows, FaDocker, FaCpanel, FaCentos } from "react-icons/fa";
+// import { GrArchlinux } from "react-icons/gr";
+// import { SiRockylinux, SiAlmalinux, SiPlesk } from "react-icons/si";
+// import MyTable from "../components/PlansTable";
 import { useDispatch, useSelector } from "react-redux";
 import { getRegions } from "../redux/apis/regionsSlice";
-import { getImages } from "../redux/apis/imagesSlice";
 import { fetchPlanId } from "../redux/apis/planSlice";
+import { createInstance } from "../redux/apis/createInstanceSlice";
+// import { useDispatch, useSelector } from "react-redux";
+// import { getRegions } from "../redux/apis/regionsSlice";
+import { getImages } from "../redux/apis/imagesSlice";
 import { Icons } from "../components/icons";
 
 const { Content } = Layout;
@@ -29,10 +37,134 @@ const DeployInstance = () => {
     dispatch(fetchPlanId("fra")); // Dispatch the fetchPlanId thunk with the "fra" region
     dispatch(getImages());
   }, [dispatch]);
+  console.log("selectedRegion", selectedRegion);
+  console.log("image", activeSystem);
+  // console.log("plan", selectedRowKey);
 
-  useEffect(() => {
-    dispatch(getImages());
-  }, [dispatch]);
+  //plans table
+  // const dispatch = useDispatch();
+  const { plan, planStatus, error } = useSelector((state) => state.plan); // Select plan state from Redux
+  const [selectedRowKey, setSelectedRowKey] = useState(null); // State to manage the selected row key
+
+  // Table columns
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      render: (text, record) => (
+        <div
+          style={{
+            cursor: "pointer",
+            backgroundColor:
+              selectedRowKey === record.name ? "#6ABBE9" : "transparent", // Highlight the selected row
+            padding: "8px",
+          }}
+          onClick={() => handleRowClick(record.name)} // Handle the row click
+        >
+          {console.log("record", record)}
+
+          {text}
+        </div>
+      ),
+    },
+    {
+      title: "Cores",
+      dataIndex: "cores",
+      key: "cores",
+      render: (text, record) => (
+        <div
+          style={{
+            cursor: "pointer",
+            backgroundColor:
+              selectedRowKey === record.name ? "#6ABBE9" : "transparent", // Highlight the selected row
+            padding: "8px",
+          }}
+          onClick={() => handleRowClick(record.name)} // Handle the row click
+        >
+          {text}
+        </div>
+      ),
+    },
+    {
+      title: "Memory",
+      dataIndex: "memory",
+      key: "memory",
+      render: (text, record) => (
+        <div
+          style={{
+            cursor: "pointer",
+            backgroundColor:
+              selectedRowKey === record.name ? "#6ABBE9" : "transparent", // Highlight the selected row
+            padding: "8px",
+          }}
+          onClick={() => handleRowClick(record.name)} // Handle the row click
+        >
+          {text}
+        </div>
+      ),
+    },
+    {
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
+      render: (text, record) => (
+        <div
+          style={{
+            cursor: "pointer",
+            backgroundColor:
+              selectedRowKey === record.name ? "#6ABBE9" : "transparent", // Highlight the selected row
+            textAlign: "center",
+            // padding: "8px",
+          }}
+          onClick={() => handleRowClick(record.name)} // Handle the row click
+        >
+          <div>
+            <strong>{record.monthly_cost}/mon</strong>
+          </div>
+          <div>{record.hourly_cost}/hr</div>
+        </div>
+      ),
+    },
+  ];
+
+  // Loading state and data handling
+  if (planStatus === "loading") return <Spin tip="Loading..." />;
+  if (planStatus === "error") return <p>Error: {error}</p>;
+
+  // Format data if necessary (assuming planId contains data for table rows)
+  const formattedData = Array.isArray(plan.data)
+    ? plan.data.map((item, index) => ({
+        key: index,
+        name: item.id,
+        cores: item.type,
+        memory: item.id.split("-")[2].toUpperCase(),
+        monthly_cost: item.monthly_cost, // Add this field
+        hourly_cost: item.hourly_cost.toFixed(3),
+      }))
+    : [];
+
+  // Handle row click
+  const handleRowClick = (key) => {
+    setSelectedRowKey(key === selectedRowKey ? null : key); // Toggle selection on click
+  };
+  console.log("selectedRowKey", selectedRowKey);
+  //create instance
+  const handleCreateInstance = () => {
+    if (selectedRowKey && selectedRegion) {
+      dispatch(
+        createInstance({
+          region: selectedRegion,
+          plan: selectedRowKey,
+          os_id: activeSystem,
+        })
+      );
+    }
+  };
+
+  // useEffect(() => {
+  //   dispatch(getImages());
+  // }, [dispatch]);
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -124,6 +256,20 @@ const DeployInstance = () => {
             </PageContent>
           </div>
         </Content>
+        <h4 className="mx-5 mt-2">Plans</h4>
+        <Table
+          columns={columns}
+          dataSource={formattedData}
+          rowSelection={null} // Disable built-in row selection
+          style={{ margin: "0 38px" }}
+        />
+        <Button
+          type="primary"
+          onClick={handleCreateInstance}
+          disabled={!selectedRowKey} // Disable button if no plan is selected
+        >
+          Create Instance
+        </Button>
       </Layout>
     </Layout>
   );
@@ -157,8 +303,7 @@ const PageContent = styled.div`
       display: flex;
       justify-content: center;
       align-items: center;
-      column-gap: 10px;
-      row-gap: 6px;
+      gap: 10px;
       width: full;
       padding: 16px 8px;
       min-height: 100px;

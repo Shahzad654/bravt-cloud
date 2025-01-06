@@ -139,7 +139,7 @@ const Ticket = () => {
                 </select>
               </div>
 
-              <button className="add-btn">+Add</button>
+              <button className="btn add-btn">+Add</button>
             </PageContent>
             <StyledTable
               columns={columns}

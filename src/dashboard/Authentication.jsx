@@ -92,7 +92,7 @@ const Authentication = () => {
                 <option value="Google Auth">Google Auth</option>
               </select>
               <input type="text" placeholder="Description" />
-              <button className="add-btn">Add 2FA</button>
+              <button className="btn add-btn">Add 2FA</button>
             </div>
           </div>
           <div

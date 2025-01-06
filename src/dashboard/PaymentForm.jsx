@@ -84,6 +84,7 @@ function Form({ credits }) {
           }}
         />
         <button
+          className="btn"
           disabled={status === "loading"}
           style={{ width: "100%", height: "44px", marginTop: "20px" }}
         >
