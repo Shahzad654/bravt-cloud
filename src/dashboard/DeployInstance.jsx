@@ -16,7 +16,7 @@ import { createInstance } from "../redux/apis/createInstanceSlice";
 // import { useDispatch, useSelector } from "react-redux";
 // import { getRegions } from "../redux/apis/regionsSlice";
 import { getImages } from "../redux/apis/imagesSlice";
-import { Icons } from "../components/icons";
+import { Icons } from "../components/Icons";
 
 const { Content } = Layout;
 
