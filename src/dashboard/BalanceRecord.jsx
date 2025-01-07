@@ -69,10 +69,6 @@ const columns = [
   },
 ];
 
-const onChange = (pagination, filters, sorter, extra) => {
-  console.log("params", pagination, filters, sorter, extra);
-};
-
 const BalanceRecord = () => {
   const dispatch = useDispatch();
   const { status, transactions } = useSelector((state) => state.transactions);
@@ -122,7 +118,6 @@ const BalanceRecord = () => {
             <StyledTable
               columns={columns}
               dataSource={transactions}
-              onChange={onChange}
               showSorterTooltip={{
                 target: "sorter-icon",
               }}

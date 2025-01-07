@@ -8,7 +8,7 @@ import resetPasswordReducer from "./apis/resetSlice";
 import emailChangeReducer from "./apis/changeEmail";
 import transactionsReducer from "./apis/transactionsSlice";
 import regionsReducer from "./apis/regionsSlice";
-import planReducer from "./apis/planSlice";
+import plansReducer from "./apis/plansSlice";
 import imagesReducer from "./apis/imagesSlice";
 import instancesReducer from "./apis/instancesSlice";
 
@@ -23,7 +23,7 @@ const store = configureStore({
     emailChange: emailChangeReducer,
     transactions: transactionsReducer,
     regions: regionsReducer,
-    plan: planReducer,
+    plans: plansReducer,
     images: imagesReducer,
     instances: instancesReducer,
   },
