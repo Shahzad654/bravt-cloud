@@ -6,14 +6,21 @@ import { Spin, Button, Dropdown, Table, Tag, App } from "antd";
 import { HiEllipsisHorizontal } from "react-icons/hi2";
 import { MdInstallDesktop } from "react-icons/md";
 import { BsDatabaseCheck, BsDatabaseSlash } from "react-icons/bs";
-import { TbRefreshDot, TbServerCog, TbTrash } from "react-icons/tb";
+import {
+  TbCopyCheckFilled,
+  TbRefreshDot,
+  TbServerCog,
+  TbTrash,
+} from "react-icons/tb";
 import styled from "styled-components";
-import { toSentenceCase } from "../utils/helpers";
+import { formatPrice, toSentenceCase } from "../utils/helpers";
 import { Icons } from "../components/Icons";
 import ReactCountryFlag from "react-country-flag";
 import { REGIONS } from "../data/regions";
 import { api } from "../utils/api";
 import { useNavigate } from "react-router-dom";
+import { TbCopy } from "react-icons/tb";
+import useCopyToClipboard from "../hooks/useCopyToClipboard";
 
 const InstancesTable = () => {
   const dispatch = useDispatch();
@@ -58,6 +65,7 @@ export default InstancesTable;
 function useInstancesTableColumns() {
   const navigate = useNavigate();
   const { modal, message } = App.useApp();
+  const { isCopied, copyToClipboard } = useCopyToClipboard();
 
   const handleInstanceAction = async (instanceId, action, successMessage) => {
     try {
@@ -85,20 +93,47 @@ function useInstancesTableColumns() {
       showSorterTooltip: {
         target: "full-header",
       },
-      render: (val) => (
+      render: (val, record) => (
         <div
           style={{ display: "flex", flexDirection: "column", rowGap: "3px" }}
         >
           <span
-            style={
-              !val && { fontStyle: "italic", color: "gray", fontSize: "14px" }
-            }
+            style={{ fontSize: "15px", fontWeight: "600", whiteSpace: "pre" }}
           >
-            {val || "Unlabeled instance"}
+            {val || "Cloud Instance"}
           </span>
+          <div
+            style={{ display: "flex", alignItems: "center", columnGap: "2px" }}
+          >
+            <span
+              style={{
+                fontSize: "12px",
+                fontWeight: "500",
+                color: "#a1a1aa",
+                whiteSpace: "pre",
+              }}
+            >
+              {record.ram} MB Regular Cloud Compute -
+            </span>
+            <IPButton onClick={() => copyToClipboard(record.main_ip)}>
+              {record.main_ip}
+              <CopyIcon>
+                {isCopied ? <TbCopyCheckFilled /> : <TbCopy />}
+              </CopyIcon>
+            </IPButton>
+          </div>
         </div>
       ),
-      sorter: (a, b) => a.server - b.server,
+      sorter: (a, b) => a.label - b.label,
+    },
+    {
+      title: "OS",
+      dataIndex: "os",
+      render: (val) => {
+        const name = val.split(" ")?.[0]?.toLowerCase();
+        const { icon: Icon, color } = Icons[name];
+        return Icon ? <Icon color={color} size={25} /> : null;
+      },
     },
     {
       title: "Region",
@@ -129,19 +164,6 @@ function useInstancesTableColumns() {
       sorter: (a, b) => a.region - b.region,
     },
     {
-      title: "IP Address",
-      dataIndex: "main_ip",
-    },
-    {
-      title: "OS",
-      dataIndex: "os",
-      render: (val) => {
-        const name = val.split(" ")?.[0]?.toLowerCase();
-        const { icon: Icon, color } = Icons[name];
-        return Icon ? <Icon color={color} size={25} /> : null;
-      },
-    },
-    {
       title: "Status",
       dataIndex: "power_status",
       render: (status) => (
@@ -160,6 +182,19 @@ function useInstancesTableColumns() {
         },
       ],
       onFilter: (value, record) => record.power_status.indexOf(value) === 0,
+    },
+    {
+      title: "Charges",
+      dataIndex: "creditsConsumed",
+      showSorterTooltip: {
+        target: "full-header",
+      },
+      render: (val) => (
+        <span style={{ fontWeight: "500", color: "gray" }}>
+          {formatPrice(val || 0)}
+        </span>
+      ),
+      sorter: (a, b) => a.creditsConsumed - b.creditsConsumed,
     },
     {
       title: "Actions",
@@ -315,5 +350,40 @@ const StyledTable = styled(Table)`
     .ant-table-wrapper {
       overflow-x: auto;
     }
+  }
+`;
+
+const IPButton = styled.button`
+  font-size: 12px;
+  font-weight: 500;
+  color: #a1a1aa;
+  white-space: pre;
+  cursor: pointer;
+  background-color: transparent;
+  padding: 0px;
+  margin: 0px;
+  border: 0px;
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+
+  &:hover {
+    color: var(--primary-color);
+  }
+`;
+
+const CopyIcon = styled.span`
+  opacity: 0;
+  transition: opacity 0.2s;
+  margin-left: 4px;
+
+  ${IPButton}:hover & {
+    opacity: 1;
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
   }
 `;

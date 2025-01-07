@@ -2,7 +2,7 @@ import { App, ConfigProvider } from "antd";
 
 const ANTDProvider = ({ children }) => {
   return (
-    <ConfigProvider theme={{ token: { colorPrimary: "var(--primary-color)" } }}>
+    <ConfigProvider>
       <App>{children}</App>
     </ConfigProvider>
   );
