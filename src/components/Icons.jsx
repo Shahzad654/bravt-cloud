@@ -91,3 +91,22 @@ export const Icons = {
     color: "#CF4229",
   },
 };
+
+export const getIcon = (val) => {
+  const formattedName = val.replace(/ /g, "-").toLowerCase();
+
+  const matchingKeys = Object.keys(Icons).filter((key) =>
+    formattedName.startsWith(key)
+  );
+
+  matchingKeys.sort((a, b) => b.length - a.length);
+
+  const matchedKey = matchingKeys[0];
+
+  if (matchedKey) {
+    const { icon: Icon, color } = Icons[matchedKey];
+    return { Icon, color };
+  }
+
+  return { Icon: null, color: null };
+};
