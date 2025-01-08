@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { Breadcrumb, Layout } from "antd";
-import DashSidebar from "../components/DashSidebar";
 import DashHeader from "../components/DashHeader";
 import { useNavigate } from "react-router-dom";
+import { LuPlus } from "react-icons/lu";
 import InstancesTable from "./InstancesTable";
 
 const { Content } = Layout;
@@ -12,21 +12,10 @@ const Instance = () => {
 
   return (
     <LayoutWrapper>
-      <DashSidebar />
+      <Layout style={{ backgroundColor: "white" }}>
+        <Content>
+          <DashHeader />
 
-      <Layout style={{ padding: "0 16px", backgroundColor: "white" }}>
-        <DashHeader />
-        <Content style={{ margin: "0 16px" }}>
-          <Breadcrumb
-            style={{
-              margin: "16px 0",
-              fontSize: "var(--m-heading)",
-              color: "black",
-              fontWeight: "500",
-            }}
-          >
-            Instance
-          </Breadcrumb>
           <div
             style={{
               padding: 24,
@@ -36,22 +25,21 @@ const Instance = () => {
             }}
           >
             <PageContent>
-              <div className="search">
-                <input type="text" placeholder="Please enter" />
-                <select name="" id="">
-                  <option value="">Server Name</option>
-                  <option value="">Server ID</option>
-                  <option value="">IP Address</option>
-                </select>
-              </div>
+              <Breadcrumb
+                style={{
+                  fontSize: "var(--m-heading)",
+                  color: "black",
+                  fontWeight: "500",
+                }}
+              >
+                Instances
+              </Breadcrumb>
 
               <button
                 className="btn add-btn"
-                onClick={() => {
-                  navigate("/deploy");
-                }}
+                onClick={() => navigate("/deploy")}
               >
-                +Add
+                <LuPlus size={16} /> Add
               </button>
             </PageContent>
             <InstancesTable />
@@ -89,6 +77,9 @@ const PageContent = styled.div`
   .add-btn {
     min-width: 80px;
     padding: 6px 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
 
   @media (max-width: 767px) {

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Breadcrumb, Layout } from "antd";
-import DashSidebar from "../components/DashSidebar";
+
 import DashHeader from "../components/DashHeader";
 import { Table } from "antd";
 
@@ -101,8 +101,7 @@ const onChange = (pagination, filters, sorter, extra) => {
 const Images = () => {
   return (
     <LayoutWrapper>
-      <DashSidebar />
-      <Layout style={{ padding: "0 16px", backgroundColor: "white" }}>
+      <Layout style={{ backgroundColor: "white" }}>
         <DashHeader />
         <Content style={{ margin: "0 16px" }}>
           <Breadcrumb

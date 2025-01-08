@@ -20,7 +20,7 @@ const MakePayment = () => {
 
   return (
     <LayoutWrapper>
-      <Layout style={{ padding: "0 16px", backgroundColor: "white" }}>
+      <Layout style={{ backgroundColor: "white" }}>
         <Content style={{ margin: "0 16px" }}>
           <Breadcrumb
             style={{

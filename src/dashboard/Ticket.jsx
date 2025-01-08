@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Breadcrumb, Layout } from "antd";
-import DashSidebar from "../components/DashSidebar";
+
 import DashHeader from "../components/DashHeader";
 import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
@@ -107,8 +107,7 @@ const onChange = (pagination, filters, sorter, extra) => {
 const Ticket = () => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <DashSidebar />
-      <Layout style={{ padding: "0 16px", backgroundColor: "white" }}>
+      <Layout style={{ backgroundColor: "white" }}>
         <DashHeader />
         <Content style={{ margin: "0 16px" }}>
           <Breadcrumb

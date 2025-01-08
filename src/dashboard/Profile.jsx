@@ -1,7 +1,7 @@
 import { useState, useEffect, useTransition } from "react";
 import styled from "styled-components";
 import { Breadcrumb, Layout, message } from "antd";
-import DashSidebar from "../components/DashSidebar";
+
 import DashHeader from "../components/DashHeader";
 import { Button, Form, Input, InputNumber, Select } from "antd";
 import Box from "@mui/material/Box";
@@ -106,8 +106,7 @@ const Profile = () => {
   return (
     <>
       <Layout style={{ minHeight: "100vh" }}>
-        <DashSidebar />
-        <Layout style={{ padding: "0 16px", backgroundColor: "white" }}>
+        <Layout style={{ backgroundColor: "white" }}>
           <DashHeader />
           <Content style={{ margin: "0 16px" }}>
             <Breadcrumb

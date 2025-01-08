@@ -1,8 +1,12 @@
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { getInstances } from "../redux/apis/instancesSlice";
+import {
+  getInstances,
+  removeInstance,
+  updateInstance,
+} from "../redux/apis/instancesSlice";
 import { useSelector } from "react-redux";
-import { Spin, Button, Dropdown, Table, Tag, App } from "antd";
+import { Button, Dropdown, Table, Tag, App } from "antd";
 import { HiEllipsisHorizontal } from "react-icons/hi2";
 import { MdInstallDesktop } from "react-icons/md";
 import { BsDatabaseCheck, BsDatabaseSlash } from "react-icons/bs";
@@ -18,11 +22,12 @@ import { Icons } from "../components/Icons";
 import ReactCountryFlag from "react-country-flag";
 import { REGIONS } from "../data/regions";
 import { api } from "../utils/api";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { TbCopy } from "react-icons/tb";
 import useCopyToClipboard from "../hooks/useCopyToClipboard";
 
 const InstancesTable = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { instances, status } = useSelector((state) => state.instances);
 
@@ -32,30 +37,19 @@ const InstancesTable = () => {
     dispatch(getInstances());
   }, [dispatch]);
 
-  if (status === "loading") {
-    return (
-      <div
-        style={{
-          width: "100%",
-          height: "400px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Spin />
-      </div>
-    );
-  }
-
   return (
     <StyledTable
       columns={columns}
       dataSource={instances}
+      loading={status === "loading"}
+      style={{ marginTop: "25px" }}
+      rowClassName="cursor-pointer"
+      onRow={(record) => ({
+        onClick: () => navigate(`/instance/${record.id}`),
+      })}
       showSorterTooltip={{
         target: "sorter-icon",
       }}
-      style={{ marginTop: "25px" }}
     />
   );
 };
@@ -64,13 +58,20 @@ export default InstancesTable;
 
 function useInstancesTableColumns() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { modal, message } = App.useApp();
   const { isCopied, copyToClipboard } = useCopyToClipboard();
 
-  const handleInstanceAction = async (instanceId, action, successMessage) => {
+  const handleInstanceAction = async (
+    instanceId,
+    action,
+    successMessage,
+    onSuccess
+  ) => {
     try {
       await api.post(`/vultr/${action}/${instanceId}`);
       message.success(successMessage);
+      if (onSuccess) dispatch(onSuccess);
     } catch (error) {
       message.error(error.response.data.message || `Failed to delete instance`);
     }
@@ -81,6 +82,7 @@ function useInstancesTableColumns() {
       await new Promise((r) => setTimeout(r, 5000));
       await api.delete(`/vultr/deleteInstance/${instanceId}`);
       message.success("Instance deleted!");
+      dispatch(removeInstance(instanceId));
     } catch (error) {
       message.error(error.response.data.message || `Failed to delete instance`);
     }
@@ -97,25 +99,40 @@ function useInstancesTableColumns() {
         <div
           style={{ display: "flex", flexDirection: "column", rowGap: "3px" }}
         >
-          <span
-            style={{ fontSize: "15px", fontWeight: "600", whiteSpace: "pre" }}
+          <Link
+            to={`/instance/${record.id}`}
+            style={{
+              fontSize: "15px",
+              fontWeight: "600",
+              whiteSpace: "pre",
+              color: "black",
+              textDecoration: "none",
+            }}
           >
             {val || "Cloud Instance"}
-          </span>
+          </Link>
           <div
             style={{ display: "flex", alignItems: "center", columnGap: "2px" }}
           >
-            <span
+            <Link
+              to={`/instance/${record.id}`}
               style={{
                 fontSize: "12px",
                 fontWeight: "500",
                 color: "#a1a1aa",
                 whiteSpace: "pre",
+                textDecoration: "none",
               }}
             >
               {record.ram} MB Regular Cloud Compute -
-            </span>
-            <IPButton onClick={() => copyToClipboard(record.main_ip)}>
+            </Link>
+            <IPButton
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                copyToClipboard(record.main_ip);
+              }}
+            >
               {record.main_ip}
               <CopyIcon>
                 {isCopied ? <TbCopyCheckFilled /> : <TbCopy />}
@@ -233,7 +250,9 @@ function useInstancesTableColumns() {
                       : "Start Server"}
                   </>
                 ),
-                onClick: () => {
+                onClick: ({ domEvent }) => {
+                  domEvent.stopPropagation();
+                  domEvent.preventDefault();
                   const isRunning = record.power_status === "running";
                   modal.confirm({
                     title: "Are you sure?",
@@ -244,7 +263,11 @@ function useInstancesTableColumns() {
                       await handleInstanceAction(
                         record.id,
                         isRunning ? "stop" : "start",
-                        `Server ${isRunning ? "stopped" : "started"}!`
+                        `Server ${isRunning ? "stopped" : "started"}!`,
+                        updateInstance({
+                          id: record.id,
+                          power_status: isRunning ? "stopped" : "running",
+                        })
                       );
                     },
                   });
@@ -258,7 +281,9 @@ function useInstancesTableColumns() {
                     Reboot Server
                   </>
                 ),
-                onClick: () => {
+                onClick: ({ domEvent }) => {
+                  domEvent.stopPropagation();
+                  domEvent.preventDefault();
                   modal.confirm({
                     title: "Are you sure?",
                     content: `This will restart your instance!`,
@@ -268,7 +293,11 @@ function useInstancesTableColumns() {
                       await handleInstanceAction(
                         record.id,
                         "reboot",
-                        `Server restarted!`
+                        `Server restarted!`,
+                        updateInstance({
+                          id: record.id,
+                          power_status: "running",
+                        })
                       );
                     },
                   });
@@ -285,7 +314,9 @@ function useInstancesTableColumns() {
                     Reinstall Server
                   </>
                 ),
-                onClick: () => {
+                onClick: ({ domEvent }) => {
+                  domEvent.stopPropagation();
+                  domEvent.preventDefault();
                   modal.confirm({
                     title: "Are you sure?",
                     content: `This will reinstall your instance!`,
@@ -313,7 +344,9 @@ function useInstancesTableColumns() {
                     Destroy Server
                   </>
                 ),
-                onClick: () => {
+                onClick: ({ domEvent }) => {
+                  domEvent.stopPropagation();
+                  domEvent.preventDefault();
                   modal.error({
                     title: "Are you absolutely sure?",
                     content: `${record.label ? `Instance "${record.label}"` : "This instance"} will be deleted permanently. This action can't be undone!`,
@@ -331,6 +364,7 @@ function useInstancesTableColumns() {
             type="text"
             aria-label="Server actions"
             icon={<HiEllipsisHorizontal size={16} />}
+            onClick={(e) => e.stopPropagation()}
           />
         </Dropdown>
       ),

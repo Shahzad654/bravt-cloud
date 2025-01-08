@@ -5,9 +5,9 @@ import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { fetchCurrentUser } from "./redux/apis/userSlice";
-import Navbar from "./components/Navbar";
-import DashNav from "./components/DashNav";
-import Home from "./pages/Home";
+// import Navbar from "./components/Navbar";
+// import DashNav from "./components/DashNav";
+// import Home from "./pages/Home";
 import Signup from "./pages/Signup";
 import ForgetPassword from "./pages/ForgetPassword";
 import ResetPassword from "./pages/ResetPassword";
@@ -30,6 +30,7 @@ import Authentication from "./dashboard/Authentication";
 import DeployInstance from "./dashboard/DeployInstance";
 import PrivateRoute from "./providers/PrivateRoute";
 import LoggedOut from "./providers/LoggedOut";
+import ProtectedLayout from "./providers/ProtectedLayout";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -66,134 +67,25 @@ export default function App() {
 
         <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="/reset-password/:userId" element={<ResetPassword />} />
-        <Route
-          path="/instance"
-          element={
-            <PrivateRoute>
-              <Instance />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/network"
-          element={
-            <PrivateRoute>
-              <Network />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/storage"
-          element={
-            <PrivateRoute>
-              <Storage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/snapshot"
-          element={
-            <PrivateRoute>
-              <Snapshot />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/firewall"
-          element={
-            <PrivateRoute>
-              <Firewall />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/images"
-          element={
-            <PrivateRoute>
-              <Images />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/monitoring"
-          element={
-            <PrivateRoute>
-              <Monitoring />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/payment"
-          element={
-            <PrivateRoute>
-              <Payment />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/ticket"
-          element={
-            <PrivateRoute>
-              <Ticket />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/link-code"
-          element={
-            <PrivateRoute>
-              <LinkCode />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/resource-record"
-          element={
-            <PrivateRoute>
-              <ResourceRecord />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/billing"
-          element={
-            <PrivateRoute>
-              <Billing />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <PrivateRoute>
-              <Profile />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/authentication"
-          element={
-            <PrivateRoute>
-              <Authentication />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/deploy"
-          element={
-            <PrivateRoute>
-              <DeployInstance />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/billing-info"
-          element={
-            <PrivateRoute>
-              <BillingInfo />
-            </PrivateRoute>
-          }
-        />
+
+        <Route element={<ProtectedLayout />}>
+          <Route path="/instance" element={<Instance />} />
+          <Route path="/network" element={<Network />} />
+          <Route path="/storage" element={<Storage />} />
+          <Route path="/snapshot" element={<Snapshot />} />
+          <Route path="/firewall" element={<Firewall />} />
+          <Route path="/images" element={<Images />} />
+          <Route path="/monitoring" element={<Monitoring />} />
+          <Route path="/payment" element={<Payment />} />
+          <Route path="/ticket" element={<Ticket />} />
+          <Route path="/link-code" element={<LinkCode />} />
+          <Route path="/resource-record" element={<ResourceRecord />} />
+          <Route path="/billing" element={<Billing />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/authentication" element={<Authentication />} />
+          <Route path="/deploy" element={<DeployInstance />} />
+          <Route path="/billing-info" element={<BillingInfo />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

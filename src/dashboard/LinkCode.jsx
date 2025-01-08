@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Breadcrumb, Layout } from "antd";
-import DashSidebar from "../components/DashSidebar";
+
 import DashHeader from "../components/DashHeader";
 import { Timeline } from "antd";
 import LinkImg from "../assets/images/commission-img.png";
@@ -10,7 +10,6 @@ const { Content } = Layout;
 const LinkCode = () => {
   return (
     <LayoutWrapper>
-      <DashSidebar />
       <LayoutComp>
         <DashHeader />
         <ContentComp>

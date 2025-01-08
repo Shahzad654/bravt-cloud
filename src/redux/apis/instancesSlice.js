@@ -22,6 +22,20 @@ const instancesSlice = createSlice({
     status: "loading",
     error: null,
   },
+  reducers: {
+    removeInstance: (state, action) => {
+      state.instances = state.instances.filter((i) => i.id === action.payload);
+    },
+    updateInstance: (state, action) => {
+      state.instances = state.instances.map((instance) => {
+        if (instance.id === action.payload.id) {
+          return { ...instance, ...action.payload };
+        } else {
+          return instance;
+        }
+      });
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getInstances.pending, (state) => {
@@ -38,5 +52,8 @@ const instancesSlice = createSlice({
       });
   },
 });
+
+export const { addInstance, removeInstance, updateInstance } =
+  instancesSlice.actions;
 
 export default instancesSlice.reducer;

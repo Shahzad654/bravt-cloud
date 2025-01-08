@@ -19,11 +19,7 @@ const DashHeader = () => {
   } = theme.useToken();
 
   return (
-    <StyledHeader
-      style={{
-        background: colorBgContainer,
-      }}
-    >
+    <StyledHeader style={{ background: colorBgContainer }}>
       <div className="logo">
         <img src={Logo} alt="Logo" />
       </div>

@@ -1,16 +1,17 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { Breadcrumb, Button, Input, Layout, message, Spin } from "antd";
-import DashSidebar from "../../components/DashSidebar";
 import DashHeader from "../../components/DashHeader";
 import ImageSelect from "./ImageSelect";
 import PlansSelect from "./PlansSelect";
 import RegionsSelect from "./RegionsSelect";
 import { api } from "../../utils/api";
+import { useNavigate } from "react-router-dom";
 
 const { Content } = Layout;
 
 const DeployInstance = () => {
+  const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [isPending, setIsPending] = useState();
   const [selectedRegion, setSelectedRegion] = useState(null);
@@ -45,7 +46,9 @@ const DeployInstance = () => {
         plan: selectedPlan,
         os_id: selectedImage,
       });
-      return response.data.data;
+      message.success("Instance created successfully!");
+      const newInstance = response.data.data.instance;
+      navigate(`/instance/${newInstance.id}`);
     } catch (error) {
       message.error(error.response?.data.message);
     } finally {
@@ -55,10 +58,17 @@ const DeployInstance = () => {
 
   return (
     <>
-      {isPending && <Spin size="large" spinning percent="auto" fullscreen />}
+      {isPending && (
+        <Spin
+          size="large"
+          spinning
+          percent="auto"
+          fullscreen
+          tip="Creating instance..."
+        />
+      )}
       <Layout style={{ minHeight: "100vh" }}>
-        <DashSidebar />
-        <Layout style={{ padding: "0 16px", backgroundColor: "white" }}>
+        <Layout style={{ backgroundColor: "white" }}>
           <DashHeader />
           <Content style={{ margin: "0 16px" }}>
             <Breadcrumb
