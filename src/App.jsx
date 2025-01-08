@@ -28,9 +28,9 @@ import Billing from "./dashboard/Billing";
 import Profile from "./dashboard/Profile";
 import Authentication from "./dashboard/Authentication";
 import DeployInstance from "./dashboard/DeployInstance";
-import PrivateRoute from "./providers/PrivateRoute";
 import LoggedOut from "./providers/LoggedOut";
 import ProtectedLayout from "./providers/ProtectedLayout";
+import InstanceDetails from "./dashboard/InstanceDetails";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -70,6 +70,7 @@ export default function App() {
 
         <Route element={<ProtectedLayout />}>
           <Route path="/instance" element={<Instance />} />
+          <Route path="/instance/:instanceId" element={<InstanceDetails />} />
           <Route path="/network" element={<Network />} />
           <Route path="/storage" element={<Storage />} />
           <Route path="/snapshot" element={<Snapshot />} />

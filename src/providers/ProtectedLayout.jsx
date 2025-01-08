@@ -1,7 +1,7 @@
 import { Outlet, Navigate, useLocation } from "react-router-dom";
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
-import DashboardSidebar from "../dashboard/DashboardSidebar";
+import DashboardSidebar from "../components/DashboardSidebar";
 import PageSpinner from "../components/PageSpinner";
 
 const ProtectedLayout = () => {

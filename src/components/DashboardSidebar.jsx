@@ -22,7 +22,7 @@ import {
   FiChevronUp as ExpandLessIcon,
 } from "react-icons/fi";
 
-import Logo from "../components/Logo";
+import Logo from "./Logo";
 import { setUser, logoutUser } from "../redux/apis/userSlice";
 
 const DRAWER_WIDTH = 240;

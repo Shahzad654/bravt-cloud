@@ -18,7 +18,7 @@ import {
 } from "react-icons/tb";
 import styled from "styled-components";
 import { formatPrice, toSentenceCase } from "../utils/helpers";
-import { Icons } from "../components/Icons";
+import { getIcon } from "../components/Icons";
 import ReactCountryFlag from "react-country-flag";
 import { REGIONS } from "../data/regions";
 import { api } from "../utils/api";
@@ -147,8 +147,7 @@ function useInstancesTableColumns() {
       title: "OS",
       dataIndex: "os",
       render: (val) => {
-        const name = val.split(" ")?.[0]?.toLowerCase();
-        const { icon: Icon, color } = Icons[name];
+        const { icon: Icon, color } = getIcon(val);
         return Icon ? <Icon color={color} size={25} /> : null;
       },
     },
