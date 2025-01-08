@@ -6,7 +6,7 @@ export const getInstances = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("/vultr/getAllInstance");
-      return response.data.data.instances;
+      return response.data.data;
     } catch (error) {
       return rejectWithValue(
         error.response?.data.message || "Failed to fetch instances"

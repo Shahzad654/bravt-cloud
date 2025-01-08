@@ -1,3 +1,6 @@
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
 export function formatPrice(amount) {
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -32,4 +35,8 @@ export function customSort(array, key) {
 
     return aValue.localeCompare(bValue);
   });
+}
+
+export function cn(...inputs) {
+  return twMerge(clsx(inputs));
 }

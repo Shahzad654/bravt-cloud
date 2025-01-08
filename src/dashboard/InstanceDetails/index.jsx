@@ -7,6 +7,7 @@ import { formatDistanceToNow } from "date-fns";
 import PageSpinner from "../../components/PageSpinner";
 import InstanceActions from "./InstanceActions";
 import InstanceTabs from "./InstanceTabs";
+import NotFound from "../../components/NotFound";
 
 const InstanceDetails = () => {
   const { instanceId } = useParams();
@@ -15,6 +16,10 @@ const InstanceDetails = () => {
 
   if (status === "pending") {
     return <PageSpinner />;
+  }
+
+  if (!data) {
+    return <NotFound />;
   }
 
   const { Icon, color } = getIcon(data.os);

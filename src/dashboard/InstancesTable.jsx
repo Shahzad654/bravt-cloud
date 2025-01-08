@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   getInstances,
   removeInstance,
@@ -25,32 +25,45 @@ import { api } from "../utils/api";
 import { Link, useNavigate } from "react-router-dom";
 import { TbCopy } from "react-icons/tb";
 import useCopyToClipboard from "../hooks/useCopyToClipboard";
+import { RiTerminalBoxLine } from "react-icons/ri";
+import NewWindow from "react-new-window";
 
 const InstancesTable = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { instances, status } = useSelector((state) => state.instances);
 
-  const { columns } = useInstancesTableColumns();
+  const { columns, isConsoleOpen, setIsConsoleOpen } =
+    useInstancesTableColumns();
 
   useEffect(() => {
     dispatch(getInstances());
   }, [dispatch]);
 
   return (
-    <StyledTable
-      columns={columns}
-      dataSource={instances}
-      loading={status === "loading"}
-      style={{ marginTop: "25px" }}
-      rowClassName="cursor-pointer"
-      onRow={(record) => ({
-        onClick: () => navigate(`/instance/${record.id}`),
-      })}
-      showSorterTooltip={{
-        target: "sorter-icon",
-      }}
-    />
+    <>
+      {isConsoleOpen && (
+        <NewWindow
+          center="parent"
+          url={isConsoleOpen}
+          onUnload={() => setIsConsoleOpen(null)}
+          features={{ width: 1200, height: 650 }}
+        />
+      )}
+      <StyledTable
+        columns={columns}
+        dataSource={instances}
+        loading={status === "loading"}
+        style={{ marginTop: "25px" }}
+        rowClassName="cursor-pointer"
+        onRow={(record) => ({
+          onClick: () => navigate(`/instance/${record.id}`),
+        })}
+        showSorterTooltip={{
+          target: "sorter-icon",
+        }}
+      />
+    </>
   );
 };
 
@@ -61,6 +74,7 @@ function useInstancesTableColumns() {
   const dispatch = useDispatch();
   const { modal, message } = App.useApp();
   const { isCopied, copyToClipboard } = useCopyToClipboard();
+  const [isConsoleOpen, setIsConsoleOpen] = useState(null);
 
   const handleInstanceAction = async (
     instanceId,
@@ -230,6 +244,23 @@ function useInstancesTableColumns() {
                 onClick: () => navigate(`/instance/${record.id}`),
               },
               {
+                key: "console",
+                label: (
+                  <>
+                    <RiTerminalBoxLine
+                      size={16}
+                      style={{ marginRight: "8px" }}
+                    />
+                    View Console
+                  </>
+                ),
+                onClick: ({ domEvent }) => {
+                  domEvent.stopPropagation();
+                  domEvent.preventDefault();
+                  setIsConsoleOpen(record.kvm);
+                },
+              },
+              {
                 key: record.power_status === "running" ? "stop" : "start",
                 label: (
                   <>
@@ -370,7 +401,7 @@ function useInstancesTableColumns() {
     },
   ];
 
-  return { columns };
+  return { columns, isConsoleOpen, setIsConsoleOpen };
 }
 
 const StyledTable = styled(Table)`

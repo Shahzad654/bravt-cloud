@@ -64,7 +64,7 @@ const DeployInstance = () => {
           spinning
           percent="auto"
           fullscreen
-          tip="Creating instance..."
+          tip="Creating Instance..."
         />
       )}
       <Layout style={{ minHeight: "100vh" }}>

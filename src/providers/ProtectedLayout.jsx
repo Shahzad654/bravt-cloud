@@ -24,12 +24,9 @@ const ProtectedLayout = () => {
         component="main"
         sx={{
           flexGrow: 1,
-          minHeight: "100vh",
+          minHeight: "100svh",
           backgroundColor: "white",
           overflow: "auto",
-          "& > *:first-of-type": {
-            mt: 2,
-          },
         }}
       >
         <Outlet />

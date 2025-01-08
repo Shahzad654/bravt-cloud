@@ -1,4 +1,5 @@
 import { Tabs } from "antd";
+import InstanceOverview from "./InstanceOverview";
 
 const InstanceTabs = () => {
   return (
@@ -8,6 +9,7 @@ const InstanceTabs = () => {
         {
           key: "1",
           label: "Overview",
+          children: <InstanceOverview />,
         },
         {
           key: "2",

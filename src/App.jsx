@@ -31,6 +31,7 @@ import DeployInstance from "./dashboard/DeployInstance";
 import LoggedOut from "./providers/LoggedOut";
 import ProtectedLayout from "./providers/ProtectedLayout";
 import InstanceDetails from "./dashboard/InstanceDetails";
+import NotFound from "./components/NotFound";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -87,6 +88,8 @@ export default function App() {
           <Route path="/deploy" element={<DeployInstance />} />
           <Route path="/billing-info" element={<BillingInfo />} />
         </Route>
+
+        <Route path="/*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
