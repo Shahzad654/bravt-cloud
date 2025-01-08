@@ -21,6 +21,7 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("error");
@@ -62,8 +63,15 @@ export default function Signup() {
   };
 
   const handleSignup = async () => {
-    if (!email || !code || !password) {
+    if (!email || !code || !password || !passwordConfirm) {
       setSnackbarMessage("Please fill in all fields.");
+      setSnackbarSeverity("error");
+      setOpenSnackbar(true);
+      return;
+    }
+
+    if (passwordConfirm !== password) {
+      setSnackbarMessage("Passwords don't match.");
       setSnackbarSeverity("error");
       setOpenSnackbar(true);
       return;
@@ -119,6 +127,7 @@ export default function Signup() {
             <button
               onClick={handleSendCode}
               disabled={isCodeSending || !email}
+              className="btn"
               style={{
                 marginTop: "5%",
                 minWidth: "2px",
@@ -146,7 +155,18 @@ export default function Signup() {
             />
             <br />
 
+            <label htmlFor="confirmPassword">Confirm Password</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              required
+              placeholder="Confirm your password"
+              value={passwordConfirm}
+              onChange={(e) => setPasswordConfirm(e.target.value)}
+            />
+
             <button
+              className="btn"
               onClick={handleSignup}
               disabled={!isFormValid || isSigningUp}
               style={{ marginTop: "20px" }}

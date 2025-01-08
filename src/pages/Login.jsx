@@ -114,7 +114,7 @@ export default function Login() {
               onChange={handleInputChange}
             />
             <br />
-            <button onClick={handleSignIn} disabled={loading}>
+            <button className="btn" onClick={handleSignIn} disabled={loading}>
               {loading ? (
                 <CircularProgress size={16} style={{ color: "white" }} />
               ) : (
@@ -124,9 +124,10 @@ export default function Login() {
             <h5
               onClick={() => navigate("/forget-password")}
               style={{
-                marginLeft: "6.5rem",
+                marginLeft: "auto",
                 marginTop: "1rem",
                 cursor: "pointer",
+                fontSize: "14px",
               }}
             >
               Forget Password?

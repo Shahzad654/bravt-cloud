@@ -73,7 +73,6 @@ export default function Navbar() {
         <div className="nav-buttons">
           <button className="outline-btn">Sign In</button>
           <button className="contained-btn">
-            {" "}
             <IoIosGift className="gift-icon" />
             Sign Up
           </button>

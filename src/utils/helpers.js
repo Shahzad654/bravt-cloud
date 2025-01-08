@@ -18,3 +18,18 @@ export function toSentenceCase(str) {
     .replace(/\s+/g, " ")
     .trim();
 }
+
+export function customSort(array, key) {
+  return array.sort((a, b) => {
+    const aValue = a[key]?.toString().toLowerCase() || "";
+    const bValue = b[key]?.toString().toLowerCase() || "";
+
+    const aStartsWithU = aValue.startsWith("u");
+    const bStartsWithU = bValue.startsWith("u");
+
+    if (aStartsWithU && !bStartsWithU) return -1;
+    if (!aStartsWithU && bStartsWithU) return 1;
+
+    return aValue.localeCompare(bValue);
+  });
+}

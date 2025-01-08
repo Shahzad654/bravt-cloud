@@ -93,7 +93,12 @@ export default function ResetPassword() {
 
             {error && <span style={{ color: "red" }}>{error}</span>}
 
-            <button type="submit" onClick={handleSubmit} disabled={loading}>
+            <button
+              type="submit"
+              onClick={handleSubmit}
+              disabled={loading}
+              className="btn"
+            >
               {loading ? "Resetting..." : "Reset"}
             </button>
           </div>

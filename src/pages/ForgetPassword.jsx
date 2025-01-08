@@ -37,7 +37,7 @@ export default function ForgotPassword() {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          <button type="submit" disabled={loading}>
+          <button className="btn" type="submit" disabled={loading}>
             {loading ? <CircularProgress size={20} /> : "Send Email"}
           </button>
         </form>

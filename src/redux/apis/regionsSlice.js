@@ -1,14 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { api } from "../../utils/api";
+import { customSort } from "../../utils/helpers";
 
 export const getRegions = createAsyncThunk(
   "vultr/getRegions",
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("/vultr/getRegions");
-      return response.data.data.sort((a, b) =>
-        b.country.localeCompare(a.country)
-      );
+      return customSort(response.data.data, "country");
     } catch (error) {
       return rejectWithValue(
         error.response?.data.message || "Failed to fetch regions"

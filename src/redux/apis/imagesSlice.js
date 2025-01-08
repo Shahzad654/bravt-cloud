@@ -1,13 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { api } from "../../utils/api";
+import { customSort } from "../../utils/helpers";
 
 export const getImages = createAsyncThunk(
   "vultr/getImages",
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("/vultr/getOS");
-      console.log(response.data.data);
-      return response.data.data;
+      return customSort(response.data.data, "family");
     } catch (error) {
       return rejectWithValue(
         error.response?.data.message || "Failed to fetch images"

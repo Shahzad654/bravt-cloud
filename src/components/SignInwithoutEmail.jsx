@@ -12,7 +12,6 @@ export default function SignInWithoutEmail() {
         <div />
       </div>
       <button
-        className="google-button google-btn-gtag"
         onClick={() =>
           window.open(
             `${API_URL}/user/google?redirectUrl=${window.location.origin}/instance`,
@@ -24,7 +23,6 @@ export default function SignInWithoutEmail() {
       </button>
 
       <button
-        className="google-button google-btn-gtag"
         onClick={() =>
           window.open(
             `${API_URL}/user/github?redirectUrl=${window.location.origin}/instance`,

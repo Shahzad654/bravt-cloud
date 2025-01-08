@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Breadcrumb, Layout } from "antd";
-import DashSidebar from "../components/DashSidebar";
+
 import DashHeader from "../components/DashHeader";
 import { Table } from "antd";
 
@@ -71,8 +71,7 @@ const onChange = (pagination, filters, sorter, extra) => {
 const Authentication = () => {
   return (
     <LayoutWrapper>
-      <DashSidebar />
-      <Layout style={{ padding: "0 16px", backgroundColor: "white" }}>
+      <Layout style={{ backgroundColor: "white" }}>
         <DashHeader />
         <Content style={{ margin: "0 16px" }}>
           <Breadcrumb
@@ -92,7 +91,7 @@ const Authentication = () => {
                 <option value="Google Auth">Google Auth</option>
               </select>
               <input type="text" placeholder="Description" />
-              <button className="add-btn">Add 2FA</button>
+              <button className="btn add-btn">Add 2FA</button>
             </div>
           </div>
           <div

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Breadcrumb, Layout } from "antd";
-import DashSidebar from "../components/DashSidebar";
+
 import DashHeader from "../components/DashHeader";
 import { Table } from "antd";
 
@@ -152,30 +152,29 @@ const Network = () => {
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      <DashSidebar />
-      <Layout style={{ padding: "0 16px", backgroundColor: "white" }}>
+      <Layout style={{ backgroundColor: "white" }}>
         <DashHeader />
-        <Content style={{ margin: "0 16px" }}>
-          <Breadcrumb
-            style={{
-              margin: "16px 0",
-              fontSize: "var(--m-heading)",
-              color: "black",
-              fontWeight: "500",
-            }}
-          >
-            Netwrok
-          </Breadcrumb>
+        <Content>
           <div
             style={{
               padding: 24,
               minHeight: 360,
-              // background: "#f0f2f5",
               background: "white",
               borderRadius: "8px",
             }}
           >
             <PageContent>
+              <Breadcrumb
+                style={{
+                  margin: "16px 0",
+                  fontSize: "var(--m-heading)",
+                  color: "black",
+                  fontWeight: "500",
+                }}
+              >
+                Netwrok
+              </Breadcrumb>
+
               <div className="search">
                 <input type="text" placeholder="Please enter" />
                 <select name="" id="">

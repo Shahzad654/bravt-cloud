@@ -8,9 +8,9 @@ import resetPasswordReducer from "./apis/resetSlice";
 import emailChangeReducer from "./apis/changeEmail";
 import transactionsReducer from "./apis/transactionsSlice";
 import regionsReducer from "./apis/regionsSlice";
-import planReducer from "./apis/planSlice";
+import plansReducer from "./apis/plansSlice";
 import imagesReducer from "./apis/imagesSlice";
-import allInstanceReducer from "./apis/getAllInstanceSlice";
+import instancesReducer from "./apis/instancesSlice";
 
 const store = configureStore({
   reducer: {
@@ -23,9 +23,9 @@ const store = configureStore({
     emailChange: emailChangeReducer,
     transactions: transactionsReducer,
     regions: regionsReducer,
-    plan: planReducer,
+    plans: plansReducer,
     images: imagesReducer,
-    allInstance:allInstanceReducer
+    instances: instancesReducer,
   },
 });
 

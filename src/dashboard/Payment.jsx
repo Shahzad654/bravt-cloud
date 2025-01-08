@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Breadcrumb, Layout } from "antd";
-import DashSidebar from "../components/DashSidebar";
+
 import DashHeader from "../components/DashHeader";
 import { Tabs } from "antd";
 import MakePayment from "./MakePayment";
@@ -24,8 +24,7 @@ const items = [
 const Payment = () => {
   return (
     <LayoutWrapper>
-      <DashSidebar />
-      <Layout style={{ padding: "0 16px", backgroundColor: "white" }}>
+      <Layout style={{ backgroundColor: "white" }}>
         <DashHeader />
         <Content style={{ margin: "0 16px" }}>
           <Breadcrumb
