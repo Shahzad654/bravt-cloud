@@ -30,6 +30,7 @@ const DRAWER_WIDTH = 240;
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
   width: DRAWER_WIDTH,
   flexShrink: 0,
+  zIndex: 10,
   "& .MuiDrawer-paper": {
     width: DRAWER_WIDTH,
     backgroundColor: theme.palette.background.paper,

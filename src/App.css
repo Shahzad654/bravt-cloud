@@ -215,3 +215,9 @@ select {
     --price-cards-width: 60%;
   }
 }
+
+.tailwind-layout {
+  @tailwind base;
+  @tailwind components;
+  @tailwind utilities;
+}
