@@ -1,35 +1,14 @@
 import styled from "styled-components";
-import { Breadcrumb, Layout, Spin } from "antd";
+import { Breadcrumb, Layout } from "antd";
 import DashHeader from "../components/DashHeader";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { clearInstances, fetchAllInstances } from "../redux/apis/getAllInstanceSlice";
-import { Content } from "antd/es/layout/layout";
 import { LuPlus } from "react-icons/lu";
 import InstancesTable from "./InstancesTable";
 
+const { Content } = Layout;
+
 const Instance = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { instances, instancesStatus, error } = useSelector((state) => {
-    return state.allInstance});
-
-  useEffect(() => {
-    dispatch(fetchAllInstances());
-  }, [dispatch]);
-
-  if (instancesStatus === "loading") return <Spin tip="Loading instances..." />;
-  if (instancesStatus === "error") return <p>Error: {error}</p>;
-
-  console.log("instances",instances);
-  const formattedData = instances.map((instance, index) => ({
-    key: index,
-    server: instance.hostname, // Adjust according to API response
-    location: instance.region, // Adjust according to API response
-    ipaddress: instance.main_ip, // Adjust according to API response
-    status: instance.status || "inactive", // Adjust according to API response
-  }));
 
   return (
     <LayoutWrapper>

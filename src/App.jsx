@@ -31,6 +31,8 @@ import DeployInstance from "./dashboard/DeployInstance";
 import LoggedOut from "./providers/LoggedOut";
 import ProtectedLayout from "./providers/ProtectedLayout";
 import InstanceDetails from "./dashboard/InstanceDetails";
+import Tags from "./components/Tags";
+import SnapShots from "./components/Snapshot";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -86,6 +88,8 @@ export default function App() {
           <Route path="/authentication" element={<Authentication />} />
           <Route path="/deploy" element={<DeployInstance />} />
           <Route path="/billing-info" element={<BillingInfo />} />
+          <Route path="/tags" element={<Tags />} />
+          <Route path="/snapshot-component" element={<SnapShots />} />
         </Route>
       </Routes>
     </BrowserRouter>
