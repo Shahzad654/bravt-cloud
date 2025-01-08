@@ -155,7 +155,7 @@ const DashboardSidebar = () => {
             <ListItemButton
               key={child.label}
               sx={{
-                pl: 4,
+                pl: 9,
                 "&:hover": {
                   backgroundColor: "rgba(0, 0, 0, 0.04)",
                 },

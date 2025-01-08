@@ -161,8 +161,8 @@ function useInstancesTableColumns() {
       title: "OS",
       dataIndex: "os",
       render: (val) => {
-        const { icon: Icon, color } = getIcon(val);
-        return Icon ? <Icon color={color} size={25} /> : null;
+        const { Icon, color } = getIcon(val);
+        return Icon ? <Icon color={color} size={25} /> : val;
       },
     },
     {

@@ -1,5 +1,4 @@
 import { Outlet, Navigate, useLocation } from "react-router-dom";
-import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
 import DashboardSidebar from "../components/DashboardSidebar";
 import PageSpinner from "../components/PageSpinner";
@@ -18,20 +17,12 @@ const ProtectedLayout = () => {
   }
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <div style={{ display: "flex" }}>
       <DashboardSidebar />
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          minHeight: "100svh",
-          backgroundColor: "white",
-          overflow: "auto",
-        }}
-      >
+      <div style={{ position: "relative", width: "100%", flex: "1 1 0%" }}>
         <Outlet />
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 };
 
