@@ -192,6 +192,10 @@ select {
   cursor: pointer;
 }
 
+.pointer-events-none {
+  pointer-events: none;
+}
+
 @keyframes pulse {
   0%,
   100% {

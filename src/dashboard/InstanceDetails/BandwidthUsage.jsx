@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useGetInstanceByIdQuery } from "../../redux/apis/queriesSlice";
+import { useGetInstanceByIdQuery } from "../../redux/apis/apiSlice";
 import { format, subDays } from "date-fns";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "./Chart";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";

@@ -43,16 +43,16 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
 
 const menuItems = [
   {
-    label: "Products",
+    label: "Network",
     icon: <ProductIcon size={20} />,
     children: [
       { label: "Instance", path: "/instance" },
-      { label: "Network", path: "/network" },
-      { label: "Block Storage", path: "/storage" },
+      // { label: "Network", path: "/network" },
+      // { label: "Block Storage", path: "/storage" },
       { label: "Snapshot", path: "/snapshot" },
       { label: "Firewall", path: "/firewall" },
-      { label: "Images", path: "/images" },
-      { label: "Monitoring", path: "/monitoring" },
+      // { label: "Images", path: "/images" },
+      // { label: "Monitoring", path: "/monitoring" },
     ],
   },
   {
@@ -60,26 +60,26 @@ const menuItems = [
     icon: <MoneyIcon size={20} />,
     children: [
       { label: "Payment", path: "/payment" },
-      { label: "Resource Record", path: "/resource-record" },
-      { label: "Billing", path: "/billing" },
+      // { label: "Resource Record", path: "/resource-record" },
+      // { label: "Billing", path: "/billing" },
     ],
   },
-  {
-    label: "Support",
-    icon: <QuestionIcon size={20} />,
-    children: [{ label: "Ticket", path: "/ticket" }],
-  },
-  {
-    label: "Affiliate",
-    icon: <AppstoreIcon size={20} />,
-    children: [{ label: "Link code", path: "/link-code" }],
-  },
+  // {
+  //   label: "Support",
+  //   icon: <QuestionIcon size={20} />,
+  //   children: [{ label: "Ticket", path: "/ticket" }],
+  // },
+  // {
+  //   label: "Affiliate",
+  //   icon: <AppstoreIcon size={20} />,
+  //   children: [{ label: "Link code", path: "/link-code" }],
+  // },
   {
     label: "Account",
     icon: <ProfileIcon size={20} />,
     children: [
       { label: "Profile", path: "/profile" },
-      { label: "Authentication", path: "/authentication" },
+      // { label: "Authentication", path: "/authentication" },
     ],
   },
 ];

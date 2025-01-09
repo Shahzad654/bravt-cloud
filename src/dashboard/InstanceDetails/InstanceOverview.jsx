@@ -1,11 +1,12 @@
 import { useParams } from "react-router-dom";
-import { useGetInstanceByIdQuery } from "../../redux/apis/queriesSlice";
+import { useGetInstanceByIdQuery } from "../../redux/apis/apiSlice";
 import { REGIONS } from "../../data/regions";
 import ReactCountryFlag from "react-country-flag";
 import useCopyToClipboard from "../../hooks/useCopyToClipboard";
 import { TbCopy, TbCopyCheckFilled } from "react-icons/tb";
 import BandwidthUsage from "./BandwidthUsage";
 import CreditsUsage from "./CreditsUsage";
+import UpdateLabel from "./UpdateLabel";
 
 const InstanceOverview = () => {
   const { instanceId } = useParams();
@@ -112,7 +113,7 @@ const InstanceOverview = () => {
               <tr>
                 <td className="py-2 text-zinc-500 text-sm w-2/3">Label:</td>
                 <td className="py-2">
-                  <div className="text-sm">{data.label}</div>
+                  <UpdateLabel />
                 </td>
               </tr>
               <tr>

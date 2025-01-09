@@ -2,52 +2,32 @@ import { RiTerminalBoxLine } from "react-icons/ri";
 import { TbRefreshDot, TbServerBolt, TbTrash } from "react-icons/tb";
 import { App, Tooltip } from "antd";
 import { MdInstallDesktop, MdPowerSettingsNew } from "react-icons/md";
-import { api } from "../../utils/api";
-import { useDispatch } from "react-redux";
 import {
-  removeInstance,
-  updateInstance,
-} from "../../redux/apis/instancesSlice";
-import { useGetInstanceByIdQuery } from "../../redux/apis/queriesSlice";
+  useDeleteInstanceMutation,
+  useGetInstanceByIdQuery,
+  useRebootInstanceMutation,
+  useReinstallInstanceMutation,
+  useStartOrStopInstanceMutation,
+} from "../../redux/apis/apiSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import NewWindow from "react-new-window";
 
 const InstanceActions = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isConsoleOpen, setIsConsoleOpen] = useState(false);
 
   const { instanceId } = useParams();
-  const { data, refetch } = useGetInstanceByIdQuery(instanceId);
+  const { data } = useGetInstanceByIdQuery(instanceId);
 
   const { modal, message } = App.useApp();
 
   const isRunning = data.power_status === "running";
 
-  const handleInstanceAction = async (action, successMessage, onSuccess) => {
-    try {
-      await api.post(`/vultr/${action}/${instanceId}`);
-      message.success(successMessage);
-      refetch();
-      if (onSuccess) dispatch(onSuccess);
-    } catch (error) {
-      message.error(error.response.data.message || `Failed to delete instance`);
-    }
-  };
-
-  const handleDeleteServer = async () => {
-    try {
-      await new Promise((r) => setTimeout(r, 5000));
-      await api.delete(`/vultr/deleteInstance/${instanceId}`);
-      message.success("Instance deleted!");
-      navigate("/instance");
-      dispatch(removeInstance(instanceId));
-      refetch();
-    } catch (error) {
-      message.error(error.response.data.message || `Failed to delete instance`);
-    }
-  };
+  const [startOrStopInstance] = useStartOrStopInstanceMutation();
+  const [rebootInstance] = useRebootInstanceMutation();
+  const [reinstallInstance] = useReinstallInstanceMutation();
+  const [deleteInstance] = useDeleteInstanceMutation();
 
   return (
     <>
@@ -81,14 +61,21 @@ const InstanceActions = () => {
                 okText: "Confirm",
                 okCancel: true,
                 onOk: async () => {
-                  await handleInstanceAction(
-                    isRunning ? "stop" : "start",
-                    `Server ${isRunning ? "stopped" : "started"}!`,
-                    updateInstance({
-                      id: data.id,
-                      power_status: isRunning ? "stopped" : "running",
-                    })
-                  );
+                  const { error } = await startOrStopInstance({
+                    id: instanceId,
+                    action: isRunning ? "stop" : "start",
+                  });
+
+                  if (error) {
+                    message.error(
+                      error.message ||
+                        `Failed to ${isRunning ? "stop" : "start"} instance!`
+                    );
+                  } else {
+                    message.success(
+                      `Instance ${isRunning ? "stopped" : "started"} successfully!`
+                    );
+                  }
                 },
               });
             }}
@@ -112,14 +99,15 @@ const InstanceActions = () => {
                 okText: "Confirm",
                 okCancel: true,
                 onOk: async () => {
-                  await handleInstanceAction(
-                    "reboot",
-                    `Server restarted!`,
-                    updateInstance({
-                      id: data.id,
-                      power_status: "running",
-                    })
-                  );
+                  const { error } = await rebootInstance({ id: instanceId });
+
+                  if (error) {
+                    message.error(
+                      error.message || `Failed to reboot instance!`
+                    );
+                  } else {
+                    message.success(`Instance restarted successfully!`);
+                  }
                 },
               });
             }}
@@ -139,10 +127,17 @@ const InstanceActions = () => {
                 okText: "Confirm",
                 okCancel: true,
                 onOk: async () => {
-                  await handleInstanceAction(
-                    "reinstall",
-                    `Server reinstalled!`
-                  );
+                  const { error } = await reinstallInstance({
+                    id: instanceId,
+                  });
+
+                  if (error) {
+                    message.error(
+                      error.message || `Failed to reinstall instance!`
+                    );
+                  } else {
+                    message.success(`Instance reinstalled successfully!`);
+                  }
                 },
               });
             }}
@@ -162,7 +157,17 @@ const InstanceActions = () => {
                 okText: "Delete",
                 okCancel: true,
                 okButtonProps: { color: "danger" },
-                onOk: handleDeleteServer,
+                onOk: async () => {
+                  const { error } = await deleteInstance({ id: instanceId });
+                  if (error) {
+                    message.error(
+                      error.message || `Failed to delete instance!`
+                    );
+                  } else {
+                    navigate("/instance");
+                    message.success(`Instance deleted successfully!`);
+                  }
+                },
               });
             }}
           >

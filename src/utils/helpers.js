@@ -40,3 +40,11 @@ export function customSort(array, key) {
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
+
+export function isInstanceInstalling(instance) {
+  if (instance?.server_status !== "ok" || instance?.status !== "active") {
+    return true;
+  } else {
+    return false;
+  }
+}

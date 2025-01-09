@@ -3,128 +3,63 @@ import { Breadcrumb, Layout } from "antd";
 
 import DashHeader from "../components/DashHeader";
 import { Table } from "antd";
+import { format } from "date-fns";
+import CreateFirewallModal from "./CreateFirewallModal";
+import { useGetFirewallGroupsQuery } from "../redux/apis/apiSlice";
+import { useNavigate } from "react-router-dom";
 
 const { Content } = Layout;
 
 const columns = [
   {
-    title: "Firewall Group",
-    dataIndex: "firewall",
-    showSorterTooltip: {
-      target: "full-header",
-    },
+    title: "ID",
+    dataIndex: "id",
   },
-  {
-    title: "Location",
-    dataIndex: "location",
-    filters: [
-      {
-        text: "London",
-        value: "London",
-      },
-      {
-        text: "New York",
-        value: "New York",
-      },
-    ],
-    onFilter: (value, record) => record.address.indexOf(value) === 0,
-  },
-  {
-    title: "Rules",
-    dataIndex: "rules",
-    showSorterTooltip: {
-      target: "full-header",
-    },
-  },
-  {
-    title: "Instance",
-    dataIndex: "instance",
-    showSorterTooltip: {
-      target: "full-header",
-    },
-  },
-
   {
     title: "Description",
     dataIndex: "description",
+    sorter: (a, b) => a.description.localeCompare(b.description),
     showSorterTooltip: {
       target: "full-header",
     },
   },
-
   {
     title: "Date Created",
-    dataIndex: "date",
+    dataIndex: "date_created",
+    render: (val) => format(val, "PPP"),
+    sorter: (a, b) => new Date(a.date_created) - new Date(b.date_created),
+    showSorterTooltip: {
+      target: "full-header",
+    },
   },
   {
-    title: "Operation",
-    dataIndex: "operation",
+    title: "Rules",
+    dataIndex: "rule_count",
+    sorter: (a, b) => a.rule_count - b.rule_count,
+    showSorterTooltip: {
+      target: "full-header",
+    },
+  },
+  {
+    title: "Instances",
+    dataIndex: "instance_count",
+    sorter: (a, b) => a.instance_count - b.instance_count,
+    showSorterTooltip: {
+      target: "full-header",
+    },
   },
 ];
 
-const data = [
-  {
-    key: "1",
-    firewall: "firewall 1",
-    location: "New York",
-    rules: "rule 1",
-    instance: "Instance 1",
-    date: "20-8-25",
-    description: "Description",
-    operation: "Success",
-  },
-  {
-    key: "2",
-    firewall: "firewall 1",
-    location: "New York",
-    rules: "rule 1",
-    instance: "Instance 1",
-    date: "20-8-25",
-    description: "Description",
-    operation: "Success",
-  },
-  {
-    key: "3",
-    firewall: "firewall 1",
-    location: "New York",
-    rules: "rule 1",
-    instance: "Instance 1",
-    date: "20-8-25",
-    description: "Description",
-    operation: "Success",
-  },
-  {
-    key: "4",
-    firewall: "firewall 1",
-    location: "New York",
-    rules: "rule 1",
-    instance: "Instance 1",
-    date: "20-8-25",
-    description: "Description",
-    operation: "Success",
-  },
-];
+const Firewall = () => {
+  const { data, isLoading } = useGetFirewallGroupsQuery();
 
-const onChange = (pagination, filters, sorter, extra) => {
-  console.log("params", pagination, filters, sorter, extra);
-};
+  const navigate = useNavigate();
 
-const Snapshot = () => {
   return (
     <LayoutWrapper>
       <Layout style={{ backgroundColor: "white" }}>
         <DashHeader />
         <Content style={{ margin: "0 16px" }}>
-          <Breadcrumb
-            style={{
-              margin: "16px 0",
-              fontSize: "var(--m-heading)",
-              color: "black",
-              fontWeight: "500",
-            }}
-          >
-            Firewall Group
-          </Breadcrumb>
           <div
             style={{
               padding: 24,
@@ -135,18 +70,27 @@ const Snapshot = () => {
             }}
           >
             <PageContent>
-              <div className="search">
-                <input type="text" placeholder="Please enter" />
-                <select name="" id="">
-                  <option value="">Firewall ID</option>
-                  <option value="">Name</option>
-                </select>
-              </div>
+              <Breadcrumb
+                style={{
+                  fontSize: "var(--m-heading)",
+                  color: "black",
+                  fontWeight: "500",
+                }}
+              >
+                Firewall Group
+              </Breadcrumb>
+
+              <CreateFirewallModal />
             </PageContent>
+
             <StyledTable
               columns={columns}
               dataSource={data}
-              onChange={onChange}
+              loading={isLoading}
+              rowClassName="cursor-pointer"
+              onRow={(record) => ({
+                onClick: () => navigate(`/firewall/${record.id}`),
+              })}
               showSorterTooltip={{
                 target: "sorter-icon",
               }}
@@ -159,7 +103,7 @@ const Snapshot = () => {
   );
 };
 
-export default Snapshot;
+export default Firewall;
 
 const StyledTable = styled(Table)`
   .ant-table-thead > tr > th {
@@ -188,18 +132,6 @@ const PageContent = styled.div`
   align-items: center;
   gap: 2rem;
   margin-bottom: 20px;
-
-  .search {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .add-btn {
-    min-width: 80px;
-    padding: 6px 16px;
-  }
 
   @media (max-width: 767px) {
     flex-direction: column;

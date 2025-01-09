@@ -1,5 +1,6 @@
 import { Tabs } from "antd";
 import InstanceOverview from "./InstanceOverview";
+import InstanceSettings from "./InstanceSettings";
 
 const InstanceTabs = () => {
   return (
@@ -14,14 +15,11 @@ const InstanceTabs = () => {
         {
           key: "2",
           label: "Settings",
+          children: <InstanceSettings />,
         },
         {
           key: "3",
           label: "Snapshots",
-        },
-        {
-          key: "4",
-          label: "Tags",
         },
       ]}
     />

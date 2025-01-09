@@ -10,8 +10,7 @@ import transactionsReducer from "./apis/transactionsSlice";
 import regionsReducer from "./apis/regionsSlice";
 import plansReducer from "./apis/plansSlice";
 import imagesReducer from "./apis/imagesSlice";
-import instancesReducer from "./apis/instancesSlice";
-import apiSlice from "./apis/queriesSlice";
+import apiSlice from "./apis/apiSlice";
 
 const store = configureStore({
   reducer: {
@@ -26,7 +25,6 @@ const store = configureStore({
     regions: regionsReducer,
     plans: plansReducer,
     images: imagesReducer,
-    instances: instancesReducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) => {

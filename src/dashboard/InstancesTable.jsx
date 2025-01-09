@@ -1,11 +1,4 @@
-import { useDispatch } from "react-redux";
-import { useEffect, useState } from "react";
-import {
-  getInstances,
-  removeInstance,
-  updateInstance,
-} from "../redux/apis/instancesSlice";
-import { useSelector } from "react-redux";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button, Dropdown, Table, Tag, App } from "antd";
 import { HiEllipsisHorizontal } from "react-icons/hi2";
 import { MdInstallDesktop } from "react-icons/md";
@@ -17,28 +10,62 @@ import {
   TbTrash,
 } from "react-icons/tb";
 import styled from "styled-components";
-import { formatPrice, toSentenceCase } from "../utils/helpers";
+import {
+  formatPrice,
+  isInstanceInstalling,
+  toSentenceCase,
+} from "../utils/helpers";
 import { getIcon } from "../components/Icons";
 import ReactCountryFlag from "react-country-flag";
 import { REGIONS } from "../data/regions";
-import { api } from "../utils/api";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { TbCopy } from "react-icons/tb";
 import useCopyToClipboard from "../hooks/useCopyToClipboard";
 import { RiTerminalBoxLine } from "react-icons/ri";
 import NewWindow from "react-new-window";
+import { CircularProgress } from "@mui/material";
+import {
+  useDeleteInstanceMutation,
+  useGetAllInstancesQuery,
+  useRebootInstanceMutation,
+  useReinstallInstanceMutation,
+  useStartOrStopInstanceMutation,
+} from "../redux/apis/apiSlice";
 
 const InstancesTable = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { instances, status } = useSelector((state) => state.instances);
 
   const { columns, isConsoleOpen, setIsConsoleOpen } =
     useInstancesTableColumns();
 
+  const [pollingInterval, setPollingInterval] = useState(0);
+  const previousDataRef = useRef();
+
+  const { data: instances, isLoading } = useGetAllInstancesQuery(undefined, {
+    pollingInterval,
+    selectFromResult: ({ data, ...rest }) => ({
+      data: data ?? previousDataRef.current,
+      ...rest,
+    }),
+  });
+
   useEffect(() => {
-    dispatch(getInstances());
-  }, [dispatch]);
+    if (instances) {
+      previousDataRef.current = instances;
+    }
+  }, [instances]);
+
+  const isAnyInstanceInstalling = useMemo(() => {
+    return instances?.some((instance) => isInstanceInstalling(instance));
+  }, [instances]);
+
+  useEffect(() => {
+    if (isAnyInstanceInstalling) {
+      setPollingInterval(5000);
+    } else {
+      setPollingInterval(0);
+    }
+  }, [isAnyInstanceInstalling]);
 
   return (
     <>
@@ -53,11 +80,18 @@ const InstancesTable = () => {
       <StyledTable
         columns={columns}
         dataSource={instances}
-        loading={status === "loading"}
+        loading={isLoading}
         style={{ marginTop: "25px" }}
-        rowClassName="cursor-pointer"
+        rowClassName={(record) =>
+          `${isInstanceInstalling(record) ? "pointer-events-none" : "cursor-pointer"}`
+        }
         onRow={(record) => ({
-          onClick: () => navigate(`/instance/${record.id}`),
+          onClick: () => {
+            console.log(isInstanceInstalling(record));
+            if (!isInstanceInstalling(record)) {
+              navigate(`/instance/${record.id}`);
+            }
+          },
         })}
         showSorterTooltip={{
           target: "sorter-icon",
@@ -70,37 +104,14 @@ const InstancesTable = () => {
 export default InstancesTable;
 
 function useInstancesTableColumns() {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { modal, message } = App.useApp();
   const { isCopied, copyToClipboard } = useCopyToClipboard();
   const [isConsoleOpen, setIsConsoleOpen] = useState(null);
 
-  const handleInstanceAction = async (
-    instanceId,
-    action,
-    successMessage,
-    onSuccess
-  ) => {
-    try {
-      await api.post(`/vultr/${action}/${instanceId}`);
-      message.success(successMessage);
-      if (onSuccess) dispatch(onSuccess);
-    } catch (error) {
-      message.error(error.response.data.message || `Failed to delete instance`);
-    }
-  };
-
-  const handleDeleteServer = async (instanceId) => {
-    try {
-      await new Promise((r) => setTimeout(r, 5000));
-      await api.delete(`/vultr/deleteInstance/${instanceId}`);
-      message.success("Instance deleted!");
-      dispatch(removeInstance(instanceId));
-    } catch (error) {
-      message.error(error.response.data.message || `Failed to delete instance`);
-    }
-  };
+  const [startOrStopInstance] = useStartOrStopInstanceMutation();
+  const [rebootInstance] = useRebootInstanceMutation();
+  const [reinstallInstance] = useReinstallInstanceMutation();
+  const [deleteInstance] = useDeleteInstanceMutation();
 
   const columns = [
     {
@@ -110,36 +121,28 @@ function useInstancesTableColumns() {
         target: "full-header",
       },
       render: (val, record) => (
-        <div
-          style={{ display: "flex", flexDirection: "column", rowGap: "3px" }}
-        >
-          <Link
-            to={`/instance/${record.id}`}
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <span
             style={{
               fontSize: "15px",
               fontWeight: "600",
               whiteSpace: "pre",
-              color: "black",
-              textDecoration: "none",
             }}
           >
             {val || "Cloud Instance"}
-          </Link>
+          </span>
           <div
             style={{ display: "flex", alignItems: "center", columnGap: "2px" }}
           >
-            <Link
-              to={`/instance/${record.id}`}
+            <span
               style={{
                 fontSize: "12px",
                 fontWeight: "500",
                 color: "#a1a1aa",
-                whiteSpace: "pre",
-                textDecoration: "none",
               }}
             >
               {record.ram} MB Regular Cloud Compute -
-            </Link>
+            </span>
             <IPButton
               onClick={(e) => {
                 e.stopPropagation();
@@ -155,7 +158,7 @@ function useInstancesTableColumns() {
           </div>
         </div>
       ),
-      sorter: (a, b) => a.label - b.label,
+      sorter: (a, b) => a.label.localCompare(b.label),
     },
     {
       title: "OS",
@@ -191,16 +194,34 @@ function useInstancesTableColumns() {
           region.toUpperCase()
         );
       },
-      sorter: (a, b) => a.region - b.region,
+      sorter: (a, b) => a.region.localCompare(b.region),
     },
     {
       title: "Status",
       dataIndex: "power_status",
-      render: (status) => (
-        <Tag color={status === "running" ? "success" : "error"}>
-          {toSentenceCase(status.toLowerCase())}
-        </Tag>
-      ),
+      render: (status, record) => {
+        const isInstalling = isInstanceInstalling(record);
+        return (
+          <Tag
+            color={
+              isInstalling
+                ? "orange"
+                : status === "running"
+                  ? "success"
+                  : "error"
+            }
+          >
+            {isInstalling && (
+              <CircularProgress
+                size={10}
+                style={{ marginRight: "6px" }}
+                color="inherit"
+              />
+            )}
+            {isInstalling ? "Installing" : toSentenceCase(status.toLowerCase())}
+          </Tag>
+        );
+      },
       filters: [
         {
           text: "Active",
@@ -231,6 +252,7 @@ function useInstancesTableColumns() {
       key: "actions",
       render: (_, record) => (
         <Dropdown
+          disabled={isInstanceInstalling(record)}
           menu={{
             items: [
               {
@@ -241,7 +263,6 @@ function useInstancesTableColumns() {
                     Server Details
                   </>
                 ),
-                onClick: () => navigate(`/instance/${record.id}`),
               },
               {
                 key: "console",
@@ -283,22 +304,28 @@ function useInstancesTableColumns() {
                 onClick: ({ domEvent }) => {
                   domEvent.stopPropagation();
                   domEvent.preventDefault();
-                  const isRunning = record.power_status === "running";
+                  const action =
+                    record.power_status === "running" ? "stop" : "start";
                   modal.confirm({
                     title: "Are you sure?",
-                    content: `This will ${isRunning ? "stop" : "start"} your instance!`,
+                    content: `This will ${action} your instance!`,
                     okText: "Confirm",
                     okCancel: true,
                     onOk: async () => {
-                      await handleInstanceAction(
-                        record.id,
-                        isRunning ? "stop" : "start",
-                        `Server ${isRunning ? "stopped" : "started"}!`,
-                        updateInstance({
-                          id: record.id,
-                          power_status: isRunning ? "stopped" : "running",
-                        })
-                      );
+                      const { error } = await startOrStopInstance({
+                        id: record.id,
+                        action,
+                      });
+
+                      if (error) {
+                        message.error(
+                          error.message || `Failed to ${action} instance!`
+                        );
+                      } else {
+                        message.success(
+                          `Instance ${action}${action === "stop" ? "p" : ""}ed successfully!`
+                        );
+                      }
                     },
                   });
                 },
@@ -320,15 +347,15 @@ function useInstancesTableColumns() {
                     okText: "Confirm",
                     okCancel: true,
                     onOk: async () => {
-                      await handleInstanceAction(
-                        record.id,
-                        "reboot",
-                        `Server restarted!`,
-                        updateInstance({
-                          id: record.id,
-                          power_status: "running",
-                        })
-                      );
+                      const { error } = await rebootInstance({ id: record.id });
+
+                      if (error) {
+                        message.error(
+                          error.message || `Failed to reboot instance!`
+                        );
+                      } else {
+                        message.success(`Instance restarted successfully!`);
+                      }
                     },
                   });
                 },
@@ -353,11 +380,17 @@ function useInstancesTableColumns() {
                     okText: "Confirm",
                     okCancel: true,
                     onOk: async () => {
-                      await handleInstanceAction(
-                        record.id,
-                        "reinstall",
-                        `Server reinstalled!`
-                      );
+                      const { error } = await reinstallInstance({
+                        id: record.id,
+                      });
+
+                      if (error) {
+                        message.error(
+                          error.message || `Failed to reinstall instance!`
+                        );
+                      } else {
+                        message.success(`Instance reinstalled successfully!`);
+                      }
                     },
                   });
                 },
@@ -383,7 +416,19 @@ function useInstancesTableColumns() {
                     okText: "Delete",
                     okCancel: true,
                     okButtonProps: { color: "danger" },
-                    onOk: async () => handleDeleteServer(record.id),
+                    onOk: async () => {
+                      const { error } = await deleteInstance({
+                        id: record.id,
+                      });
+
+                      if (error) {
+                        message.error(
+                          error.message || `Failed to delete instance!`
+                        );
+                      } else {
+                        message.success(`Instance deleted successfully!`);
+                      }
+                    },
                   });
                 },
               },

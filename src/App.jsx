@@ -32,6 +32,7 @@ import LoggedOut from "./providers/LoggedOut";
 import ProtectedLayout from "./providers/ProtectedLayout";
 import InstanceDetails from "./dashboard/InstanceDetails";
 import NotFound from "./components/NotFound";
+import FirewallDetails from "./dashboard/FirewallDetails";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -76,6 +77,7 @@ export default function App() {
           <Route path="/storage" element={<Storage />} />
           <Route path="/snapshot" element={<Snapshot />} />
           <Route path="/firewall" element={<Firewall />} />
+          <Route path="/firewall/:firewallId" element={<FirewallDetails />} />
           <Route path="/images" element={<Images />} />
           <Route path="/monitoring" element={<Monitoring />} />
           <Route path="/payment" element={<Payment />} />

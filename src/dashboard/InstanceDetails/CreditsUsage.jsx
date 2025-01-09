@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useGetInstanceByIdQuery } from "../../redux/apis/queriesSlice";
+import { useGetInstanceByIdQuery } from "../../redux/apis/apiSlice";
 import { PieChart, Pie, Label } from "recharts";
 import { useMemo } from "react";
 import { Card } from "antd";
