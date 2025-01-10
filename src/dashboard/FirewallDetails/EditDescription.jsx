@@ -19,7 +19,7 @@ const EditDescription = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const description = inputRef.current?.value;
+    const description = inputRef.current?.value?.trim();
     if (!description) {
       inputRef.current?.focus();
       return;
@@ -30,6 +30,7 @@ const EditDescription = () => {
       description,
     });
 
+    if (inputRef.current) inputRef.current.value = "";
     setIsEditMode(false);
 
     if (error) {

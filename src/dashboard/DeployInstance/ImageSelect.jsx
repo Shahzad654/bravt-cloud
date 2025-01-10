@@ -1,28 +1,22 @@
 import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { getImages } from "../../redux/apis/imagesSlice";
 import { Icons } from "../../components/Icons";
+import { useGetImagesQuery } from "../../redux/apis/apiSlice";
 
 const ImageSelect = ({ value, onValueChange }) => {
-  const dispatch = useDispatch();
-  const { images, status } = useSelector((state) => state.images);
+  const { data, isLoading } = useGetImagesQuery();
 
   useEffect(() => {
-    dispatch(getImages());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (images.length && !value) {
-      onValueChange(images[0].id);
+    if (data?.length && !value) {
+      onValueChange(data[0].id);
     }
-  }, [images, value, onValueChange]);
+  }, [data, value, onValueChange]);
 
   return (
     <>
       <h4 style={{ marginTop: "20px" }}>Operating system</h4>
 
       <div className="grid-layout">
-        {status === "loading"
+        {isLoading
           ? Array.from({ length: 38 }).map((_, index) => (
               <div
                 key={index}
@@ -30,7 +24,7 @@ const ImageSelect = ({ value, onValueChange }) => {
                 style={{ backgroundColor: "#d1d5db", height: "100px" }}
               />
             ))
-          : images.map((image) => {
+          : data.map((image) => {
               const { icon: Icon, color } = Icons[image.family];
               return (
                 <div

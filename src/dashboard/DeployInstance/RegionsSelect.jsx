@@ -1,28 +1,21 @@
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { getRegions } from "../../redux/apis/regionsSlice";
 import { useEffect } from "react";
 import ReactCountryFlag from "react-country-flag";
+import { useGetRegionsQuery } from "../../redux/apis/apiSlice";
 
 const RegionsSelect = ({ value, onValueChange }) => {
-  const dispatch = useDispatch();
-  const { regions, status } = useSelector((state) => state.regions);
+  const { data, isLoading } = useGetRegionsQuery();
 
   useEffect(() => {
-    dispatch(getRegions());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (regions.length && !value) {
-      onValueChange(regions[0].id);
+    if (data?.length && !value) {
+      onValueChange(data[0].id);
     }
-  }, [regions, value, onValueChange]);
+  }, [data, value, onValueChange]);
 
   return (
     <>
       <h4>Regions</h4>
       <div className="grid-layout">
-        {status === "loading"
+        {isLoading
           ? Array.from({ length: 32 }).map((_, index) => (
               <div
                 key={index}
@@ -32,7 +25,7 @@ const RegionsSelect = ({ value, onValueChange }) => {
                 <div style={{ width: "36px", height: "36px" }} />
               </div>
             ))
-          : regions.map((region) => (
+          : data.map((region) => (
               <div
                 key={region.id}
                 className={`grid-item ${value === region.id ? "active" : ""}`}

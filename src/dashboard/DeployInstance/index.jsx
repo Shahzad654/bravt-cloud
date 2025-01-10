@@ -7,6 +7,8 @@ import PlansSelect from "./PlansSelect";
 import RegionsSelect from "./RegionsSelect";
 import { api } from "../../utils/api";
 import { useNavigate } from "react-router-dom";
+import SSHKeySelect from "./SSHKeySelect";
+import FirewallGroupSelect from "./FirewallGroupSelect";
 
 const { Content } = Layout;
 
@@ -19,6 +21,8 @@ const DeployInstance = () => {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [label, setLabel] = useState("");
   const [hostname, setHostname] = useState("");
+  const [sshKey, setSSHKey] = useState("");
+  const [firewallGroup, setFirewallGroup] = useState("");
 
   const handleCreateInstance = async () => {
     if (step === 0) {
@@ -45,6 +49,8 @@ const DeployInstance = () => {
         region: selectedRegion,
         plan: selectedPlan,
         os_id: selectedImage,
+        sshkey_id: sshKey,
+        firewall_group_id: firewallGroup,
       });
       message.success("Instance created successfully!");
       const newInstance = response.data.data.instance;
@@ -143,6 +149,22 @@ const DeployInstance = () => {
                           onChange={(e) => setHostname(e.target.value)}
                         />
                       </div>
+                    </div>
+
+                    <div
+                      style={{
+                        display: "grid",
+                        columnGap: "12px",
+                        marginTop: "14px",
+                        gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                      }}
+                    >
+                      <SSHKeySelect sshKey={sshKey} setSSHKey={setSSHKey} />
+
+                      <FirewallGroupSelect
+                        firewallGroup={firewallGroup}
+                        setFirewallGroup={setFirewallGroup}
+                      />
                     </div>
 
                     <ImageSelect

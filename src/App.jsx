@@ -1,41 +1,43 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import { useEffect } from "react";
+import { lazy, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { fetchCurrentUser } from "./redux/apis/userSlice";
-// import Navbar from "./components/Navbar";
-// import DashNav from "./components/DashNav";
-// import Home from "./pages/Home";
-import Signup from "./pages/Signup";
-import ForgetPassword from "./pages/ForgetPassword";
-import ResetPassword from "./pages/ResetPassword";
-import BillingInfo from "./pages/BillingInfo";
-import Login from "./pages/Login";
-import Instance from "./dashboard/Instance";
-import Network from "./dashboard/Netwrok";
-import Storage from "./dashboard/Storage";
-import Snapshot from "./dashboard/Snapshot";
-import Firewall from "./dashboard/Firewall";
-import Images from "./dashboard/Images";
-import Monitoring from "./dashboard/Monitoring";
-import Payment from "./dashboard/Payment";
-import Ticket from "./dashboard/Ticket";
-import LinkCode from "./dashboard/LinkCode";
-import ResourceRecord from "./dashboard/ResourceRecord";
-import Billing from "./dashboard/Billing";
-import Profile from "./dashboard/Profile";
-import Authentication from "./dashboard/Authentication";
-import DeployInstance from "./dashboard/DeployInstance";
+
 import LoggedOut from "./providers/LoggedOut";
-import ProtectedLayout from "./providers/ProtectedLayout";
-import InstanceDetails from "./dashboard/InstanceDetails";
+import DashboardLayout from "./providers/DashboardLayout";
 import NotFound from "./components/NotFound";
-import FirewallDetails from "./dashboard/FirewallDetails";
-import AddSHH from "./dashboard/ShhDetails/AddSHH";
-import SSHKeyTable from "./dashboard/ShhDetails";
-import UpdateSHH from "./dashboard/ShhDetails/UpadateSHH";
+
+// Lazy loaded components
+const Signup = lazy(() => import("./pages/Signup"));
+const ForgetPassword = lazy(() => import("./pages/ForgetPassword"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const BillingInfo = lazy(() => import("./pages/BillingInfo"));
+const Login = lazy(() => import("./pages/Login"));
+const Instance = lazy(() => import("./dashboard/Instance"));
+const Network = lazy(() => import("./dashboard/Network"));
+const Storage = lazy(() => import("./dashboard/Storage"));
+const Snapshot = lazy(() => import("./dashboard/Snapshot"));
+const Firewall = lazy(() => import("./dashboard/Firewall"));
+const Images = lazy(() => import("./dashboard/Images"));
+const Monitoring = lazy(() => import("./dashboard/Monitoring"));
+const Payment = lazy(() => import("./dashboard/Payment"));
+const Ticket = lazy(() => import("./dashboard/Ticket"));
+const LinkCode = lazy(() => import("./dashboard/LinkCode"));
+const ResourceRecord = lazy(() => import("./dashboard/ResourceRecord"));
+const Billing = lazy(() => import("./dashboard/Billing"));
+const Profile = lazy(() => import("./dashboard/Profile"));
+const Authentication = lazy(() => import("./dashboard/Authentication"));
+const DeployInstance = lazy(() => import("./dashboard/DeployInstance"));
+const InstanceDetails = lazy(() => import("./dashboard/InstanceDetails"));
+const FirewallDetails = lazy(() => import("./dashboard/FirewallDetails"));
+const CreateSnapshot = lazy(() => import("./dashboard/CreateSnapshot"));
+const AddSHH = lazy(() => import("./dashboard/ShhDetails/AddSHH"));
+const SSHKeyTable = lazy(() => import("./dashboard/ShhDetails"));
+const UpdateSHH = lazy(() => import("./dashboard/ShhDetails/UpadateSHH"));
+
 
 export default function App() {
   const dispatch = useDispatch();
@@ -46,39 +48,21 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      {/* <DashNav/>
-    <Instance/> */}
-      {/* <Home/> */}
-      {/* <Signup/> */}
-      {/* <Login/> */}
       <Routes>
-        <Route
-          path="/"
-          element={
-            <LoggedOut>
-              <Login />
-            </LoggedOut>
-          }
-        />
+        <Route element={<LoggedOut />}>
+          <Route path="/" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/forget-password" element={<ForgetPassword />} />
+          <Route path="/reset-password/:userId" element={<ResetPassword />} />
+        </Route>
 
-        <Route
-          path="/signup"
-          element={
-            <LoggedOut>
-              <Signup />
-            </LoggedOut>
-          }
-        />
-
-        <Route path="/forget-password" element={<ForgetPassword />} />
-        <Route path="/reset-password/:userId" element={<ResetPassword />} />
-
-        <Route element={<ProtectedLayout />}>
+        <Route element={<DashboardLayout />}>
           <Route path="/instance" element={<Instance />} />
           <Route path="/instance/:instanceId" element={<InstanceDetails />} />
           <Route path="/network" element={<Network />} />
           <Route path="/storage" element={<Storage />} />
           <Route path="/snapshot" element={<Snapshot />} />
+          <Route path="/snapshot/create" element={<CreateSnapshot />} />
           <Route path="/firewall" element={<Firewall />} />
           <Route path="/firewall/:firewallId" element={<FirewallDetails />} />
           <Route path="/images" element={<Images />} />

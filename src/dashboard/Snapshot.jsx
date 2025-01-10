@@ -1,140 +1,129 @@
 import styled from "styled-components";
-import { Breadcrumb, Layout } from "antd";
+import { App, Breadcrumb, Button, Layout, message, Tag } from "antd";
+import { TbPlus, TbTrash } from "react-icons/tb";
+import { format } from "date-fns";
 
 import DashHeader from "../components/DashHeader";
 import { Table } from "antd";
+import { Link } from "react-router-dom";
+import {
+  useDeleteSnapshotMutation,
+  useGetSnapshotsQuery,
+} from "../redux/apis/apiSlice";
+import { toSentenceCase } from "../utils/helpers";
 
 const { Content } = Layout;
 
-const columns = [
-  {
-    title: "Snapshot Name",
-    dataIndex: "snapshot",
-    showSorterTooltip: {
-      target: "full-header",
-    },
-  },
-  {
-    title: "Type",
-    dataIndex: "type",
-    showSorterTooltip: {
-      target: "full-header",
-    },
-  },
-  {
-    title: "Size",
-    dataIndex: "size",
-    showSorterTooltip: {
-      target: "full-header",
-    },
-  },
-  {
-    title: "Location",
-    dataIndex: "location",
-    filters: [
-      {
-        text: "London",
-        value: "London",
-      },
-      {
-        text: "New York",
-        value: "New York",
-      },
-    ],
-    onFilter: (value, record) => record.address.indexOf(value) === 0,
-  },
-  {
-    title: "Datetime",
-    dataIndex: "date",
-  },
-  {
-    title: "Operation",
-    dataIndex: "operation",
-  },
-];
-
-const data = [
-  {
-    key: "1",
-    snapshot: "Snapshot 1",
-    location: "New York",
-    type: "type 1",
-    size: "20GB",
-    date: "20-8-25",
-    operation: "Success",
-  },
-  {
-    key: "2",
-    snapshot: "Snapshot 1",
-    location: "New York",
-    type: "type 1",
-    size: "20GB",
-    date: "20-8-25",
-    operation: "Success",
-  },
-  {
-    key: "3",
-    snapshot: "Snapshot 1",
-    location: "New York",
-    type: "type 1",
-    size: "20GB",
-    date: "20-8-25",
-    operation: "Success",
-  },
-  {
-    key: "4",
-    snapshot: "Snapshot 1",
-    location: "New York",
-    type: "type 1",
-    size: "20GB",
-    date: "20-8-25",
-    operation: "Success",
-  },
-];
-
-const onChange = (pagination, filters, sorter, extra) => {
-  console.log("params", pagination, filters, sorter, extra);
-};
-
 const Snapshot = () => {
+  const { data, isLoading } = useGetSnapshotsQuery();
+  const { modal } = App.useApp();
+
+  const [deleteSnapshot] = useDeleteSnapshotMutation();
+
+  const columns = [
+    {
+      title: "Label",
+      dataIndex: "description",
+      sorter: (a, b) => a.description?.localeCompare(b.description),
+      showSorterTooltip: {
+        target: "full-header",
+      },
+    },
+    {
+      title: "Size",
+      dataIndex: "compressed_size",
+      render: (val) => `${(val / 1024 / 1024 / 1024).toFixed(2)} GB`,
+      showSorterTooltip: {
+        target: "full-header",
+      },
+    },
+    {
+      title: "Date",
+      dataIndex: "date_created",
+      render: (val) => format(val, "PP"),
+    },
+    {
+      title: "Charges",
+      key: "charges",
+      render: () => `${process.env.REACT_APP_SNAPSHOT_COST}/GB`,
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      render: (val) => (
+        <Tag
+          color={
+            val === "pending" ? "blue" : val === "complete" ? "green" : "red"
+          }
+        >
+          {toSentenceCase(val)}
+        </Tag>
+      ),
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (_, record) => (
+        <DelButton
+          aria-label="Delete snapshot"
+          onClick={() => {
+            modal.error({
+              title: "Are you absolutely sure?",
+              content: `Snapshot "${record.description || ""}"  will be deleted permanently. This action can't be undone!`,
+              okText: "Delete",
+              okCancel: true,
+              okButtonProps: { color: "danger" },
+              onOk: async () => {
+                const { error } = await deleteSnapshot(record.id);
+                if (error) {
+                  message.error(error.message || "Failed to delete snapshot");
+                } else {
+                  message.success("Snapshot Deleted!");
+                }
+              },
+            });
+          }}
+        >
+          <TbTrash size={18} />
+        </DelButton>
+      ),
+    },
+  ];
+
   return (
     <LayoutWrapper>
       <Layout style={{ backgroundColor: "white" }}>
         <DashHeader />
         <Content style={{ margin: "0 16px" }}>
-          <Breadcrumb
-            style={{
-              margin: "16px 0",
-              fontSize: "var(--m-heading)",
-              color: "black",
-              fontWeight: "500",
-            }}
-          >
-            Snapshot
-          </Breadcrumb>
           <div
             style={{
               padding: 24,
               minHeight: 360,
-              // background: "#f0f2f5",
               background: "white",
               borderRadius: "8px",
             }}
           >
             <PageContent>
-              <div className="search">
-                <input type="text" placeholder="Please enter" />
-                <select name="" id="">
-                  <option value="">Snapshot Name</option>
-                  <option value="">Source ID</option>
-                  <option value="">Disk ID</option>
-                </select>
-              </div>
+              <Breadcrumb
+                style={{
+                  fontSize: "var(--m-heading)",
+                  color: "black",
+                  fontWeight: "500",
+                }}
+              >
+                Snapshots
+              </Breadcrumb>
+
+              <Link to="/snapshot/create">
+                <Button icon={<TbPlus size={18} />} type="primary">
+                  Create snapshot
+                </Button>
+              </Link>
             </PageContent>
             <StyledTable
               columns={columns}
               dataSource={data}
-              onChange={onChange}
+              loading={isLoading}
               showSorterTooltip={{
                 target: "sorter-icon",
               }}
@@ -177,20 +166,19 @@ const PageContent = styled.div`
   gap: 2rem;
   margin-bottom: 20px;
 
-  .search {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .add-btn {
-    min-width: 80px;
-    padding: 6px 16px;
-  }
-
   @media (max-width: 767px) {
     flex-direction: column;
     align-items: flex-start;
+  }
+`;
+
+const DelButton = styled.button`
+  color: black;
+  background: white;
+  border: 0;
+  outline: none;
+
+  &:hover {
+    color: red;
   }
 `;

@@ -10,7 +10,6 @@ import { TbCheck, TbX } from "react-icons/tb";
 
 const UpdateLabel = ({ size = "sm" }) => {
   const [isInputMode, setIsInputMode] = useState(false);
-  const [value, setValue] = useState("");
   const inputRef = useRef(null);
 
   const [updateLabel, { isLoading }] = useUpdateInstanceMutation();
@@ -43,14 +42,16 @@ const UpdateLabel = ({ size = "sm" }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!value.trim()) {
-      message.error("Value is required!");
+
+    const value = inputRef.current?.value?.trim();
+    if (!value) {
       inputRef.current?.focus();
       return;
     }
+
     const { error } = await updateLabel({ id: instanceId, label: value });
 
-    setValue("");
+    if (inputRef.current) inputRef.current.value = "";
     setIsInputMode(false);
 
     if (error) {
@@ -62,9 +63,7 @@ const UpdateLabel = ({ size = "sm" }) => {
     <form onSubmit={handleSubmit} className="flex items-center gap-2">
       <input
         ref={inputRef}
-        value={value}
         disabled={isLoading}
-        onChange={(e) => setValue(e.target.value)}
         className={cn(
           "w-full !pb-0.5 px-0 border-b bg-transparent border-zinc-400 focus-visible:border-primary transition-[colors,opacity] rounded-none disabled:opacity-60",
           size === "sm"
@@ -87,8 +86,8 @@ const UpdateLabel = ({ size = "sm" }) => {
         disabled={isLoading}
         className="text-red-600 transition-opacity aspect-square disabled:opacity-60"
         onClick={() => {
-          setValue("");
           setIsInputMode(false);
+          if (inputRef.current) inputRef.current.value = "";
         }}
       >
         <TbX size={size === "sm" ? 14 : 20} />

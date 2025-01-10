@@ -22,27 +22,16 @@ export function toSentenceCase(str) {
     .trim();
 }
 
-export function customSort(array, key) {
-  return array.sort((a, b) => {
-    const aValue = a[key]?.toString().toLowerCase() || "";
-    const bValue = b[key]?.toString().toLowerCase() || "";
-
-    const aStartsWithU = aValue.startsWith("u");
-    const bStartsWithU = bValue.startsWith("u");
-
-    if (aStartsWithU && !bStartsWithU) return -1;
-    if (!aStartsWithU && bStartsWithU) return 1;
-
-    return aValue.localeCompare(bValue);
-  });
-}
-
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
 export function isInstanceInstalling(instance) {
-  if (instance?.server_status !== "ok" || instance?.status !== "active") {
+  if (
+    instance?.server_status !== "ok" ||
+    instance?.status !== "active" ||
+    !["running", "stopped"].includes(instance?.power_status)
+  ) {
     return true;
   } else {
     return false;
