@@ -37,7 +37,7 @@ const Instance = () => {
 
               <button
                 className="btn add-btn"
-                onClick={() => navigate("/deploy")}
+                onClick={() => navigate("/instance/deploy")}
               >
                 <LuPlus size={16} /> Add
               </button>

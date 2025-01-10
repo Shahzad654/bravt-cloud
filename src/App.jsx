@@ -54,6 +54,7 @@ export default function App() {
 
         <Route element={<DashboardLayout />}>
           <Route path="/instance" element={<Instance />} />
+          <Route path="/instance/deploy" element={<DeployInstance />} />
           <Route path="/instance/:instanceId" element={<InstanceDetails />} />
           <Route path="/network" element={<Network />} />
           <Route path="/storage" element={<Storage />} />
@@ -70,7 +71,6 @@ export default function App() {
           <Route path="/billing" element={<Billing />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/authentication" element={<Authentication />} />
-          <Route path="/deploy" element={<DeployInstance />} />
           <Route path="/billing-info" element={<BillingInfo />} />
         </Route>
 

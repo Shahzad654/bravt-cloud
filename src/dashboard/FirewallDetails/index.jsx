@@ -10,6 +10,7 @@ import { Card, Tabs } from "antd";
 import { useState } from "react";
 import CreateFirewallRuleModal from "./CreateFirewallRuleModal";
 import FirewallRulesTable from "./FirewallRulesTable";
+import FirewallLinkedInstances from "./FirewallLinkedInstances";
 
 const FirewallDetails = () => {
   const { firewallId } = useParams();
@@ -76,7 +77,11 @@ const FirewallDetails = () => {
               </span>
             </p>
           </Card>
-          <Card hoverable className="border">
+          <Card
+            hoverable
+            className="border"
+            onClick={() => setActiveTab("linked_instance")}
+          >
             <p className="font-medium text-sm text-zinc-500">
               Linked Instances
             </p>
@@ -125,6 +130,11 @@ const FirewallDetails = () => {
                   <FirewallRulesTable ipType="v6" />
                 </>
               ),
+            },
+            {
+              key: "linked_instance",
+              label: "Linked Instances",
+              children: <FirewallLinkedInstances />,
             },
           ]}
         />
