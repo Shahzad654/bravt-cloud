@@ -93,19 +93,33 @@ export const Icons = {
 };
 
 export const getIcon = (val) => {
-  const formattedName = val.replace(/ /g, "-").toLowerCase();
+  if (!val) return { Icon: null, color: null };
 
-  const matchingKeys = Object.keys(Icons).filter((key) =>
-    formattedName.startsWith(key)
-  );
+  const searchStr = val.toLowerCase().trim();
 
-  matchingKeys.sort((a, b) => b.length - a.length);
+  const osKeys = Object.keys(Icons).sort((a, b) => b.length - a.length);
 
-  const matchedKey = matchingKeys[0];
+  const matchedKey = osKeys.find((key) => {
+    if (searchStr.startsWith(key)) return true;
+
+    const hyphenToSpace = key.replace(/-/g, " ");
+    if (searchStr.startsWith(hyphenToSpace)) return true;
+
+    const spaceToHyphen = key.replace(/ /g, "-");
+    if (searchStr.startsWith(spaceToHyphen)) return true;
+
+    const noSpacesOrHyphens = key.replace(/[-\s]/g, "");
+    if (searchStr.replace(/[-\s]/g, "").startsWith(noSpacesOrHyphens))
+      return true;
+
+    return false;
+  });
 
   if (matchedKey) {
-    const { icon: Icon, color } = Icons[matchedKey];
-    return { Icon, color };
+    return {
+      Icon: Icons[matchedKey].icon,
+      color: Icons[matchedKey].color,
+    };
   }
 
   return { Icon: null, color: null };

@@ -24,7 +24,7 @@ const DashHeader = () => {
         <img src={Logo} alt="Logo" />
       </div>
       <NavLinks>
-        <Link to="/" className="link">
+        {/* <Link to="/" className="link">
           <div className="icon-border">
             <MdEmail className="icon" />
           </div>
@@ -35,13 +35,13 @@ const DashHeader = () => {
             <IoDocumentTextOutline className="icon" />
           </div>
           Docs
-        </Link>
-        <Link to="/" className="link">
+        </Link> */}
+        <div className="link">
           <div className="icon-border">
             <GrLanguage className="icon" />
           </div>
           English
-        </Link>
+        </div>
         <Link to="/payment" className="link">
           <div className="icon-border">
             <RiMoneyDollarCircleLine className="icon" />

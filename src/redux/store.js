@@ -10,7 +10,9 @@ import transactionsReducer from "./apis/transactionsSlice";
 import regionsReducer from "./apis/regionsSlice";
 import plansReducer from "./apis/plansSlice";
 import imagesReducer from "./apis/imagesSlice";
-import instancesReducer from "./apis/instancesSlice";
+import apiSlice from "./apis/apiSlice";
+import addShhReducer from "./apis/createShhSlice";
+import getShhReducer from "./apis/getAllShhSlice";
 
 const store = configureStore({
   reducer: {
@@ -25,7 +27,12 @@ const store = configureStore({
     regions: regionsReducer,
     plans: plansReducer,
     images: imagesReducer,
-    instances: instancesReducer,
+    createShh: addShhReducer,
+    getAllShh: getShhReducer,
+    [apiSlice.reducerPath]: apiSlice.reducer,
+  },
+  middleware: (getDefaultMiddleware) => {
+    return getDefaultMiddleware().concat(apiSlice.middleware);
   },
 });
 

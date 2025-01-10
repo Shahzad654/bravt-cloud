@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import styled from "styled-components";
 import { Breadcrumb, Button, Input, Layout, message, Spin } from "antd";
 import DashHeader from "../../components/DashHeader";
@@ -56,6 +56,13 @@ const DeployInstance = () => {
     }
   };
 
+  const isSubmitDisabled = useMemo(() => {
+    return (
+      (step === 0 && (!selectedPlan || !selectedRegion)) ||
+      (step === 1 && (!label || !hostname || !selectedImage))
+    );
+  }, [step, selectedPlan, selectedRegion, label, hostname, selectedImage]);
+
   return (
     <>
       {isPending && (
@@ -64,7 +71,7 @@ const DeployInstance = () => {
           spinning
           percent="auto"
           fullscreen
-          tip="Creating instance..."
+          tip="Creating Instance..."
         />
       )}
       <Layout style={{ minHeight: "100vh" }}>
@@ -180,7 +187,7 @@ const DeployInstance = () => {
                     type="primary"
                     size="large"
                     onClick={handleCreateInstance}
-                    disabled={!selectedPlan || !selectedRegion}
+                    disabled={isSubmitDisabled}
                     loading={isPending}
                   >
                     {step === 0 ? "Next Step" : "Create Instance"}

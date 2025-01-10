@@ -31,8 +31,11 @@ import DeployInstance from "./dashboard/DeployInstance";
 import LoggedOut from "./providers/LoggedOut";
 import ProtectedLayout from "./providers/ProtectedLayout";
 import InstanceDetails from "./dashboard/InstanceDetails";
-import Tags from "./components/Tags";
-import SnapShots from "./components/Snapshot";
+import NotFound from "./components/NotFound";
+import FirewallDetails from "./dashboard/FirewallDetails";
+import AddSHH from "./dashboard/ShhDetails/AddSHH";
+import SSHKeyTable from "./dashboard/ShhDetails";
+import UpdateSHH from "./dashboard/ShhDetails/UpadateSHH";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -77,6 +80,7 @@ export default function App() {
           <Route path="/storage" element={<Storage />} />
           <Route path="/snapshot" element={<Snapshot />} />
           <Route path="/firewall" element={<Firewall />} />
+          <Route path="/firewall/:firewallId" element={<FirewallDetails />} />
           <Route path="/images" element={<Images />} />
           <Route path="/monitoring" element={<Monitoring />} />
           <Route path="/payment" element={<Payment />} />
@@ -88,9 +92,12 @@ export default function App() {
           <Route path="/authentication" element={<Authentication />} />
           <Route path="/deploy" element={<DeployInstance />} />
           <Route path="/billing-info" element={<BillingInfo />} />
-          <Route path="/tags" element={<Tags />} />
-          <Route path="/snapshot-component" element={<SnapShots />} />
+          <Route path="/addSHH" element={<AddSHH />} />
+          <Route path="/updateSHH/:id" element={<UpdateSHH />} />
+          <Route path="/shhDetails" element={<SSHKeyTable />} />
         </Route>
+
+        <Route path="/*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

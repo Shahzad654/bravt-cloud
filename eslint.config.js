@@ -34,6 +34,15 @@ export default [
         "warn",
         { allowConstantExport: true },
       ],
+      "no-unused-vars": [
+        "error",
+        {
+          vars: "all",
+          args: "after-used",
+          argsIgnorePattern: "^_", // Ignore unused variables starting with "_"
+          ignoreRestSiblings: true,
+        },
+      ],
     },
   },
 ];
