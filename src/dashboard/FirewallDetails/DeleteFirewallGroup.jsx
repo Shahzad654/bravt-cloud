@@ -23,16 +23,16 @@ const DeleteFirewallGroup = () => {
         onClick={() => {
           modal.error({
             title: "Are you absolutely sure?",
-            content: `Firewall group "${data.description}"  will be deleted permanently. This action can't be undone!`,
+            content: `Firewall group "${data.firewallGroup.description}"  will be deleted permanently. This action can't be undone!`,
             okText: "Delete",
             okCancel: true,
             okButtonProps: { color: "danger" },
             onOk: async () => {
               const { error } = await deleteFirewallGroup(firewallId);
               if (error) {
-                message.error(error.message || "Failed to update firewall");
+                message.error(error.message || "Failed to delete firewall");
               } else {
-                message.success("Firewall Deleted!");
+                message.success("Firewall deleted!");
                 navigate("/firewall");
               }
             },

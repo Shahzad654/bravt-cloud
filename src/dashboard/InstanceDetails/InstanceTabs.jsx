@@ -1,6 +1,7 @@
 import { Tabs } from "antd";
 import InstanceOverview from "./InstanceOverview";
 import InstanceSettings from "./InstanceSettings";
+import CreateInstanceSnapShot from "./CreateInstanceSnapShot";
 
 const InstanceTabs = () => {
   return (
@@ -20,6 +21,7 @@ const InstanceTabs = () => {
         {
           key: "3",
           label: "Snapshots",
+          children: <CreateInstanceSnapShot />,
         },
       ]}
     />

@@ -1,27 +1,21 @@
 import { useEffect, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Table } from "antd";
 
-import { fetchPlans } from "../../redux/apis/plansSlice";
 import { formatPrice } from "../../utils/helpers";
+import { useGetPlansQuery } from "../../redux/apis/apiSlice";
 
 const PlansSelect = ({ value, onValueChange, region }) => {
-  const dispatch = useDispatch();
-  const { plans, status } = useSelector((state) => state.plans);
-
-  useEffect(() => {
-    dispatch(fetchPlans(region));
-  }, [dispatch, region]);
+  const { data, isLoading } = useGetPlansQuery(region);
 
   const plan = useMemo(() => {
-    return plans.find((p) => p.id === value);
-  }, [plans, value]);
+    return data?.find((p) => p.id === value);
+  }, [data, value]);
 
   useEffect(() => {
-    if (plans.length && !plan) {
-      onValueChange(plans[0].id);
+    if (data?.length && !plan) {
+      onValueChange(data[0]?.id);
     }
-  }, [plans, plan, onValueChange]);
+  }, [data, plan, onValueChange]);
 
   const columns = [
     {
@@ -82,11 +76,11 @@ const PlansSelect = ({ value, onValueChange, region }) => {
   ];
 
   const plansWithKey = useMemo(() => {
-    return plans?.map((item, index) => ({
+    return data?.map((item, index) => ({
       key: index,
       ...item,
     }));
-  }, [plans]);
+  }, [data]);
 
   return (
     <>
@@ -94,14 +88,14 @@ const PlansSelect = ({ value, onValueChange, region }) => {
       <Table
         columns={columns}
         dataSource={plansWithKey}
-        loading={status === "loading"}
+        loading={isLoading}
         pagination={false}
         rowClassName="cursor-pointer"
         rowSelection={{
           type: "radio",
           onSelect: (row) => onValueChange(row.id),
           selectedRowKeys: plan
-            ? [plans.findIndex((row) => row.id === plan.id)]
+            ? [data.findIndex((row) => row.id === plan.id)]
             : [],
         }}
         onRow={(record) => ({

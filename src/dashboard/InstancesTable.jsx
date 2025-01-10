@@ -43,8 +43,9 @@ const InstancesTable = () => {
 
   const { data: instances, isLoading } = useGetAllInstancesQuery(undefined, {
     pollingInterval,
-    selectFromResult: ({ data, ...rest }) => ({
+    selectFromResult: ({ data, isLoading, ...rest }) => ({
       data: data ?? previousDataRef.current,
+      isLoading: previousDataRef.current ? false : isLoading,
       ...rest,
     }),
   });
@@ -158,7 +159,7 @@ function useInstancesTableColumns() {
           </div>
         </div>
       ),
-      sorter: (a, b) => a.label.localCompare(b.label),
+      sorter: (a, b) => a.label.localeCompare(b.label),
     },
     {
       title: "OS",
@@ -194,7 +195,7 @@ function useInstancesTableColumns() {
           region.toUpperCase()
         );
       },
-      sorter: (a, b) => a.region.localCompare(b.region),
+      sorter: (a, b) => a.region.localeCompare(b.region),
     },
     {
       title: "Status",

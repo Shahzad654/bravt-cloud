@@ -45,14 +45,14 @@ const FirewallRulesTable = ({ ipType }) => {
     {
       title: "Actions",
       key: "actions",
-      render: (record) => (
+      render: (_, record) => (
         <button
           aria-label="Delete firewall"
           className="text-zinc-500 hover:text-red-600 transition-colors"
           onClick={() => {
             modal.error({
               title: "Are you absolutely sure?",
-              content: `Firewall group "${data.description}"  will be deleted permanently. This action can't be undone!`,
+              content: `Firewall rule will be deleted permanently. This action can't be undone!`,
               okText: "Delete",
               okCancel: true,
               okButtonProps: { color: "danger" },
@@ -64,16 +64,16 @@ const FirewallRulesTable = ({ ipType }) => {
 
                 if (error) {
                   message.error(
-                    error.message || "Failed to update firewall rule"
+                    error.message || "Failed to delete firewall rule"
                   );
                 } else {
-                  message.success("Firewall rule Deleted!");
+                  message.success("Firewall rule deleted!");
                 }
               },
             });
           }}
         >
-          <TbTrash size={22} />
+          <TbTrash size={18} />
         </button>
       ),
     },

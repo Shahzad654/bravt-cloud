@@ -11,6 +11,9 @@ export default defineConfig(({ mode }) => {
       "process.env.REACT_APP_PAYPAL_PUBLIC_KEY": JSON.stringify(
         env.REACT_APP_PAYPAL_PUBLIC_KEY
       ),
+      "process.env.REACT_APP_SNAPSHOT_COST": JSON.stringify(
+        env.REACT_APP_SNAPSHOT_COST
+      ),
     },
     plugins: [react()],
   };

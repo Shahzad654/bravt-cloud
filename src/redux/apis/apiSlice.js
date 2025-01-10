@@ -1,6 +1,5 @@
 import { API_URL } from "../../utils/constants";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { customSort } from "../../utils/helpers";
 
 const apiSlice = createApi({
   reducerPath: "api",
@@ -25,7 +24,17 @@ const apiSlice = createApi({
 
     getImages: builder.query({
       query: () => "vultr/getOS",
-      transformResponse: (res) => customSort(res.data),
+      transformResponse: (res) => res.data,
+    }),
+
+    getRegions: builder.query({
+      query: () => "vultr/getRegions",
+      transformResponse: (res) => res.data,
+    }),
+
+    getPlans: builder.query({
+      query: (region) => `vultr/getPlanId?region=${region}`,
+      transformResponse: (res) => res.data,
     }),
 
     getFirewallGroups: builder.query({
@@ -39,12 +48,24 @@ const apiSlice = createApi({
       providesTags: (_, __, id) => [{ type: "FirewallRules", id }],
     }),
 
+    getSnapshots: builder.query({
+      query: () => "vultr/snapshots/list",
+      transformResponse: (res) => res.data,
+      providesTags: () => [{ type: "Snapshots" }],
+    }),
+
+    getSSHKeys: builder.query({
+      query: () => "vultr/ssh/list",
+      transformResponse: (res) => res.data,
+    }),
+
     updateInstance: builder.mutation({
       query: ({ id, ...body }) => ({
         url: `vultr/update/${id}`,
         method: "PATCH",
         body,
       }),
+      invalidatesTags: () => [{ type: "AllInstances" }],
       onQueryStarted: async ({ id }, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
@@ -243,6 +264,23 @@ const apiSlice = createApi({
       }),
       invalidatesTags: (_, __, { id }) => [{ type: "FirewallRules", id }],
     }),
+
+    createSnapshot: builder.mutation({
+      query: (body) => ({
+        url: `vultr/snapshots/create`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: () => [{ type: "Snapshots" }],
+    }),
+
+    deleteSnapshot: builder.mutation({
+      query: (id) => ({
+        url: `vultr/snapshots/delete/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: () => [{ type: "Snapshots" }],
+    }),
   }),
 });
 
@@ -251,8 +289,12 @@ export const {
   useGetInstanceByIdQuery,
   useGetInstanceAvailableUpgradesQuery,
   useGetImagesQuery,
+  useGetRegionsQuery,
+  useGetPlansQuery,
   useGetFirewallGroupsQuery,
   useGetFirewallRulesQuery,
+  useGetSnapshotsQuery,
+  useGetSSHKeysQuery,
   useUpdateInstanceMutation,
   useCreateFirewallGroupMutation,
   useUpdateFirewallGroupMutation,
@@ -263,6 +305,8 @@ export const {
   useRebootInstanceMutation,
   useReinstallInstanceMutation,
   useDeleteInstanceMutation,
+  useCreateSnapshotMutation,
+  useDeleteSnapshotMutation,
 } = apiSlice;
 
 export default apiSlice;
