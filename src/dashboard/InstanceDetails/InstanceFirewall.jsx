@@ -28,7 +28,7 @@ const InstanceFirewall = () => {
   const onFinish = async ({ firewall_group_id }) => {
     const { error } = await updateInstance({
       id: instanceId,
-      firewall_group_id: firewall_group_id || null,
+      firewall_group_id: firewall_group_id,
     });
     if (error) {
       message.error(error.message || "Failed to update firewall!");
@@ -66,7 +66,7 @@ const InstanceFirewall = () => {
             placeholder="Select firewall group"
             optionFilterProp="label"
             allowClear
-            onClear={() => form.setFieldValue({ firewall_group_id: null })}
+            onClear={() => form.setFieldValue("firewall_group_id", null)}
             labelRender={(val) =>
               status === "pending" ? "Loading..." : val.label
             }

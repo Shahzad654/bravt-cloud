@@ -6,7 +6,8 @@ const apiSlice = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: API_URL, credentials: "include" }),
   endpoints: (builder) => ({
     getAllInstances: builder.query({
-      query: () => "/vultr/getAllInstance",
+      query: (firewallGroupID) =>
+        `vultr/getAllInstance${firewallGroupID ? `?firewallGroupID=${firewallGroupID}` : ""}`,
       transformResponse: (res) => res.data,
       providesTags: () => [{ type: "AllInstances" }],
     }),
