@@ -83,8 +83,8 @@ const RestoreSnapshot = () => {
       ),
     },
     {
-      title: "Restore",
-      key: "restore",
+      title: "Actions",
+      key: "actions",
       render: (_, record) => {
         const isPending = record.status === "pending";
 

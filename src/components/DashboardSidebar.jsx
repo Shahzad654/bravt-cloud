@@ -48,6 +48,7 @@ const menuItems = [
       // { label: "Block Storage", path: "/storage" },
       { label: "Snapshot", path: "/snapshot" },
       { label: "Firewall", path: "/firewall" },
+      { label: "ISO", path: "/iso" },
       // { label: "Images", path: "/images" },
       // { label: "Monitoring", path: "/monitoring" },
     ],

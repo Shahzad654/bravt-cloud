@@ -31,7 +31,7 @@ const DeployInstance = () => {
   const [hostname, setHostname] = useState("");
   const [sshKeys, setSSHKeys] = useState([]);
   const [firewallGroup, setFirewallGroup] = useState("");
-  const [selectedISO, setSelectedISO] = useState("");
+  const [selectedISO, setSelectedISO] = useState(null);
 
   const [createInstance, { isLoading }] = useCreateInstanceMutation();
 
@@ -49,6 +49,7 @@ const DeployInstance = () => {
       os_id: selectedImage,
       sshkey_id: sshKeys,
       firewall_group_id: firewallGroup,
+      iso_id: selectedISO,
     });
 
     if (error) {

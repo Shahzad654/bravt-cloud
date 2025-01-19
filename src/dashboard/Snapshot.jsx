@@ -73,7 +73,7 @@ const Snapshot = () => {
     },
     {
       title: "Charges",
-      key: "charges",
+      key: "creditsConsumed",
       render: () => `${process.env.REACT_APP_SNAPSHOT_COST}/GB`,
     },
     {
@@ -208,6 +208,7 @@ const DelButton = styled.button`
   background: transparent;
   border: 0;
   outline: none;
+  padding: 0 20px;
 
   &:hover {
     color: red;

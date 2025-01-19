@@ -6,6 +6,7 @@ import authApi from "./apis/auth";
 import instancesApi from "./apis/instances";
 import sshApi from "./apis/ssh";
 import snapshotsApi from "./apis/snapshots";
+import isoApi from "./apis/iso";
 
 const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ const store = configureStore({
     [sshApi.reducerPath]: sshApi.reducer,
     [snapshotsApi.reducerPath]: snapshotsApi.reducer,
     [firewallsApi.reducerPath]: firewallsApi.reducer,
+    [isoApi.reducerPath]: isoApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware().concat(
@@ -23,7 +25,8 @@ const store = configureStore({
       instancesApi.middleware,
       sshApi.middleware,
       snapshotsApi.middleware,
-      firewallsApi.middleware
+      firewallsApi.middleware,
+      isoApi.middleware
     );
   },
 });

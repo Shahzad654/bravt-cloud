@@ -38,6 +38,7 @@ import UpdateSHH from "./dashboard/ShhDetails/UpadateSHH";
 import OAuthCallback from "./pages/OAuthCallback";
 import VerifyCode from "./pages/VerifyCode";
 import SetupPassword from "./pages/SetupPassword";
+import ISO from "./dashboard/ISO";
 
 export default function App() {
   return (
@@ -81,6 +82,7 @@ export default function App() {
           <Route path="/ssh-keys" element={<SSHKeyTable />} />
           <Route path="/ssh-keys/add" element={<AddSHH />} />
           <Route path="/ssh-keys/:id" element={<UpdateSHH />} />
+          <Route path="/iso" element={<ISO />} />
         </Route>
 
         <Route path="/*" element={<NotFound />} />

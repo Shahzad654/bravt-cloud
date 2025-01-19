@@ -1,6 +1,7 @@
 import { RiCoreosFill } from "react-icons/ri";
+import { TbDisc } from "react-icons/tb";
 import { SiOpenbsd } from "react-icons/si";
-import { FaWindows, FaUbuntu, FaFreebsd, FaLinux } from "react-icons/fa";
+import { FaWindows, FaUbuntu, FaFreebsd } from "react-icons/fa";
 import {
   SiCentos,
   SiDebian,
@@ -122,7 +123,7 @@ export const getIcon = (val) => {
     };
   }
 
-  return { Icon: FaLinux, color: "#0000000" };
+  return { Icon: TbDisc, color: "gray" };
 };
 
 export function getOSName(os) {

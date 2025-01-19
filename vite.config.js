@@ -14,6 +14,7 @@ export default defineConfig(({ mode }) => {
       "process.env.REACT_APP_SNAPSHOT_COST": JSON.stringify(
         env.REACT_APP_SNAPSHOT_COST
       ),
+      "process.env.REACT_APP_API_URL": JSON.stringify(env.REACT_APP_API_URL),
     },
     plugins: [react()],
   };

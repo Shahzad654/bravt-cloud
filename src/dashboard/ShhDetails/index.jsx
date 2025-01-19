@@ -1,4 +1,4 @@
-import { Table, Space, message, App } from "antd";
+import { Table, Space, message, App, Button } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import DashHeader from "../../components/DashHeader";
@@ -88,11 +88,8 @@ const SSHKeyTable = () => {
           }}
         >
           <h4>SSH Keys</h4>
-          <Link
-            to="/ssh-keys/add"
-            style={{ textDecoration: "none", fontSize: "15px", color: "blue" }}
-          >
-            + Add SSH Key
+          <Link to="/ssh-keys/add">
+            <Button type="primary">+ Add SSH Key</Button>
           </Link>
         </div>
 
@@ -101,7 +98,7 @@ const SSHKeyTable = () => {
           dataSource={sshKeys}
           loading={isLoading}
           pagination={{ pageSize: 5 }}
-          style={{ width: "100%" }}
+          style={{ width: "100%", marginTop: "25px" }}
           rowKey="id" // Use unique key (e.g., id)
         />
       </div>
