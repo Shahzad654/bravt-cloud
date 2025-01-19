@@ -45,6 +45,18 @@ const authApi = createApi({
         method: "POST",
         body,
       }),
+      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+        try {
+          const { data } = await queryFulfilled;
+          localStorage.setItem("access_token", data.token);
+          dispatch(
+            authApi.util.updateQueryData("getSession", undefined, (draft) => {
+              Object.assign(draft, data.user);
+            })
+          );
+          // eslint-disable-next-line no-empty
+        } catch {}
+      },
     }),
 
     setupPassword: builder.mutation({
