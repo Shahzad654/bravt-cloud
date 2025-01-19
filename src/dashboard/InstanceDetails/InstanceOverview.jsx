@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useGetInstanceByIdQuery } from "../../redux/apis/apiSlice";
+import { useGetInstanceByIdQuery } from "../../redux/apis/instances";
 import { REGIONS } from "../../data/regions";
 import ReactCountryFlag from "react-country-flag";
 import useCopyToClipboard from "../../hooks/useCopyToClipboard";
@@ -16,16 +16,16 @@ const InstanceOverview = () => {
   const region = REGIONS[data.region];
 
   return (
-    <div className="bg-white w-full mt-4">
-      <div className="grid grid-cols-3 divide-x divide-zinc-300 w-full gap-8">
+    <div className="w-full mt-4 bg-white">
+      <div className="grid w-full grid-cols-3 gap-8 divide-x divide-zinc-300">
         <div className="space-y-3 font-medium">
           <table className="w-full">
             <tbody>
               <tr>
-                <td className="py-2 text-zinc-500 text-sm w-2/3">Location:</td>
+                <td className="w-2/3 py-2 text-sm text-zinc-500">Location:</td>
                 <td className="py-2">
                   {region ? (
-                    <div className="flex items-center gap-2 w-1/3">
+                    <div className="flex items-center w-1/3 gap-2">
                       <ReactCountryFlag
                         svg
                         style={{ width: "25px", height: "25px" }}
@@ -39,7 +39,7 @@ const InstanceOverview = () => {
                 </td>
               </tr>
               <tr>
-                <td className="py-2 text-zinc-500 text-sm w-2/3">
+                <td className="w-2/3 py-2 text-sm text-zinc-500">
                   IP Address:
                 </td>
                 <td className="py-2">
@@ -59,13 +59,13 @@ const InstanceOverview = () => {
                 </td>
               </tr>
               <tr>
-                <td className="py-2 text-zinc-500 text-sm w-2/3">Username:</td>
+                <td className="w-2/3 py-2 text-sm text-zinc-500">Username:</td>
                 <td className="py-2">
                   <div className="text-sm">{data.user_scheme}</div>
                 </td>
               </tr>
               <tr>
-                <td className="py-2 text-zinc-500 text-sm w-2/3">Hostname:</td>
+                <td className="w-2/3 py-2 text-sm text-zinc-500">Hostname:</td>
                 <td className="py-2">
                   <div className="text-sm">{data.hostname}</div>
                 </td>
@@ -78,7 +78,7 @@ const InstanceOverview = () => {
           <table className="w-full">
             <tbody>
               <tr>
-                <td className="py-2 text-zinc-500 text-sm w-2/3">vCPU/s:</td>
+                <td className="w-2/3 py-2 text-sm text-zinc-500">vCPU/s:</td>
                 <td className="py-2">
                   <div className="text-sm">
                     {data.vcpu_count} vCPU{data.vcpu_count > 1 ? "s" : ""}
@@ -86,19 +86,19 @@ const InstanceOverview = () => {
                 </td>
               </tr>
               <tr>
-                <td className="py-2 text-zinc-500 text-sm w-2/3">RAM:</td>
+                <td className="w-2/3 py-2 text-sm text-zinc-500">RAM:</td>
                 <td className="py-2">
                   <div className="text-sm">{data.ram.toFixed(2)} MB</div>
                 </td>
               </tr>
               <tr>
-                <td className="py-2 text-zinc-500 text-sm w-2/3">Storage:</td>
+                <td className="w-2/3 py-2 text-sm text-zinc-500">Storage:</td>
                 <td className="py-2">
                   <div className="text-sm">{data.disk.toFixed(2)} GB SSD</div>
                 </td>
               </tr>
               <tr>
-                <td className="py-2 text-zinc-500 text-sm w-2/3">Bandwidth:</td>
+                <td className="w-2/3 py-2 text-sm text-zinc-500">Bandwidth:</td>
                 <td className="py-2">
                   <div className="text-sm">{data.allowed_bandwidth} GB</div>
                 </td>
@@ -111,13 +111,13 @@ const InstanceOverview = () => {
           <table className="w-full">
             <tbody>
               <tr>
-                <td className="py-2 text-zinc-500 text-sm w-2/3">Label:</td>
+                <td className="w-2/3 py-2 text-sm text-zinc-500">Label:</td>
                 <td className="py-2">
                   <UpdateLabel />
                 </td>
               </tr>
               <tr>
-                <td className="py-2 text-zinc-500 text-sm w-2/3">OS:</td>
+                <td className="w-2/3 py-2 text-sm text-zinc-500">OS:</td>
                 <td className="py-2">
                   <div className="text-sm">{data.os}</div>
                 </td>
@@ -127,7 +127,7 @@ const InstanceOverview = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 mt-6 gap-3">
+      <div className="grid grid-cols-3 gap-3 mt-6">
         <BandwidthUsage />
         <CreditsUsage />
       </div>

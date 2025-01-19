@@ -1,11 +1,12 @@
 import { useParams } from "react-router-dom";
+import { Button, Form, message, Select } from "antd";
+import { useMemo } from "react";
+import { formatPrice } from "../../utils/helpers";
 import {
   useGetInstanceByIdQuery,
   useGetInstanceAvailableUpgradesQuery,
   useUpdateInstanceMutation,
-} from "../../redux/apis/apiSlice";
-import { Button, Form, message, Select } from "antd";
-import { useMemo } from "react";
+} from "../../redux/apis/instances";
 
 const ChangePlan = () => {
   const { instanceId } = useParams();
@@ -17,18 +18,17 @@ const ChangePlan = () => {
     useGetInstanceAvailableUpgradesQuery(instanceId);
 
   const options = useMemo(() => {
-    return (
-      upgrades?.plans.map((plan) => ({
-        value: plan,
-        label: plan,
-      })) || []
-    );
+    return upgrades?.plans.map((plan) => ({
+      value: plan.plan,
+      label: plan.plan,
+      cost: formatPrice(plan.hourlyCost),
+    }));
   }, [upgrades?.plans]);
 
   const onFinish = async ({ plan }) => {
     const { error } = await updateInstance({ id: instanceId, plan });
     if (error) {
-      message.error(error.message || "Failed to update plan!");
+      message.error(error.data.message || "Failed to update plan!");
     } else {
       message.success("Plan updated successfully!");
     }
@@ -61,16 +61,30 @@ const ChangePlan = () => {
             disabled={isLoading || status === "pending"}
             loading={status === "pending"}
             rootClassName="[&_span]:text-sm"
-            options={options}
             placeholder="Select a plan"
-            optionFilterProp="label"
+            options={options}
+            optionRender={(opt) => {
+              return (
+                <div
+                  key={opt.value}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <span>{opt.value}</span>
+                  <span>{opt.data.cost}/hr</span>
+                </div>
+              );
+            }}
           />
         </Form.Item>
 
         <Form.Item>
           <Button
             htmlType="submit"
-            className="btn h-9 flex items-center justify-center gap-2 w-full"
+            className="flex items-center justify-center w-full gap-2 btn h-9"
             loading={isLoading}
           >
             Save

@@ -1,109 +1,42 @@
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  sendVerificationCode,
-  verifyAndSignup,
-  setEmailAndPassword,
-} from "../redux/apis/authSlice";
+import { useState } from "react";
 import styled from "styled-components";
 import LoginImg from "../assets/images/signup.jpg";
-import Logo from "../assets/images/nav.webp";
 import { Link, useNavigate } from "react-router-dom";
-import { Snackbar } from "@mui/material";
-import MuiAlert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
-import { setUser } from "../redux/apis/userSlice";
+import Logo from "../components/Logo";
+import { useSendVerificationMutation } from "../redux/apis/auth";
+import { message } from "antd";
 
 export default function Signup() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { error, verificationSent } = useSelector((state) => state.auth);
   const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("error");
-  const [isCodeSending, setIsCodeSending] = useState(false);
-  const [isSigningUp, setIsSigningUp] = useState(false);
 
-  useEffect(() => {
-    if (error) {
-      setSnackbarMessage(error);
-      setSnackbarSeverity("error");
-      setOpenSnackbar(true);
-    }
-  }, [error]);
+  const [sendVerification, { isLoading }] = useSendVerificationMutation();
 
-  useEffect(() => {
-    if (verificationSent) {
-      setSnackbarMessage("Verification code sent successfully!");
-      setSnackbarSeverity("success");
-      setOpenSnackbar(true);
-    }
-  }, [verificationSent]);
+  const handleSendCode = async (e) => {
+    e.preventDefault();
 
-  const handleSendCode = async () => {
     if (!email) {
-      setSnackbarMessage("Please enter a valid email.");
-      setSnackbarSeverity("error");
-      setOpenSnackbar(true);
+      message.error("Please enter a valid email.");
       return;
     }
 
-    setIsCodeSending(true);
-    try {
-      await dispatch(sendVerificationCode(email)).unwrap();
-    } catch {
-      // Error handling is done through the useEffect
-    } finally {
-      setIsCodeSending(false);
+    const { error } = await sendVerification({ email });
+    if (error) {
+      message.error(error.data.message);
+      return;
     }
+
+    navigate(`/verify-code?email=${email}`);
   };
 
-  const handleSignup = async () => {
-    if (!email || !code || !password || !passwordConfirm) {
-      setSnackbarMessage("Please fill in all fields.");
-      setSnackbarSeverity("error");
-      setOpenSnackbar(true);
-      return;
-    }
-
-    if (passwordConfirm !== password) {
-      setSnackbarMessage("Passwords don't match.");
-      setSnackbarSeverity("error");
-      setOpenSnackbar(true);
-      return;
-    }
-
-    setIsSigningUp(true);
-    try {
-      dispatch(setEmailAndPassword({ email, password }));
-      const response = await dispatch(
-        verifyAndSignup({ email, code, password })
-      ).unwrap();
-
-      navigate("/billing-info");
-      setSnackbarMessage("Signup Successful!");
-      setSnackbarSeverity("success");
-      setOpenSnackbar(true);
-      dispatch(setUser(response.user));
-    } catch {
-      // Error handling is done through the useEffect
-    } finally {
-      setIsSigningUp(false);
-    }
-  };
-
-  const isFormValid = email && code && password;
   return (
     <Main>
-      <img src={Logo} alt="" />
+      <Logo size={250} style={{ marginTop: "24px" }} />
       <StyledSignUp>
         <div className="form-container">
           <h3>Sign Up with Email</h3>
-          <div className="form-detail">
+          <form className="form-detail" onSubmit={handleSendCode}>
             <label htmlFor="email">Email</label>
             <input
               type="email"
@@ -113,101 +46,35 @@ export default function Signup() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <br />
-
-            <label htmlFor="code">Email verification code</label>
-            <input
-              type="text"
-              id="code"
-              required
-              placeholder="Enter your verification code"
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-            />
-            <button
-              onClick={handleSendCode}
-              disabled={isCodeSending || !email}
-              className="btn"
-              style={{
-                marginTop: "5%",
-                minWidth: "2px",
-                paddingTop: "3px",
-                paddingBottom: "3px",
-              }}
-            >
-              {isCodeSending ? (
-                <CircularProgress size={24} sx={{ color: "white" }} />
-              ) : (
-                "Send Code"
-              )}
-            </button>
-
-            <br />
-
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              required
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <br />
-
-            <label htmlFor="confirmPassword">Confirm Password</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              required
-              placeholder="Confirm your password"
-              value={passwordConfirm}
-              onChange={(e) => setPasswordConfirm(e.target.value)}
-            />
 
             <button
               className="btn"
-              onClick={handleSignup}
-              disabled={!isFormValid || isSigningUp}
-              style={{ marginTop: "20px" }}
+              type="submit"
+              disabled={isLoading || !email}
+              style={{ marginTop: "20px", height: "36px" }}
             >
-              {isSigningUp ? (
-                <CircularProgress size={24} sx={{ color: "white" }} />
+              {isLoading ? (
+                <CircularProgress size={18} style={{ color: "inherit" }} />
               ) : (
-                "Signup"
+                "Continue"
               )}
             </button>
 
             <br />
             <p>
               I have an account{" "}
-              <Link to="/">
+              <Link to="/login">
                 <span>Sign In</span>
               </Link>
             </p>
             <br />
-          </div>
+          </form>
         </div>
 
         <div className="image-container">
           <img src={LoginImg} alt="" />
         </div>
       </StyledSignUp>
-
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={3000}
-        onClose={() => setOpenSnackbar(false)}
-      >
-        <MuiAlert
-          elevation={6}
-          variant="filled"
-          onClose={() => setOpenSnackbar(false)}
-          severity={snackbarSeverity}
-        >
-          {snackbarMessage}
-        </MuiAlert>
-      </Snackbar>
     </Main>
   );
 }

@@ -1,14 +1,10 @@
 import styled from "styled-components";
-import { Breadcrumb, Layout, Spin, Tag } from "antd";
+import { Breadcrumb, Layout, Tag } from "antd";
 import { Table } from "antd";
-import { useSelector } from "react-redux";
-import { useEffect } from "react";
-import { getTransactions } from "../redux/apis/transactionsSlice";
-import { useDispatch } from "react-redux";
-import { format } from "date-fns";
-import { formatPrice, toSentenceCase } from "../utils/helpers";
+import { formatDate, formatPrice, toSentenceCase } from "../utils/helpers";
 import { BsCreditCard2FrontFill } from "react-icons/bs";
 import { FaPaypal } from "react-icons/fa";
+import { useListTransactionsQuery } from "../redux/apis/transactions";
 
 const { Content } = Layout;
 
@@ -25,73 +21,55 @@ const columns = [
   {
     title: "Status",
     dataIndex: "status",
-    render: (status) => (
-      <Tag
-        color={
-          status === "processing" || status === "pending"
-            ? "processing"
-            : status === "succeeded" || status === "COMPLETED"
-              ? "success"
-              : "error"
-        }
-      >
-        {toSentenceCase(status.toLowerCase())}
-      </Tag>
-    ),
+    render: (value) => {
+      const status = value.toLowerCase();
+      return (
+        <Tag
+          color={
+            status === "processing" || status === "pending"
+              ? "processing"
+              : status === "success" ||
+                  status === "succeeded" ||
+                  status === "completed"
+                ? "success"
+                : "error"
+          }
+        >
+          {toSentenceCase(status)}
+        </Tag>
+      );
+    },
   },
   {
     title: "Method",
-    dataIndex: "paymentMethod",
+    dataIndex: "method",
     render: (method) => (
       <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-        {method === "Card" ? (
+        {method === "CREDIT_CARD" ? (
           <BsCreditCard2FrontFill size={18} style={{ color: "#003366" }} />
         ) : (
           <FaPaypal size={18} style={{ color: "var(--primary-color)" }} />
         )}
-        {method}
+        {toSentenceCase(method.toLowerCase())}
       </div>
     ),
     filters: [
-      { text: "Card", value: "Card" },
-      { text: "PayPal", value: "PayPal" },
+      { text: "Card", value: "CREDIT_CARD" },
+      { text: "PayPal", value: "PAYPAL" },
     ],
-    onFilter: (value, record) => record.paymentMethod.indexOf(value) === 0,
+    onFilter: (value, record) => record.method.indexOf(value) === 0,
   },
   {
     title: "Time",
     dataIndex: "createdAt",
-    render: (value) => (
-      <span style={{ fontSize: "14px" }}>{format(value, "PPP")}</span>
-    ),
+    render: formatDate,
     showSorterTooltip: { target: "full-header" },
     sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
   },
 ];
 
 const BalanceRecord = () => {
-  const dispatch = useDispatch();
-  const { status, transactions } = useSelector((state) => state.transactions);
-
-  useEffect(() => {
-    dispatch(getTransactions());
-  }, [dispatch]);
-
-  if (status === "loading") {
-    return (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "509px",
-          padding: "180px 16px",
-        }}
-      >
-        <Spin size="small" />
-      </div>
-    );
-  }
+  const { isLoading, data } = useListTransactionsQuery();
 
   return (
     <LayoutWrapper>
@@ -108,16 +86,15 @@ const BalanceRecord = () => {
 
           <div
             style={{
-              //   padding: 24,
               minHeight: 360,
-              // background: "#f0f2f5",
               background: "white",
               borderRadius: "8px",
             }}
           >
             <StyledTable
               columns={columns}
-              dataSource={transactions}
+              dataSource={data}
+              loading={isLoading}
               showSorterTooltip={{
                 target: "sorter-icon",
               }}

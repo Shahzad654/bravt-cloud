@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   useDeleteFirewallGroupMutation,
   useGetFirewallRulesQuery,
-} from "../../redux/apis/apiSlice";
+} from "../../redux/apis/firewalls";
 import { App, message, Tooltip } from "antd";
 import { TbTrash } from "react-icons/tb";
 
@@ -19,7 +19,7 @@ const DeleteFirewallGroup = () => {
     <Tooltip title="Delete firewall">
       <button
         aria-label="Delete firewall"
-        className="text-zinc-500 hover:text-red-600 transition-colors"
+        className="transition-colors text-zinc-500 hover:text-red-600"
         onClick={() => {
           modal.error({
             title: "Are you absolutely sure?",
@@ -30,7 +30,9 @@ const DeleteFirewallGroup = () => {
             onOk: async () => {
               const { error } = await deleteFirewallGroup(firewallId);
               if (error) {
-                message.error(error.message || "Failed to delete firewall");
+                message.error(
+                  error.data.message || "Failed to delete firewall"
+                );
               } else {
                 message.success("Firewall deleted!");
                 navigate("/firewall");

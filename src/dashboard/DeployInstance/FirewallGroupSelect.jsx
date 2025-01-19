@@ -1,5 +1,5 @@
 import { Select } from "antd";
-import { useGetFirewallGroupsQuery } from "../../redux/apis/apiSlice";
+import { useGetFirewallGroupsQuery } from "../../redux/apis/firewalls";
 import { useMemo } from "react";
 
 const FirewallGroupSelect = ({ firewallGroup, setFirewallGroup }) => {

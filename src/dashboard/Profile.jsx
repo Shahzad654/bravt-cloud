@@ -1,33 +1,17 @@
-import { useState, useEffect, useTransition } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Breadcrumb, Layout, message } from "antd";
 
 import DashHeader from "../components/DashHeader";
-import { Button, Form, Input, InputNumber, Select } from "antd";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { setUser } from "../redux/apis/userSlice";
-import { updateProfileInfo } from "../redux/apis/updateProfileSlice";
+import { Form, Input, InputNumber, Select } from "antd";
+import {
+  useGetSessionQuery,
+  useUpdateProfileMutation,
+} from "../redux/apis/auth";
+import { CircularProgress } from "@mui/material";
+import PhoneInput from "antd-phone-input";
 
 const { Content } = Layout;
-const { Option } = Select;
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  // border: '2px solid #000',
-  borderRadius: 4,
-  boxShadow: 24,
-  p: 4,
-};
 
 const formItemLayout = {
   labelCol: {
@@ -41,285 +25,236 @@ const formItemLayout = {
 };
 
 const Profile = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [form] = Form.useForm();
   const [countries, setCountries] = useState([]);
-  const [modalEmail, setModalEmail] = useState("");
-  const [isPending, startTransition] = useTransition();
-  const [open, setOpen] = useState(false);
 
-  const { user } = useSelector((state) => state.user);
-
-  const handleOpen = () => {
-    setModalEmail(user.email);
-    setOpen(true);
-  };
-
-  const handleClose = () => setOpen(false);
+  const { data: user } = useGetSessionQuery();
+  const [updateProfile, { isLoading }] = useUpdateProfileMutation();
 
   useEffect(() => {
     const fetchCountries = async () => {
       try {
         const response = await fetch("https://restcountries.com/v3.1/all");
         const data = await response.json();
-
-        const countryNames = data.map((country) => country.name.common).sort();
+        const countryNames = data.sort((a, b) =>
+          a.name.common.localeCompare(b.name.common)
+        );
         setCountries(countryNames);
-      } catch (error) {
-        console.error("Error fetching countries:", error);
+      } catch {
+        message.error("Failed to load countries. Please refresh the page.");
       }
     };
 
     fetchCountries();
   }, []);
 
-  const handleSubmit = () => {
-    startTransition(async () => {
-      try {
-        // Validate form first
-        await form.validateFields();
+  const handleSubmit = async () => {
+    await form.validateFields();
+    const values = form.getFieldsValue();
+    const phoneNumber = `+${values.phoneNumber.countryCode}${values.phoneNumber.areaCode}${values.phoneNumber.phoneNumber}`;
+    const { error } = await updateProfile({ ...values, phoneNumber });
 
-        const values = form.getFieldsValue();
+    if (error) {
+      message.error(error.data.message);
+      return;
+    }
 
-        // Add email to the form data
-        const formDataWithEmail = {
-          ...values,
-          email: user.email,
-        };
+    message.success("Profile updated");
+  };
 
-        const response = await dispatch(
-          updateProfileInfo(formDataWithEmail)
-        ).unwrap();
-
-        dispatch(setUser(response.data));
-
-        message.success("Profile updated successfully!");
-        // Optional: Redirect to next page after successful submission
-        setTimeout(() => navigate("/instance"), 2000);
-      } catch (error) {
-        message.error(error?.message || "Failed to save billing information");
-      }
-    });
+  const phoneNumberValidator = (_, { valid }) => {
+    if (valid(true)) return Promise.resolve();
+    return Promise.reject("Invalid phone number");
   };
 
   return (
-    <>
-      <Layout style={{ minHeight: "100vh" }}>
-        <Layout style={{ backgroundColor: "white" }}>
-          <DashHeader />
-          <Content style={{ margin: "0 16px" }}>
-            <Breadcrumb
-              style={{
-                margin: "16px 0",
-                fontSize: "var(--m-heading)",
-                color: "black",
-                fontWeight: "500",
-              }}
-            >
-              Profile
-            </Breadcrumb>
-            <div
-              style={{
-                padding: 24,
-                minHeight: 360,
-                background: "white",
-                borderRadius: "8px",
-              }}
-            >
-              <PageContent>
-                <div className="form">
-                  <div className="user_email" style={{ marginLeft: "1rem" }}>
-                    <label htmlFor="email">Email</label>
-                    <input
-                      type="email"
-                      id="email"
-                      readOnly
-                      value={user.email}
-                      // placeholder="Enter your email"
-                      style={{ marginLeft: "2.3rem", color: "gray" }}
-                    />
-                    <button className="small-btn" onClick={handleOpen}>
-                      Change
-                    </button>
-                  </div>
-                  <br />
-
-                  <Form
-                    form={form}
-                    style={{ maxWidth: 600 }}
-                    initialValues={user}
-                    {...formItemLayout}
+    <Layout style={{ minHeight: "100vh" }}>
+      <Layout style={{ backgroundColor: "white" }}>
+        <DashHeader />
+        <Content style={{ margin: "0 16px" }}>
+          <Breadcrumb
+            style={{
+              margin: "16px 0",
+              fontSize: "var(--m-heading)",
+              color: "black",
+              fontWeight: "500",
+            }}
+          >
+            Profile
+          </Breadcrumb>
+          <div
+            style={{
+              padding: 24,
+              minHeight: 360,
+              background: "white",
+              borderRadius: "8px",
+            }}
+          >
+            <PageContent>
+              <div className="form">
+                <Form
+                  form={form}
+                  style={{ maxWidth: 600 }}
+                  initialValues={user}
+                  disabled={isLoading}
+                  {...formItemLayout}
+                >
+                  <Form.Item
+                    label="First Name"
+                    name="firstName"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please enter your first name",
+                      },
+                    ]}
                   >
-                    <Form.Item
-                      label="First Name"
-                      name="firstName"
-                      rules={[{ required: true, message: "Please input!" }]}
-                    >
-                      <Input
-                        disabled={isPending}
-                        style={{ marginLeft: "10px", width: "220px" }}
-                      />
-                    </Form.Item>
+                    <Input
+                      style={{ marginLeft: "10px", width: "220px" }}
+                      placeholder="Enter your first name"
+                    />
+                  </Form.Item>
 
-                    <Form.Item
-                      label="Last Name"
-                      name="lastName"
-                      rules={[{ required: true, message: "Please input!" }]}
-                    >
-                      <Input
-                        disabled={isPending}
-                        style={{ marginLeft: "10px", width: "220px" }}
-                      />
-                    </Form.Item>
+                  <Form.Item
+                    label="Last Name"
+                    name="lastName"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please enter your last name",
+                      },
+                    ]}
+                  >
+                    <Input
+                      style={{ marginLeft: "10px", width: "220px" }}
+                      placeholder="Enter your last name"
+                    />
+                  </Form.Item>
 
-                    <Form.Item
-                      label="Address"
-                      name="address"
-                      rules={[{ required: true, message: "Please input!" }]}
-                    >
-                      <Input
-                        disabled={isPending}
-                        style={{ marginLeft: "10px", width: "220px" }}
-                      />
-                    </Form.Item>
+                  <Form.Item
+                    label="Address"
+                    name="address"
+                    rules={[
+                      { required: true, message: "Please enter your address" },
+                    ]}
+                  >
+                    <Input
+                      style={{ marginLeft: "10px", width: "220px" }}
+                      placeholder="Enter your address"
+                    />
+                  </Form.Item>
 
-                    <Form.Item
-                      label="City"
-                      name="city"
-                      rules={[{ required: true, message: "Please input!" }]}
-                    >
-                      <Input
-                        disabled={isPending}
-                        style={{ marginLeft: "10px", width: "220px" }}
-                      />
-                    </Form.Item>
+                  <Form.Item
+                    label="City"
+                    name="city"
+                    rules={[
+                      { required: true, message: "Please enter your city" },
+                    ]}
+                  >
+                    <Input
+                      style={{ marginLeft: "10px", width: "220px" }}
+                      placeholder="Enter your city"
+                    />
+                  </Form.Item>
 
-                    <Form.Item
-                      label="Country"
-                      name="country"
-                      rules={[{ required: true, message: "Please input!" }]}
-                    >
-                      <Select
-                        disabled={isPending}
-                        style={{ marginLeft: "10px", width: "220px" }}
-                      >
-                        {countries.map((country) => (
-                          <Option key={country} value={country}>
-                            {country}
-                          </Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
+                  <Form.Item
+                    label="Country"
+                    name="country"
+                    rules={[
+                      { required: true, message: "Please select your country" },
+                    ]}
+                  >
+                    <Select
+                      style={{ marginLeft: "10px", width: "220px" }}
+                      placeholder="select your country"
+                      showSearch
+                      options={countries.map((country) => ({
+                        label: country.name?.common,
+                        value: country.name.common,
+                      }))}
+                    />
+                  </Form.Item>
 
-                    <Form.Item
-                      label="Zip Code"
-                      name="zipCode"
-                      rules={[{ required: true, message: "Please input!" }]}
-                    >
-                      <InputNumber
-                        disabled={isPending}
-                        style={{ marginLeft: "10px", width: "220px" }}
-                      />
-                    </Form.Item>
+                  <Form.Item
+                    label="Zip Code"
+                    name="zipCode"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please enter your zip code",
+                      },
+                    ]}
+                  >
+                    <InputNumber
+                      style={{ marginLeft: "10px", width: "220px" }}
+                      placeholder="Enter your zip code"
+                    />
+                  </Form.Item>
 
-                    <Form.Item
-                      label="Company"
-                      name="companyName"
-                      rules={[{ required: true, message: "Please input!" }]}
-                    >
-                      <Input
-                        disabled={isPending}
-                        style={{ marginLeft: "10px", width: "220px" }}
-                      />
-                    </Form.Item>
+                  <Form.Item
+                    label="Company"
+                    name="companyName"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please enter your company name",
+                      },
+                    ]}
+                  >
+                    <Input
+                      style={{ marginLeft: "10px", width: "220px" }}
+                      placeholder="Enter your company name"
+                    />
+                  </Form.Item>
 
-                    <Form.Item
-                      label="Phone"
-                      name="phoneNumber"
-                      rules={[{ required: true, message: "Please input!" }]}
-                    >
-                      <InputNumber
-                        disabled={isPending}
-                        style={{ marginLeft: "10px", width: "220px" }}
-                      />
-                    </Form.Item>
+                  <Form.Item
+                    label="Phone"
+                    name="phoneNumber"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please enter your phone number",
+                        validator: phoneNumberValidator,
+                      },
+                    ]}
+                  >
+                    <PhoneInput
+                      enableSearch
+                      style={{ marginLeft: "10px", width: "220px" }}
+                      country={user.country}
+                      onChange={(value) => value.phoneNumber}
+                    />
+                  </Form.Item>
 
-                    <Form.Item
-                      wrapperCol={{
-                        offset: 6,
-                        span: 16,
+                  <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
+                    <button
+                      type="submit"
+                      onClick={handleSubmit}
+                      loading={isLoading}
+                      className="btn"
+                      style={{
+                        minWidth: "250px",
+                        height: "36px",
+                        color: "white",
                       }}
                     >
-                      <Button
-                        type="primary"
-                        htmlType="submit"
-                        onClick={handleSubmit}
-                        loading={isPending}
-                      >
-                        Save Changes
-                      </Button>
-                    </Form.Item>
-                  </Form>
-                </div>
-              </PageContent>
-            </div>
-          </Content>
-        </Layout>
-      </Layout>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Change Email
-          </Typography>
-          <Form style={{ marginTop: "2rem" }}>
-            <Form.Item
-              label="Current Email"
-              name="email"
-              rules={[{ required: true, message: "Please input!" }]}
-            >
-              <Input
-                style={{ marginLeft: "9px", width: "180px" }}
-                readOnly
-                defaultValue={modalEmail}
-              />
-            </Form.Item>
-
-            <Form.Item
-              label="Enter OTP"
-              name="otp"
-              rules={[{ required: true, message: "Please input!" }]}
-            >
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <Input
-                  style={{ marginLeft: "10px", width: "180px" }}
-                  placeholder="Enter OTP"
-                />
-                <Button
-                  type="primary"
-                  style={{ marginLeft: "10px", minWidth: "30px" }}
-                >
-                  Get OTP
-                </Button>
+                      {isLoading ? (
+                        <CircularProgress
+                          size={16}
+                          style={{ color: "white" }}
+                        />
+                      ) : (
+                        "Submit"
+                      )}
+                    </button>
+                  </Form.Item>
+                </Form>
               </div>
-            </Form.Item>
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <Button
-                type="primary"
-                style={{ marginLeft: "10px", minWidth: "150px" }}
-              >
-                Submit
-              </Button>
-            </div>
-          </Form>
-        </Box>
-      </Modal>
-    </>
+            </PageContent>
+          </div>
+        </Content>
+      </Layout>
+    </Layout>
   );
 };
 

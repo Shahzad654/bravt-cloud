@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import {
   useGetInstanceByIdQuery,
   useUpdateInstanceMutation,
-} from "../../redux/apis/apiSlice";
+} from "../../redux/apis/instances";
 
 const GeneralInfoForm = () => {
   const [form] = Form.useForm();
@@ -16,7 +16,7 @@ const GeneralInfoForm = () => {
   const onFinish = async (values) => {
     const { error } = await updateInstance({ id: instanceId, ...values });
     if (error) {
-      message.error(error.message || "Failed to update instance!");
+      message.error(error.data.message || "Failed to update instance!");
     } else {
       message.success("Instance updated successfully!");
     }
@@ -79,7 +79,7 @@ const GeneralInfoForm = () => {
         <Form.Item>
           <Button
             htmlType="submit"
-            className="btn h-9 flex items-center justify-center gap-2 w-full"
+            className="flex items-center justify-center w-full gap-2 btn h-9"
             loading={isLoading}
           >
             Save

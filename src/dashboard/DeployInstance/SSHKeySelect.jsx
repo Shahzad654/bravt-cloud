@@ -1,9 +1,9 @@
 import { Select } from "antd";
-import { useGetSSHKeysQuery } from "../../redux/apis/apiSlice";
+import { useListSSHKeysQuery } from "../../redux/apis/ssh";
 import { useMemo } from "react";
 
-const SSHKeySelect = ({ sshKey, setSSHKey }) => {
-  const { data, isLoading } = useGetSSHKeysQuery();
+const SSHKeySelect = ({ sshKeys, setSSHKeys }) => {
+  const { data, isLoading } = useListSSHKeysQuery();
 
   const options = useMemo(() => {
     return data?.map((key) => ({
@@ -14,19 +14,20 @@ const SSHKeySelect = ({ sshKey, setSSHKey }) => {
 
   return (
     <div>
-      <label htmlFor="sshKey" style={{ fontSize: "14px" }}>
-        SSH Key
+      <label htmlFor="sshKeys" style={{ fontSize: "14px" }}>
+        SSH Keys
       </label>
       <Select
         showSearch
-        id="sshKey"
+        id="sshKeys"
+        mode="multiple"
         options={options}
-        value={sshKey}
-        onChange={setSSHKey}
+        value={sshKeys}
+        onChange={setSSHKeys}
         loading={isLoading}
         disabled={isLoading}
         style={{ width: "100%" }}
-        placeholder="Select SSH Key"
+        placeholder="Select SSH Keys"
         allowClear
       />
     </div>

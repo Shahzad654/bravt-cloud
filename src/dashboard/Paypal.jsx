@@ -1,14 +1,22 @@
+import { message } from "antd";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
-import { api } from "../utils/api";
-import { setUser } from "../redux/apis/userSlice";
 import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { authUtil, useGetSessionQuery } from "../redux/apis/auth";
+import {
+  useCapturePaypalOrderMutation,
+  useCreatePaypalOrderMutation,
+  useCancelPaypalOrderMutation,
+} from "../redux/apis/transactions";
 
 const Paypal = ({ credits }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user } = useSelector((state) => state.user);
+  const { data: user } = useGetSessionQuery();
+
+  const [createPaypalOrder] = useCreatePaypalOrderMutation();
+  const [capturePaypalOrder] = useCapturePaypalOrderMutation();
+  const [cancelOrder] = useCancelPaypalOrderMutation();
 
   return (
     <PayPalScriptProvider
@@ -18,24 +26,40 @@ const Paypal = ({ credits }) => {
     >
       <PayPalButtons
         createOrder={async () => {
-          const { data } = await api.post("/payment/paypal", { credits });
+          const { data, error } = await createPaypalOrder({ credits });
+          if (error) {
+            message.error(error.data.message);
+            throw error;
+          }
           return data.orderID;
         }}
-        onApprove={async (data) => {
-          await api.post("/payment/paypal/capture", {
-            orderID: data.orderID,
-          });
-          const newUser = { ...user, credit: user.credit + credits };
-          dispatch(setUser(newUser));
+        onApprove={async ({ orderID }) => {
+          const { error } = await capturePaypalOrder(orderID);
+          if (error) {
+            message.error(error.data.message);
+            throw error;
+          }
+
+          dispatch(
+            authUtil.updateQueryData("getSession", undefined, (draft) => {
+              Object.assign(draft, {
+                credits: Number(user.credits) + Number(credits),
+              });
+            })
+          );
+
           navigate("/instance");
         }}
         onError={() => {
-          const newUser = { ...user, credit: user.credit - credits };
-          dispatch(setUser(newUser));
+          dispatch(
+            authUtil.updateQueryData("getSession", undefined, (draft) => {
+              Object.assign(draft, {
+                credits: Number(user.credits) - Number(credits),
+              });
+            })
+          );
         }}
-        onCancel={async (data) => {
-          await api.post(`/payment/paypal/cancel/${data.orderID}`);
-        }}
+        onCancel={async (data) => cancelOrder(data.orderID)}
       />
     </PayPalScriptProvider>
   );

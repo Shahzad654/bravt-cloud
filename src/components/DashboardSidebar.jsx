@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
 import { styled } from "@mui/material/styles";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import {
   Drawer,
   List,
@@ -12,10 +11,8 @@ import {
   Button,
 } from "@mui/material";
 
+import { TbCloudComputing } from "react-icons/tb";
 import {
-  FiBox as ProductIcon,
-  FiHelpCircle as QuestionIcon,
-  FiGrid as AppstoreIcon,
   FiDollarSign as MoneyIcon,
   FiUser as ProfileIcon,
   FiChevronDown as ExpandMoreIcon,
@@ -23,7 +20,7 @@ import {
 } from "react-icons/fi";
 
 import Logo from "./Logo";
-import { setUser, logoutUser } from "../redux/apis/userSlice";
+import { useLogoutMutation } from "../redux/apis/auth";
 
 const DRAWER_WIDTH = 240;
 
@@ -43,8 +40,8 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
 
 const menuItems = [
   {
-    label: "Network",
-    icon: <ProductIcon size={20} />,
+    label: "Compute",
+    icon: <TbCloudComputing size={20} />,
     children: [
       { label: "Instance", path: "/instance" },
       // { label: "Network", path: "/network" },
@@ -79,7 +76,7 @@ const menuItems = [
     icon: <ProfileIcon size={20} />,
     children: [
       { label: "Profile", path: "/profile" },
-      { label: "SSH keys", path: "/shhDetails" },
+      { label: "SSH keys", path: "/ssh-keys" },
       // { label: "Authentication", path: "/authentication" },
     ],
   },
@@ -88,7 +85,8 @@ const menuItems = [
 const DashboardSidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch();
+
+  const [logoutUser] = useLogoutMutation();
 
   const defaultOpenMenus = useMemo(() => {
     const currentPath = location.pathname;
@@ -110,8 +108,7 @@ const DashboardSidebar = () => {
 
   const handleLogout = async () => {
     await logoutUser();
-    dispatch(setUser(null));
-    navigate("/");
+    navigate("/login");
   };
 
   const handleMenuClick = (label) => {

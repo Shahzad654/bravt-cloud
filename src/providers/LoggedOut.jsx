@@ -1,16 +1,16 @@
-import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 import PageSpinner from "../components/PageSpinner";
 import { Suspense } from "react";
+import { useGetSessionQuery } from "../redux/apis/auth";
 
 const LoggedOut = () => {
-  const { user, status } = useSelector((state) => state.user);
+  const { data, isLoading } = useGetSessionQuery();
 
-  if (status === "loading") {
+  if (isLoading) {
     return <PageSpinner />;
   }
 
-  return user ? (
+  return data ? (
     <Navigate to="/instance" replace />
   ) : (
     <Suspense fallback={<PageSpinner />}>

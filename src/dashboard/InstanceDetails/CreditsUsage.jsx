@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom";
-import { useGetInstanceByIdQuery } from "../../redux/apis/apiSlice";
+import { useGetInstanceByIdQuery } from "../../redux/apis/instances";
 import { PieChart, Pie, Label } from "recharts";
 import { useMemo } from "react";
 import { Card } from "antd";
-import { useSelector } from "react-redux";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "./Chart";
+import { useGetSessionQuery } from "../../redux/apis/auth";
 
 const chartConfig = {
   credits: {
@@ -24,30 +24,30 @@ const CreditsUsage = () => {
   const { instanceId } = useParams();
   const { data } = useGetInstanceByIdQuery(instanceId);
 
-  const { user } = useSelector((state) => state.user);
+  const { data: user } = useGetSessionQuery();
 
   const chartData = useMemo(() => {
     if (!data) return [];
 
     const consumed = data.creditsConsumed || 0;
-    const remaining = user.credit || 0;
+    const remaining = user.credits || 0;
 
     return [
       {
         name: "Instance Usage",
-        value: Number(consumed.toFixed(2)),
+        value: Number(consumed),
         fill: "var(--color-consumed)",
       },
       {
         name: "Current Balance",
-        value: remaining,
+        value: Number(remaining),
         fill: "var(--color-remaining)",
       },
     ];
   }, [data, user]);
 
   return (
-    <Card className="border rounded-xl col-span-1 shadow-sm h-fit">
+    <Card className="col-span-1 border shadow-sm rounded-xl h-fit">
       <Card.Meta
         title="Credits Usage"
         description="Credits Consumed vs Remaining"
@@ -82,9 +82,9 @@ const CreditsUsage = () => {
                       <tspan
                         x={viewBox.cx}
                         y={viewBox.cy}
-                        className="fill-black text-2xl font-bold"
+                        className="text-2xl font-bold fill-black"
                       >
-                        {user.credit}
+                        {user.credits}
                       </tspan>
                       <tspan
                         x={viewBox.cx}

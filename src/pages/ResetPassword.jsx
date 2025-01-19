@@ -1,66 +1,55 @@
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import styled from "styled-components";
-import { resetPasswordThunk } from "../redux/apis/resetSlice";
-import { Snackbar, Button } from "@mui/material";
+import { useResetPasswordMutation } from "../redux/apis/auth";
+import { message } from "antd";
 
 export default function ResetPassword() {
-  const { userId } = useParams();
-  const dispatch = useDispatch();
+  const { token } = useParams();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const email = searchParams.get("email");
+  const [resetPassword, { isLoading }] = useResetPasswordMutation();
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
-  const [snackbarMessage, setSnackbarMessage] = useState("");
 
-  const {
-    loading,
-    success,
-    error: resetPasswordError,
-  } = useSelector(
-    (state) =>
-      state.resetPassword || { loading: false, success: false, error: null }
-  );
+  if (!email) {
+    throw new Error("No Email!");
+  }
 
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!password || !confirmPassword) {
+      message.error("Please fill all the fields");
+      return;
+    }
+
+    if (password.length < 8) {
+      message.error("Password must be at least 8 characters");
+      return;
+    }
+
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      message.error("Passwords don't match");
       return;
     }
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters");
+    const { error } = await resetPassword({
+      token,
+      email,
+      newPassword: password,
+      confirmPassword,
+    });
+
+    if (error) {
+      message.error(error.data.message);
       return;
     }
 
-    setError("");
-    dispatch(resetPasswordThunk(userId, password, confirmPassword));
+    navigate("/login");
+    message.success("Password reset successfully!");
   };
-
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
-    // if (success) {
-    //   navigate('/');
-    // }
-  };
-
-  useEffect(() => {
-    if (resetPasswordError) {
-      setSnackbarMessage(resetPasswordError);
-      setOpenSnackbar(true);
-    }
-  }, [resetPasswordError]);
-
-  useEffect(() => {
-    if (success) {
-      setSnackbarMessage("Password reset successful!");
-      setOpenSnackbar(true);
-    }
-  }, [success]);
 
   return (
     <Main>
@@ -91,32 +80,17 @@ export default function ResetPassword() {
             />
             <br />
 
-            {error && <span style={{ color: "red" }}>{error}</span>}
-
             <button
               type="submit"
               onClick={handleSubmit}
-              disabled={loading}
+              disabled={isLoading}
               className="btn"
             >
-              {loading ? "Resetting..." : "Reset"}
+              {isLoading ? "Resetting..." : "Reset"}
             </button>
           </div>
         </div>
       </StyledSignUp>
-
-      {/* MUI Snackbar for success/error messages */}
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        message={snackbarMessage}
-        action={
-          <Button color="secondary" size="small" onClick={handleCloseSnackbar}>
-            CLOSE
-          </Button>
-        }
-      />
     </Main>
   );
 }

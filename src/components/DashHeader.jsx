@@ -2,17 +2,14 @@ import styled from "styled-components";
 import Logo from "../assets/images/logo.png";
 import { Layout, theme } from "antd";
 import { Link } from "react-router-dom";
-import { MdEmail } from "react-icons/md";
-import { IoDocumentTextOutline } from "react-icons/io5";
-import { GrLanguage } from "react-icons/gr";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
-import { useSelector } from "react-redux";
 import { LuUser } from "react-icons/lu";
+import { useGetSessionQuery } from "../redux/apis/auth";
 
 const { Header } = Layout;
 
 const DashHeader = () => {
-  const { user } = useSelector((state) => state.user);
+  const { data } = useGetSessionQuery();
 
   const {
     token: { colorBgContainer },
@@ -36,24 +33,24 @@ const DashHeader = () => {
           </div>
           Docs
         </Link> */}
-        <div className="link">
+        {/* <div className="link">
           <div className="icon-border">
             <GrLanguage className="icon" />
           </div>
           English
-        </div>
+        </div> */}
         <Link to="/payment" className="link">
           <div className="icon-border">
             <RiMoneyDollarCircleLine className="icon" />
           </div>
-          {user.credit}
+          {data.credits}
         </Link>
 
         <Link to="/profile" className="link">
           <div className="icon-border">
             <LuUser className="icon" />
           </div>
-          {user.email}
+          {data.email}
         </Link>
       </NavLinks>
     </StyledHeader>

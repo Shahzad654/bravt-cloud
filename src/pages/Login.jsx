@@ -1,24 +1,15 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Snackbar, Alert, CircularProgress } from "@mui/material";
-import {
-  loginStart,
-  loginSuccess,
-  loginFailure,
-} from "../redux/apis/loginSlice";
-import { loginAPI } from "../redux/apis/loginSlice";
 import LoginImg from "../assets/images/login.jpg";
-import Logo from "../assets/images/nav.webp";
+import Logo from "../components/Logo";
 import SignInWithoutEmail from "../components/SignInwithoutEmail";
-import { setUser } from "../redux/apis/userSlice";
+import { useLoginMutation } from "../redux/apis/auth";
 
 export default function Login() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading } = useSelector((state) => state.login);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -41,6 +32,8 @@ export default function Login() {
     setSnackbar({ ...snackbar, open: false });
   };
 
+  const [login, { isLoading }] = useLoginMutation();
+
   const handleSignIn = async (e) => {
     e.preventDefault();
 
@@ -53,40 +46,29 @@ export default function Login() {
       return;
     }
 
-    try {
-      dispatch(loginStart());
+    const { error } = await login(formData);
 
-      const response = await loginAPI(formData.email, formData.password);
-
-      if (response?.user) {
-        dispatch(loginSuccess());
-        dispatch(setUser(response.user));
-
-        setSnackbar({
-          open: true,
-          message: "Login successful!",
-          severity: "success",
-        });
-
-        setTimeout(() => {
-          navigate("/instance");
-        }, 1500);
-      } else {
-        throw new Error("Invalid response from server");
-      }
-    } catch (error) {
-      dispatch(loginFailure(error.message));
+    if (error) {
       setSnackbar({
         open: true,
-        message: error.message || "Login failed",
+        message: error.data.message || "Login failed",
         severity: "error",
       });
+    } else {
+      setSnackbar({
+        open: true,
+        message: "Login successful!",
+        severity: "success",
+      });
+
+      navigate("/instance");
     }
   };
 
   return (
     <Main>
-      <img src={Logo} alt="" />
+      <Logo size={250} style={{ marginTop: "24px" }} />
+
       <StyledSignUp>
         <div className="form-container">
           <h3>Sign In with Email</h3>
@@ -97,7 +79,7 @@ export default function Login() {
               name="email"
               required
               placeholder="Enter your email"
-              disabled={loading}
+              disabled={isLoading}
               value={formData.email}
               onChange={handleInputChange}
             />
@@ -108,14 +90,14 @@ export default function Login() {
               type="password"
               name="password"
               required
-              disabled={loading}
+              disabled={isLoading}
               placeholder="Enter your password"
               value={formData.password}
               onChange={handleInputChange}
             />
             <br />
-            <button className="btn" onClick={handleSignIn} disabled={loading}>
-              {loading ? (
+            <button className="btn" onClick={handleSignIn} disabled={isLoading}>
+              {isLoading ? (
                 <CircularProgress size={16} style={{ color: "white" }} />
               ) : (
                 "Sign In"

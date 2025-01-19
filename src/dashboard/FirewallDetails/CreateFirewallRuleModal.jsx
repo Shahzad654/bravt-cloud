@@ -1,6 +1,6 @@
 import { Form, Input, InputNumber, message, Modal, Select } from "antd";
 import { useState } from "react";
-import { useCreateFirewallRuleMutation } from "../../redux/apis/apiSlice";
+import { useCreateFirewallRuleMutation } from "../../redux/apis/firewalls";
 import { useParams } from "react-router-dom";
 import { TbPlus } from "react-icons/tb";
 import IPInput from "../../components/IPInput";
@@ -22,7 +22,7 @@ const CreateFirewallRuleModal = ({ ip_type = "v4" }) => {
     });
 
     if (error) {
-      message.error(error.message || "Failed to create firewall rule!");
+      message.error(error.data.message || "Failed to create firewall rule!");
     } else {
       setIsOpen(false);
       message.success("Firewall rule created!");

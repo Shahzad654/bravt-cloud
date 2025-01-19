@@ -1,9 +1,8 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
-import { Breadcrumb, Layout } from "antd";
-import { Segmented } from "antd";
+import { Breadcrumb, Button, Layout, Input } from "antd";
 import { Flex } from "antd";
-import { BsCreditCard2FrontFill } from "react-icons/bs";
+import { BsCreditCard2FrontFill, BsCurrencyDollar } from "react-icons/bs";
 import { FaPaypal } from "react-icons/fa";
 import PaymentForm from "./PaymentForm";
 import Paypal from "./Paypal";
@@ -11,12 +10,36 @@ import Paypal from "./Paypal";
 const { Content } = Layout;
 
 const MakePayment = () => {
-  const [value, setValue] = useState("$10");
+  const [value, setValue] = useState(10);
+  const [customValue, setCustomValue] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("stripe");
+  const [error, setError] = useState("");
 
-  const credits = useMemo(() => {
-    return parseInt(value.replace("$", "") || "10", 10);
-  }, [value]);
+  const handleCustomValueChange = (e) => {
+    const inputValue = e.target.value;
+    setCustomValue(inputValue);
+
+    if (inputValue === "") {
+      setError("");
+      return;
+    }
+
+    const numValue = parseFloat(inputValue);
+    if (isNaN(numValue)) {
+      setError("Please enter a valid number");
+    } else if (numValue < 10) {
+      setError("Minimum amount is $10");
+    } else {
+      setError("");
+      setValue(numValue);
+    }
+  };
+
+  const handlePresetValue = (val) => {
+    setValue(val);
+    setCustomValue("");
+    setError("");
+  };
 
   return (
     <LayoutWrapper>
@@ -40,11 +63,40 @@ const MakePayment = () => {
             }}
           >
             <PageContent>
-              <CustomSegmented
-                options={["$10", "$25", "$50", "$100", "$200"]}
-                value={value}
-                onChange={setValue}
-              />
+              <Flex gap={8} wrap="wrap">
+                {[10, 25, 50, 100, 200].map((val) => (
+                  <Button
+                    key={val}
+                    type={value === val && !customValue ? "primary" : "default"}
+                    onClick={() => handlePresetValue(val)}
+                    style={{
+                      minWidth: "80px",
+                      height: "40px",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      display: "flex",
+                    }}
+                  >
+                    ${val}
+                  </Button>
+                ))}
+                <CustomInputWrapper>
+                  <Input
+                    placeholder="Custom amount"
+                    value={customValue}
+                    size="small"
+                    onChange={handleCustomValueChange}
+                    style={{ width: "150px" }}
+                    prefix={
+                      <BsCurrencyDollar
+                        size={14}
+                        style={{ color: "#71717a" }}
+                      />
+                    }
+                  />
+                  {error && <ErrorText>{error}</ErrorText>}
+                </CustomInputWrapper>
+              </Flex>
 
               <Flex gap={12} style={{ width: "100%" }}>
                 <PaymentMethodCard
@@ -65,9 +117,9 @@ const MakePayment = () => {
               </Flex>
 
               {paymentMethod === "stripe" ? (
-                <PaymentForm credits={credits} />
+                <PaymentForm credits={value} />
               ) : (
-                <Paypal credits={credits} />
+                <Paypal credits={value} />
               )}
             </PageContent>
           </div>
@@ -78,23 +130,6 @@ const MakePayment = () => {
 };
 
 export default MakePayment;
-
-const CustomSegmented = styled(Segmented)`
-  .ant-segmented {
-    height: 60px;
-    line-height: 60px;
-    font-size: 18px;
-  }
-
-  .ant-segmented-item {
-    padding: 0 30px;
-  }
-
-  .ant-segmented-item-selected {
-    background-color: var(--primary-color) !important;
-    color: white !important;
-  }
-`;
 
 const LayoutWrapper = styled(Layout)`
   min-height: 100vh;
@@ -137,4 +172,15 @@ const PaymentMethodCard = styled.div`
     color: var(--primary-color);
     background-color: #f0f9ff;
   `}
+`;
+
+const CustomInputWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`;
+
+const ErrorText = styled.span`
+  color: #ff4d4f;
+  font-size: 12px;
 `;

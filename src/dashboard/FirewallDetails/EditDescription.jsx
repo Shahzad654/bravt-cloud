@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import {
   useGetFirewallRulesQuery,
   useUpdateFirewallGroupMutation,
-} from "../../redux/apis/apiSlice";
+} from "../../redux/apis/firewalls";
 import { TbCheck, TbEdit, TbX } from "react-icons/tb";
 import { useRef, useState } from "react";
 
@@ -26,7 +26,7 @@ const EditDescription = () => {
     }
 
     const { error } = await updateFirewall({
-      groupID: firewallId,
+      id: firewallId,
       description,
     });
 
@@ -34,7 +34,7 @@ const EditDescription = () => {
     setIsEditMode(false);
 
     if (error) {
-      message.error(error.message || "Failed to update firewall");
+      message.error(error.data.message || "Failed to update firewall");
     }
   };
 
@@ -49,7 +49,7 @@ const EditDescription = () => {
     >
       <div className="flex items-center justify-between">
         <div>
-          <p className="font-medium text-sm text-zinc-500">Description</p>
+          <p className="text-sm font-medium text-zinc-500">Description</p>
           {isEditMode ? (
             <form onSubmit={handleSubmit} className="flex items-center gap-3">
               <input
@@ -63,7 +63,7 @@ const EditDescription = () => {
                   type="submit"
                   aria-label="Update"
                   disabled={isLoading}
-                  className="text-emerald-600 transition-opacity aspect-square disabled:opacity-60"
+                  className="transition-opacity text-emerald-600 aspect-square disabled:opacity-60"
                 >
                   <TbCheck size={20} />
                 </button>

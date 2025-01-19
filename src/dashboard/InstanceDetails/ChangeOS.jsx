@@ -1,11 +1,11 @@
 import { useParams } from "react-router-dom";
+import { Button, Form, message, Select } from "antd";
+import { useMemo } from "react";
 import {
   useGetInstanceByIdQuery,
   useGetInstanceAvailableUpgradesQuery,
   useUpdateInstanceMutation,
-} from "../../redux/apis/apiSlice";
-import { Button, Form, message, Select } from "antd";
-import { useMemo } from "react";
+} from "../../redux/apis/instances";
 
 const ChangeOS = () => {
   const { instanceId } = useParams();
@@ -28,7 +28,7 @@ const ChangeOS = () => {
   const onFinish = async ({ os_id }) => {
     const { error } = await updateInstance({ id: instanceId, os_id });
     if (error) {
-      message.error(error.message || "Failed to update OS!");
+      message.error(error.data.message || "Failed to update OS!");
     } else {
       message.success("Operating system updated successfully!");
     }
@@ -75,7 +75,7 @@ const ChangeOS = () => {
         <Form.Item>
           <Button
             htmlType="submit"
-            className="btn h-9 flex items-center justify-center gap-2 w-full"
+            className="flex items-center justify-center w-full gap-2 btn h-9"
             loading={isLoading}
           >
             Save

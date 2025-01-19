@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import Logo from "../assets/images/nav.webp";
+import Logo from "../assets/images/logo.png";
 import { IoIosGift } from "react-icons/io";
 import { GiHamburgerMenu } from "react-icons/gi";
 import Box from "@mui/material/Box";

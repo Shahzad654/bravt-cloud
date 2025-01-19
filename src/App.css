@@ -19,6 +19,8 @@
   --primary-color: #0f7aff;
   --bg-color: rgb(238, 245, 255);
   --text-color: #41434d;
+  --brand: 210 100% 50%;
+  --brand-foreground: 213 100% 60%;
 
   --price-cards-width: 50%;
 }
@@ -82,12 +84,16 @@ input {
   padding: 6px 14px;
   min-width: 230px;
   max-height: 45px;
+  min-height: 36px;
   border: none;
   touch-action: pinch-zoom;
   white-space: nowrap;
   transition-property: opacity;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 300ms;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   &:hover {
     opacity: 0.7;
   }
@@ -196,6 +202,41 @@ select {
   pointer-events: none;
 }
 
+.typing-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.dot {
+  background-color: currentColor;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  opacity: 0;
+  animation: typingDot 1.4s infinite;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typingDot {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 @keyframes pulse {
   0%,
   100% {
@@ -224,4 +265,16 @@ select {
   @tailwind base;
   @tailwind components;
   @tailwind utilities;
+}
+
+/* For Chrome, Safari, Edge, Opera */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* For Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
 }

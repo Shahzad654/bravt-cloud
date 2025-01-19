@@ -1,10 +1,8 @@
 import { Button, Form, Input, message, Select } from "antd";
-import {
-  useCreateSnapshotMutation,
-  useGetAllInstancesQuery,
-} from "../../redux/apis/apiSlice";
+import { useCreateSnapshotMutation } from "../../redux/apis/snapshots";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { useGetAllInstancesQuery } from "../../redux/apis/instances";
 
 const CreateSnapshot = () => {
   const { data, status } = useGetAllInstancesQuery();
@@ -24,7 +22,7 @@ const CreateSnapshot = () => {
   const onFinish = async (values) => {
     const { error } = await createSnapshot(values);
     if (error) {
-      message.error(error.message || "Failed to create snapshot");
+      message.error(error.data.message || "Failed to create snapshot");
     } else {
       message.success("Snapshot created");
       navigate("/snapshot");
@@ -33,8 +31,8 @@ const CreateSnapshot = () => {
 
   return (
     <div className="tailwind-layout">
-      <div className="w-full max-w-2xl py-8 px-12">
-        <div className="space-y-4 border shadow-sm border-zinc-200 p-4 rounded-lg">
+      <div className="w-full max-w-2xl px-12 py-8">
+        <div className="p-4 space-y-4 border rounded-lg shadow-sm border-zinc-200">
           <h1 className="text-2xl font-semibold">
             Take a snapshot of an active server
           </h1>
@@ -47,7 +45,7 @@ const CreateSnapshot = () => {
             onFinish={onFinish}
           >
             <Form.Item
-              name="instanceID"
+              name="instanceId"
               label="Instance"
               rules={[{ required: true }]}
             >
@@ -72,9 +70,9 @@ const CreateSnapshot = () => {
               type="primary"
               htmlType="submit"
               loading={isLoading}
-              className="w-full h-9 bg-primary text-white"
+              className="w-full text-white h-9 bg-primary"
             >
-              Upload snapshot
+              Take snapshot
             </Button>
           </Form>
 
@@ -84,7 +82,7 @@ const CreateSnapshot = () => {
               /GB per month - pricing subject to change.
             </li>
             <li>
-              We recommend using DHCP for networking. By default, Vultr
+              We recommend using DHCP for networking. By default, Bravt Cloud
               instances are configured to use DHCP.
             </li>
             <li>

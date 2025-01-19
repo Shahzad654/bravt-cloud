@@ -1,53 +1,35 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 import LoginImg from "../assets/images/signup.jpg";
-import Logo from "../assets/images/nav.webp";
-import { Button, Form, Input, InputNumber, Select, Spin } from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { saveBillingInfo } from "../redux/apis/billingInfo";
-import { setUser } from "../redux/apis/userSlice";
-import { Snackbar } from "@mui/material";
-import MuiAlert from "@mui/material/Alert";
+import { Form, Input, InputNumber, message, Select } from "antd";
+import { CircularProgress } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-
-const { Option } = Select;
+import Logo from "../components/Logo";
+import PhoneInput from "antd-phone-input";
+import {
+  useGetSessionQuery,
+  useUpdateProfileMutation,
+} from "../redux/apis/auth";
 
 export default function BillingInfo() {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [countries, setCountries] = useState([]);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.user);
-
-  // Check for stored email on component mount
-  useEffect(() => {
-    if (!user) {
-      setSnackbarMessage("Please sign up first");
-      setSnackbarSeverity("error");
-      setOpenSnackbar(true);
-      // Redirect to signup after a short delay
-      setTimeout(() => navigate("/"), 2000);
-    }
-  }, [navigate, user]);
+  const { data } = useGetSessionQuery();
+  const [updateProfile, { isLoading }] = useUpdateProfileMutation();
 
   useEffect(() => {
     const fetchCountries = async () => {
       try {
         const response = await fetch("https://restcountries.com/v3.1/all");
         const data = await response.json();
-        const countryNames = data.map((country) => country.name.common).sort();
+        const countryNames = data.sort((a, b) =>
+          a.name.common.localeCompare(b.name.common)
+        );
         setCountries(countryNames);
       } catch {
-        setSnackbarMessage(
-          "Failed to load countries. Please refresh the page."
-        );
-        setSnackbarSeverity("error");
-        setOpenSnackbar(true);
+        message.error("Failed to load countries. Please refresh the page.");
       }
     };
 
@@ -55,40 +37,17 @@ export default function BillingInfo() {
   }, []);
 
   const handleSubmit = async () => {
-    try {
-      setIsSubmitting(true);
-      // Validate form first
-      await form.validateFields();
+    await form.validateFields();
+    const values = form.getFieldsValue();
+    const phoneNumber = `+${values.phoneNumber.countryCode}${values.phoneNumber.areaCode}${values.phoneNumber.phoneNumber}`;
+    const { error } = await updateProfile({ ...values, phoneNumber });
 
-      const values = form.getFieldsValue();
-
-      // Add email to the form data
-      const formDataWithEmail = {
-        ...values,
-        email: user.email,
-      };
-
-      const response = await dispatch(
-        saveBillingInfo(formDataWithEmail)
-      ).unwrap();
-
-      dispatch(setUser(response.data.user));
-
-      setSnackbarMessage("Billing information saved successfully!");
-      setSnackbarSeverity("success");
-      setOpenSnackbar(true);
-
-      // Optional: Redirect to next page after successful submission
-      setTimeout(() => navigate("/instance"), 2000);
-    } catch (error) {
-      setSnackbarMessage(
-        error?.message || "Failed to save billing information"
-      );
-      setSnackbarSeverity("error");
-      setOpenSnackbar(true);
-    } finally {
-      setIsSubmitting(false);
+    if (error) {
+      message.error(error.data.message);
+      return;
     }
+
+    navigate("/payment");
   };
 
   const formItemLayout = {
@@ -96,9 +55,14 @@ export default function BillingInfo() {
     wrapperCol: { xs: { span: 24 }, sm: { span: 14 } },
   };
 
+  const phoneNumberValidator = (_, { valid }) => {
+    if (valid(true)) return Promise.resolve();
+    return Promise.reject("Invalid phone number");
+  };
+
   return (
     <Main>
-      <img src={Logo} alt="" />
+      <Logo size={250} style={{ marginTop: "24px" }} />
       <StyledSignUp>
         <div className="form-container">
           <h3>Billing Information</h3>
@@ -106,7 +70,8 @@ export default function BillingInfo() {
             <Form
               form={form}
               style={{ maxWidth: 600 }}
-              initialValues={user}
+              initialValues={data}
+              disabled={isLoading}
               {...formItemLayout}
             >
               <Form.Item
@@ -116,7 +81,10 @@ export default function BillingInfo() {
                   { required: true, message: "Please enter your first name" },
                 ]}
               >
-                <Input style={{ marginLeft: "10px", width: "220px" }} placeholder="Enter your first name"/>
+                <Input
+                  style={{ marginLeft: "10px", width: "220px" }}
+                  placeholder="Enter your first name"
+                />
               </Form.Item>
 
               <Form.Item
@@ -126,7 +94,10 @@ export default function BillingInfo() {
                   { required: true, message: "Please enter your last name" },
                 ]}
               >
-                <Input style={{ marginLeft: "10px", width: "220px" }} placeholder="Enter your last name" />
+                <Input
+                  style={{ marginLeft: "10px", width: "220px" }}
+                  placeholder="Enter your last name"
+                />
               </Form.Item>
 
               <Form.Item
@@ -136,7 +107,10 @@ export default function BillingInfo() {
                   { required: true, message: "Please enter your address" },
                 ]}
               >
-                <Input style={{ marginLeft: "10px", width: "220px" }} placeholder="Enter your address" />
+                <Input
+                  style={{ marginLeft: "10px", width: "220px" }}
+                  placeholder="Enter your address"
+                />
               </Form.Item>
 
               <Form.Item
@@ -144,7 +118,10 @@ export default function BillingInfo() {
                 name="city"
                 rules={[{ required: true, message: "Please enter your city" }]}
               >
-                <Input style={{ marginLeft: "10px", width: "220px" }} placeholder="Enter your city" />
+                <Input
+                  style={{ marginLeft: "10px", width: "220px" }}
+                  placeholder="Enter your city"
+                />
               </Form.Item>
 
               <Form.Item
@@ -154,13 +131,15 @@ export default function BillingInfo() {
                   { required: true, message: "Please select your country" },
                 ]}
               >
-                <Select style={{ marginLeft: "10px", width: "220px" }} placeholder="select your country">
-                  {countries.map((country) => (
-                    <Option key={country} value={country}>
-                      {country}
-                    </Option>
-                  ))}
-                </Select>
+                <Select
+                  style={{ marginLeft: "10px", width: "220px" }}
+                  placeholder="select your country"
+                  showSearch
+                  options={countries.map((country) => ({
+                    label: country.name.common,
+                    value: country.name.common,
+                  }))}
+                />
               </Form.Item>
 
               <Form.Item
@@ -173,7 +152,10 @@ export default function BillingInfo() {
                   },
                 ]}
               >
-                <InputNumber style={{ marginLeft: "10px", width: "220px" }} placeholder="Enter your zip code" />
+                <InputNumber
+                  style={{ marginLeft: "10px", width: "220px" }}
+                  placeholder="Enter your zip code"
+                />
               </Form.Item>
 
               <Form.Item
@@ -183,7 +165,10 @@ export default function BillingInfo() {
                   { required: true, message: "Please enter your company name" },
                 ]}
               >
-                <Input style={{ marginLeft: "10px", width: "220px" }} placeholder="Enter your company name" />
+                <Input
+                  style={{ marginLeft: "10px", width: "220px" }}
+                  placeholder="Enter your company name"
+                />
               </Form.Item>
 
               <Form.Item
@@ -193,21 +178,32 @@ export default function BillingInfo() {
                   {
                     required: true,
                     message: "Please enter your phone number",
+                    validator: phoneNumberValidator,
                   },
                 ]}
               >
-                <InputNumber style={{ marginLeft: "10px", width: "220px" }} placeholder="Enter your phone number" />
+                <PhoneInput
+                  enableSearch
+                  style={{ marginLeft: "10px", width: "220px" }}
+                  country={data.country}
+                  onChange={(value) => value.phoneNumber}
+                />
               </Form.Item>
 
               <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
-                <Button
-                  type="primary"
+                <button
+                  type="submit"
                   onClick={handleSubmit}
-                  disabled={isSubmitting}
-                  style={{ minWidth: "250px" }}
+                  loading={isLoading}
+                  className="btn"
+                  style={{ minWidth: "250px", height: "36px", color: "white" }}
                 >
-                  {isSubmitting ? <Spin /> : "Submit"}
-                </Button>
+                  {isLoading ? (
+                    <CircularProgress size={16} style={{ color: "white" }} />
+                  ) : (
+                    "Submit"
+                  )}
+                </button>
               </Form.Item>
             </Form>
           </div>
@@ -217,21 +213,6 @@ export default function BillingInfo() {
           <img src={LoginImg} alt="" />
         </div>
       </StyledSignUp>
-
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={3000}
-        onClose={() => setOpenSnackbar(false)}
-      >
-        <MuiAlert
-          elevation={6}
-          variant="filled"
-          onClose={() => setOpenSnackbar(false)}
-          severity={snackbarSeverity}
-        >
-          {snackbarMessage}
-        </MuiAlert>
-      </Snackbar>
     </Main>
   );
 }

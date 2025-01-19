@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 import LogoIcon from "../assets/images/logo.png";
 
-const Logo = ({ href = "/" }) => {
+const Logo = ({ href = "/", style, size = 150 }) => {
   return (
-    <Link to={href} className="logo">
-      <img src={LogoIcon} alt="Logo" width={150} />
+    <Link to={href} className="logo" style={style}>
+      <img src={LogoIcon} alt="Logo" width={size} />
     </Link>
   );
 };

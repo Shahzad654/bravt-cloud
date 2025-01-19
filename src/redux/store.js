@@ -1,32 +1,30 @@
 import { configureStore } from "@reduxjs/toolkit";
-import authReducer from "./apis/authSlice";
-import billingReducer from "./apis/billingInfo";
-import loginReducer from "./apis/loginSlice";
-import userReducer from "./apis/userSlice";
-import forgotPasswordReducer from "./apis/forgetSlice";
-import resetPasswordReducer from "./apis/resetSlice";
-import emailChangeReducer from "./apis/changeEmail";
-import transactionsReducer from "./apis/transactionsSlice";
-import apiSlice from "./apis/apiSlice";
-import addShhReducer from "./apis/createShhSlice";
-import getShhReducer from "./apis/getAllShhSlice";
+
+import transactionsApi from "./apis/transactions";
+import firewallsApi from "./apis/firewalls";
+import authApi from "./apis/auth";
+import instancesApi from "./apis/instances";
+import sshApi from "./apis/ssh";
+import snapshotsApi from "./apis/snapshots";
 
 const store = configureStore({
   reducer: {
-    auth: authReducer,
-    billing: billingReducer,
-    login: loginReducer,
-    user: userReducer,
-    forgetPassword: forgotPasswordReducer,
-    resetPassword: resetPasswordReducer,
-    emailChange: emailChangeReducer,
-    transactions: transactionsReducer,
-    createShh: addShhReducer,
-    getAllShh: getShhReducer,
-    [apiSlice.reducerPath]: apiSlice.reducer,
+    [authApi.reducerPath]: authApi.reducer,
+    [transactionsApi.reducerPath]: transactionsApi.reducer,
+    [instancesApi.reducerPath]: instancesApi.reducer,
+    [sshApi.reducerPath]: sshApi.reducer,
+    [snapshotsApi.reducerPath]: snapshotsApi.reducer,
+    [firewallsApi.reducerPath]: firewallsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
-    return getDefaultMiddleware().concat(apiSlice.middleware);
+    return getDefaultMiddleware().concat(
+      authApi.middleware,
+      transactionsApi.middleware,
+      instancesApi.middleware,
+      sshApi.middleware,
+      snapshotsApi.middleware,
+      firewallsApi.middleware
+    );
   },
 });
 

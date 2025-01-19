@@ -2,16 +2,17 @@ import { RiTerminalBoxLine } from "react-icons/ri";
 import { TbRefreshDot, TbServerBolt, TbTrash } from "react-icons/tb";
 import { App, Tooltip } from "antd";
 import { MdInstallDesktop, MdPowerSettingsNew } from "react-icons/md";
+import { useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
+import NewWindow from "react-new-window";
+import { isInstanceInstalling } from "../../utils/helpers";
 import {
   useDeleteInstanceMutation,
   useGetInstanceByIdQuery,
   useRebootInstanceMutation,
   useReinstallInstanceMutation,
   useStartOrStopInstanceMutation,
-} from "../../redux/apis/apiSlice";
-import { useNavigate, useParams } from "react-router-dom";
-import { useState } from "react";
-import NewWindow from "react-new-window";
+} from "../../redux/apis/instances";
 
 const InstanceActions = () => {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ const InstanceActions = () => {
   const { modal, message } = App.useApp();
 
   const isRunning = data.power_status === "running";
+  const isInstalling = isInstanceInstalling(data);
 
   const [startOrStopInstance] = useStartOrStopInstanceMutation();
   const [rebootInstance] = useRebootInstanceMutation();
@@ -42,8 +44,9 @@ const InstanceActions = () => {
       <div className="flex items-center gap-4">
         <Tooltip title="View console">
           <button
+            disabled={isInstalling}
             aria-label="View console"
-            className="text-zinc-500 hover:text-primary transition-colors"
+            className="transition-colors text-zinc-500 hover:text-primary disabled:opacity-50 disabled:pointer-events-none"
             onClick={() => setIsConsoleOpen(true)}
           >
             <RiTerminalBoxLine size={22} />
@@ -52,8 +55,9 @@ const InstanceActions = () => {
 
         <Tooltip title={`Server ${isRunning ? "stop" : "start"}`}>
           <button
+            disabled={isInstalling}
             aria-label={`Server ${isRunning ? " stop" : "start"}`}
-            className="text-zinc-500 hover:text-primary transition-colors"
+            className="transition-colors text-zinc-500 hover:text-primary disabled:opacity-50 disabled:pointer-events-none"
             onClick={() => {
               modal.confirm({
                 title: "Are you sure?",
@@ -68,7 +72,7 @@ const InstanceActions = () => {
 
                   if (error) {
                     message.error(
-                      error.message ||
+                      error.data.message ||
                         `Failed to ${isRunning ? "stop" : "start"} instance!`
                     );
                   } else {
@@ -90,8 +94,9 @@ const InstanceActions = () => {
 
         <Tooltip title="Server restart">
           <button
+            disabled={isInstalling}
             aria-label="Server restart"
-            className="text-zinc-500 hover:text-primary transition-colors"
+            className="transition-colors text-zinc-500 hover:text-primary disabled:opacity-50 disabled:pointer-events-none"
             onClick={() => {
               modal.confirm({
                 title: "Are you sure?",
@@ -103,7 +108,7 @@ const InstanceActions = () => {
 
                   if (error) {
                     message.error(
-                      error.message || `Failed to reboot instance!`
+                      error.data.message || `Failed to reboot instance!`
                     );
                   } else {
                     message.success(`Instance restarted successfully!`);
@@ -118,8 +123,9 @@ const InstanceActions = () => {
 
         <Tooltip title="Server reinstall">
           <button
+            disabled={isInstalling}
             aria-label="Server reinstall"
-            className="text-zinc-500 hover:text-primary transition-colors"
+            className="transition-colors text-zinc-500 hover:text-primary disabled:opacity-50 disabled:pointer-events-none"
             onClick={() => {
               modal.confirm({
                 title: "Are you absolutely sure?",
@@ -133,7 +139,7 @@ const InstanceActions = () => {
 
                   if (error) {
                     message.error(
-                      error.message || `Failed to reinstall instance!`
+                      error.data.message || `Failed to reinstall instance!`
                     );
                   } else {
                     message.success(`Instance reinstalled successfully!`);
@@ -148,8 +154,9 @@ const InstanceActions = () => {
 
         <Tooltip title="Server destroy">
           <button
+            disabled={isInstalling}
             aria-label="Server destroy"
-            className="text-zinc-500 hover:text-red-600 transition-colors"
+            className="transition-colors text-zinc-500 hover:text-red-600 disabled:opacity-50 disabled:pointer-events-none"
             onClick={() => {
               modal.error({
                 title: "Are you absolutely sure?",
@@ -161,7 +168,7 @@ const InstanceActions = () => {
                   const { error } = await deleteInstance({ id: instanceId });
                   if (error) {
                     message.error(
-                      error.message || `Failed to delete instance!`
+                      error.data.message || `Failed to delete instance!`
                     );
                   } else {
                     navigate("/instance");

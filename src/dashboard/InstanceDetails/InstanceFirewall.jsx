@@ -1,9 +1,9 @@
 import { Link, useParams } from "react-router-dom";
+import { useGetFirewallGroupsQuery } from "../../redux/apis/firewalls";
 import {
-  useGetFirewallGroupsQuery,
   useGetInstanceByIdQuery,
   useUpdateInstanceMutation,
-} from "../../redux/apis/apiSlice";
+} from "../../redux/apis/instances";
 import { useMemo } from "react";
 import { Form, Button, message, Select, notification } from "antd";
 
@@ -31,7 +31,7 @@ const InstanceFirewall = () => {
       firewall_group_id: firewall_group_id,
     });
     if (error) {
-      message.error(error.message || "Failed to update firewall!");
+      message.error(error.data.message || "Failed to update firewall!");
     } else {
       notification.success({
         message: "Instance firewall updated!",
@@ -65,8 +65,6 @@ const InstanceFirewall = () => {
             options={options}
             placeholder="Select firewall group"
             optionFilterProp="label"
-            allowClear
-            onClear={() => form.setFieldValue("firewall_group_id", null)}
             labelRender={(val) =>
               status === "pending" ? "Loading..." : val.label
             }
@@ -76,7 +74,7 @@ const InstanceFirewall = () => {
         <Form.Item>
           <Button
             htmlType="submit"
-            className="btn h-9 flex items-center justify-center gap-2 w-full"
+            className="flex items-center justify-center w-full gap-2 btn h-9"
             loading={isLoading}
           >
             Save

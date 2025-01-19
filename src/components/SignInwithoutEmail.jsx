@@ -2,8 +2,19 @@ import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import styled from "styled-components";
 import { API_URL } from "../utils/constants";
+import { useQueryState } from "nuqs";
+import { message } from "antd";
+import { useEffect } from "react";
 
 export default function SignInWithoutEmail() {
+  const [error, setError] = useQueryState("oauth_error");
+  useEffect(() => {
+    if (error) {
+      message.error(error);
+      setError(null);
+    }
+  }, [error, setError]);
+
   return (
     <StyledSignIn>
       <div className="line">
@@ -12,23 +23,13 @@ export default function SignInWithoutEmail() {
         <div />
       </div>
       <button
-        onClick={() =>
-          window.open(
-            `${API_URL}/user/google?redirectUrl=${window.location.origin}/instance`,
-            "_self"
-          )
-        }
+        onClick={() => window.open(`${API_URL}/api/auth/google`, "_self")}
       >
         <FcGoogle /> Continue with Google
       </button>
 
       <button
-        onClick={() =>
-          window.open(
-            `${API_URL}/user/github?redirectUrl=${window.location.origin}/instance`,
-            "_self"
-          )
-        }
+        onClick={() => window.open(`${API_URL}/api/auth/github`, "_self")}
       >
         <FaGithub /> Continue with GitHub
       </button>

@@ -1,19 +1,18 @@
-import { Outlet, Navigate, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { Outlet, Navigate } from "react-router-dom";
 import DashboardSidebar from "../components/DashboardSidebar";
 import PageSpinner from "../components/PageSpinner";
 import { Suspense } from "react";
+import { useGetSessionQuery } from "../redux/apis/auth";
 
 const ProtectedLayout = () => {
-  const location = useLocation();
-  const { user, status } = useSelector((state) => state.user);
+  const { data, isLoading } = useGetSessionQuery();
 
-  if (status === "loading") {
+  if (isLoading) {
     return <PageSpinner />;
   }
 
-  if (!user) {
-    return <Navigate to="/" state={{ from: location }} replace />;
+  if (!data) {
+    return <Navigate to="/login" replace />;
   }
 
   return (

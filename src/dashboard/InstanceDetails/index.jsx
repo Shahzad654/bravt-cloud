@@ -2,16 +2,16 @@ import { Link } from "react-router-dom";
 import { useParams } from "react-router";
 import { HiArrowLeft } from "react-icons/hi2";
 import { getIcon } from "../../components/Icons";
-import { useGetInstanceByIdQuery } from "../../redux/apis/apiSlice";
+import { useGetInstanceByIdQuery } from "../../redux/apis/instances";
 import { formatDistanceToNow } from "date-fns";
 import PageSpinner from "../../components/PageSpinner";
 import InstanceActions from "./InstanceActions";
 import InstanceTabs from "./InstanceTabs";
 import NotFound from "../../components/NotFound";
 import UpdateLabel from "./UpdateLabel";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { isInstanceInstalling } from "../../utils/helpers";
-import { Spin } from "antd";
+import { CircularProgress } from "@mui/material";
 
 const InstanceDetails = () => {
   const previousDataRef = useRef();
@@ -33,7 +33,7 @@ const InstanceDetails = () => {
     }
   }, [data]);
 
-  const isInstalling = useMemo(() => isInstanceInstalling(data), [data]);
+  const isInstalling = isInstanceInstalling(data);
 
   useEffect(() => {
     if (isInstalling) {
@@ -54,53 +54,61 @@ const InstanceDetails = () => {
   const { Icon, color } = getIcon(data.os);
 
   return (
-    <>
-      {isInstalling && (
-        <Spin size="large" spinning fullscreen tip="Installing..." />
-      )}
-      <div className="tailwind-layout">
-        <div className="w-full py-8 px-12">
-          <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-4">
-              <Link
-                to="/instance"
-                className="aspect-square rounded-full bg-blue-100 p-2.5 shrink-0 text-primary"
-              >
-                <HiArrowLeft size={24} />
-              </Link>
+    <div className="tailwind-layout">
+      <div className="w-full px-12 py-8">
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center gap-4">
+            <Link
+              to="/instance"
+              className="aspect-square rounded-full bg-blue-100 p-2.5 shrink-0 text-primary"
+            >
+              <HiArrowLeft size={24} />
+            </Link>
 
-              <div className="flex items-center gap-3">
-                {Icon ? <Icon color={color} size={42} /> : null}
-                <div className="space-y-1.5">
+            <div className="flex items-center gap-3">
+              {Icon ? <Icon color={color} size={42} /> : null}
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-4">
                   <UpdateLabel size="lg">
                     <h2 className="text-3xl font-medium cursor-pointer">
                       {data.label || "Server Information"}
                     </h2>
                   </UpdateLabel>
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs text-zinc-400">
-                      {data.main_ip}
-                    </span>
-                    <span className="text-xs text-zinc-400">
-                      Created{" "}
-                      {formatDistanceToNow(data.date_created, {
-                        addSuffix: true,
-                      })}
-                    </span>
-                  </div>
+
+                  {isInstalling && (
+                    <div className="flex items-center text-amber-600">
+                      <CircularProgress size={14} color="inherit" />
+                      <span className="mx-1 ml-2 text-sm">Installing</span>
+                      <span className="typing-dots">
+                        <span className="dot" />
+                        <span className="dot" />
+                        <span className="dot" />
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <span className="text-xs text-zinc-400">{data.main_ip}</span>
+                  <span className="text-xs text-zinc-400">
+                    Created{" "}
+                    {formatDistanceToNow(data.date_created, {
+                      addSuffix: true,
+                    })}
+                  </span>
                 </div>
               </div>
             </div>
-
-            <InstanceActions />
           </div>
 
-          <div className="w-full mt-12">
-            <InstanceTabs />
-          </div>
+          <InstanceActions />
+        </div>
+
+        <div className="w-full mt-12">
+          <InstanceTabs />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

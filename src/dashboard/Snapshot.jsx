@@ -1,22 +1,51 @@
 import styled from "styled-components";
 import { App, Breadcrumb, Button, Layout, message, Tag } from "antd";
 import { TbPlus, TbTrash } from "react-icons/tb";
-import { format } from "date-fns";
 
 import DashHeader from "../components/DashHeader";
 import { Table } from "antd";
 import { Link } from "react-router-dom";
+import { formatDate, toSentenceCase } from "../utils/helpers";
 import {
   useDeleteSnapshotMutation,
   useGetSnapshotsQuery,
-} from "../redux/apis/apiSlice";
-import { toSentenceCase } from "../utils/helpers";
+} from "../redux/apis/snapshots";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 const { Content } = Layout;
 
 const Snapshot = () => {
-  const { data, isLoading } = useGetSnapshotsQuery();
   const { modal } = App.useApp();
+
+  const previousDataRef = useRef();
+  const [pollingInterval, setPollingInterval] = useState(0);
+
+  const { data, isLoading } = useGetSnapshotsQuery(undefined, {
+    pollingInterval,
+    selectFromResult: ({ data, isLoading, ...rest }) => ({
+      data: data ?? previousDataRef.current,
+      isLoading: previousDataRef.current ? false : isLoading,
+      ...rest,
+    }),
+  });
+
+  const isAnySnapshotPending = useMemo(() => {
+    return data?.some((snapshot) => snapshot.status === "pending");
+  }, [data]);
+
+  useEffect(() => {
+    if (data) {
+      previousDataRef.current = data;
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (isAnySnapshotPending) {
+      setPollingInterval(5000);
+    } else {
+      setPollingInterval(0);
+    }
+  }, [isAnySnapshotPending]);
 
   const [deleteSnapshot] = useDeleteSnapshotMutation();
 
@@ -40,7 +69,7 @@ const Snapshot = () => {
     {
       title: "Date",
       dataIndex: "date_created",
-      render: (val) => format(val, "PP"),
+      render: formatDate,
     },
     {
       title: "Charges",
@@ -76,7 +105,9 @@ const Snapshot = () => {
               onOk: async () => {
                 const { error } = await deleteSnapshot(record.id);
                 if (error) {
-                  message.error(error.message || "Failed to delete snapshot");
+                  message.error(
+                    error.data.message || "Failed to delete snapshot"
+                  );
                 } else {
                   message.success("Snapshot Deleted!");
                 }
@@ -174,7 +205,7 @@ const PageContent = styled.div`
 
 const DelButton = styled.button`
   color: black;
-  background: white;
+  background: transparent;
   border: 0;
   outline: none;
 

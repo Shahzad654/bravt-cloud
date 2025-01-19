@@ -2,25 +2,25 @@ import { useEffect, useMemo } from "react";
 import { Table } from "antd";
 
 import { formatPrice } from "../../utils/helpers";
-import { useGetPlansQuery } from "../../redux/apis/apiSlice";
+import { useGetPlansQuery } from "../../redux/apis/instances";
 
 const PlansSelect = ({ value, onValueChange, region }) => {
   const { data, isLoading } = useGetPlansQuery(region);
 
   const plan = useMemo(() => {
-    return data?.find((p) => p.id === value);
+    return data?.find((p) => p.plan === value);
   }, [data, value]);
 
   useEffect(() => {
     if (data?.length && !plan) {
-      onValueChange(data[0]?.id);
+      onValueChange(data[0]?.plan);
     }
   }, [data, plan, onValueChange]);
 
   const columns = [
     {
       title: "Name",
-      dataIndex: "id",
+      dataIndex: "plan",
       render: (val) => (
         <span style={{ fontSize: "14px", fontWeight: "500" }}>{val}</span>
       ),
@@ -66,9 +66,9 @@ const PlansSelect = ({ value, onValueChange, region }) => {
       dataIndex: "price",
       render: (_, record) => (
         <div>
-          <strong>{formatPrice(record.monthly_cost)}/mon</strong>
+          <strong>{formatPrice(record.monthlyCost)}/mon</strong>
           <p style={{ fontSize: "14px" }}>
-            {formatPrice(record.hourly_cost)}/hr
+            {formatPrice(record.hourlyCost)}/hr
           </p>
         </div>
       ),
@@ -93,13 +93,13 @@ const PlansSelect = ({ value, onValueChange, region }) => {
         rowClassName="cursor-pointer"
         rowSelection={{
           type: "radio",
-          onSelect: (row) => onValueChange(row.id),
+          onSelect: (row) => onValueChange(row.plan),
           selectedRowKeys: plan
-            ? [data.findIndex((row) => row.id === plan.id)]
+            ? [data.findIndex((row) => row.plan === plan.plan)]
             : [],
         }}
         onRow={(record) => ({
-          onClick: () => onValueChange(record.id),
+          onClick: () => onValueChange(record.plan),
         })}
       />
     </>

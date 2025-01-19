@@ -3,10 +3,10 @@ import { Breadcrumb, Layout } from "antd";
 
 import DashHeader from "../components/DashHeader";
 import { Table } from "antd";
-import { format } from "date-fns";
 import CreateFirewallModal from "./CreateFirewallModal";
-import { useGetFirewallGroupsQuery } from "../redux/apis/apiSlice";
+import { useGetFirewallGroupsQuery } from "../redux/apis/firewalls";
 import { useNavigate } from "react-router-dom";
+import { formatDate } from "../utils/helpers";
 
 const { Content } = Layout;
 
@@ -26,7 +26,7 @@ const columns = [
   {
     title: "Date Created",
     dataIndex: "date_created",
-    render: (val) => format(val, "PPP"),
+    render: formatDate,
     sorter: (a, b) => new Date(a.date_created) - new Date(b.date_created),
     showSorterTooltip: {
       target: "full-header",
@@ -64,7 +64,6 @@ const Firewall = () => {
             style={{
               padding: 24,
               minHeight: 360,
-              // background: "#f0f2f5",
               background: "white",
               borderRadius: "8px",
             }}

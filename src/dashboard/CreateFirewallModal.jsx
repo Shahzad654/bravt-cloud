@@ -1,20 +1,23 @@
 import { Button, Form, Input, message, Modal } from "antd";
 import { useState } from "react";
 import { TbPlus } from "react-icons/tb";
-import { useCreateFirewallGroupMutation } from "../redux/apis/apiSlice";
+import { useCreateFirewallGroupMutation } from "../redux/apis/firewalls";
+import { useNavigate } from "react-router-dom";
 
 const CreateFirewallModal = () => {
   const [isOpen, setIsOpen] = useState(false);
-
+  const navigate = useNavigate();
   const [form] = Form.useForm();
 
   const [createFirewallGroup, { isLoading }] = useCreateFirewallGroupMutation();
 
   const onFinish = async (values) => {
-    const { error } = await createFirewallGroup(values);
+    const { error, data } = await createFirewallGroup(values);
+
     if (error) {
-      message.error(error.message || "Failed to create firewall group!");
+      message.error(error.data.message || "Failed to create firewall group!");
     } else {
+      navigate(`/firewall/${data.id}`);
       setIsOpen(false);
       message.success("Firewall group created!");
     }

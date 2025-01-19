@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
-import { Alert, CircularProgress, Snackbar } from "@mui/material";
-import { api } from "../utils/api";
-import { setUser } from "../redux/apis/userSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { CircularProgress } from "@mui/material";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { message } from "antd";
+import { authUtil, useGetSessionQuery } from "../redux/apis/auth";
+import { useGetStripePaymentIntentMutation } from "../redux/apis/transactions";
 import {
   CardElement,
   Elements,
@@ -18,13 +19,9 @@ function Form({ credits }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [status, setStatus] = useState("idle");
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "success",
-  });
 
-  const { user } = useSelector((state) => state.user);
+  const { data: user } = useGetSessionQuery();
+  const [getPaymentIntent] = useGetStripePaymentIntentMutation();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -33,7 +30,13 @@ function Form({ credits }) {
 
     setStatus("loading");
 
-    const { data } = await api.post("/payment/stripe", { credits });
+    const { data, error } = await getPaymentIntent({ credits });
+
+    if (error) {
+      message.error(error.data.message);
+      setStatus("error");
+      return;
+    }
 
     const result = await stripe.confirmCardPayment(data.clientSecret, {
       payment_method: {
@@ -43,73 +46,51 @@ function Form({ credits }) {
 
     if (result.error) {
       setStatus("error");
-      setSnackbar({
-        open: true,
-        severity: "error",
-        message: result.error.message,
-      });
-    } else if (result.paymentIntent.status === "requires_capture") {
-      setStatus("success");
-      const newUser = { ...user, credit: user.credit + credits };
-      dispatch(setUser(newUser));
-      setSnackbar({
-        open: true,
-        severity: "success",
-        message: "Payment successful!",
-      });
+      message.error(result.error.message);
+      return;
+    }
+
+    setStatus("success");
+
+    if (result.paymentIntent.status === "requires_capture") {
+      dispatch(
+        authUtil.updateQueryData("getSession", undefined, (draft) => {
+          Object.assign(draft, {
+            credits: Number(user.credits) + Number(credits),
+          });
+        })
+      );
 
       navigate("/instance");
-    } else {
-      setStatus("success");
     }
   };
 
-  const handleClose = () => {
-    setSnackbar({ ...snackbar, open: false });
-  };
-
   return (
-    <>
-      <form style={{ width: "100%" }} onSubmit={handleSubmit}>
-        <CardElement
-          onReady={(e) => e.focus()}
-          options={{
-            hidePostalCode: true,
-            disabled: status === "loading",
-            classes: {
-              base: "stripe-card-element",
-              focus: "stripe-card-element-focused",
-              invalid: "stripe-card-element-invalid",
-            },
-          }}
-        />
-        <button
-          className="btn"
-          disabled={status === "loading"}
-          style={{ width: "100%", height: "44px", marginTop: "20px" }}
-        >
-          {status === "loading" ? (
-            <CircularProgress size={16} style={{ color: "white" }} />
-          ) : (
-            `Pay $${credits}`
-          )}
-        </button>
-      </form>
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={handleClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+    <form style={{ width: "100%" }} onSubmit={handleSubmit}>
+      <CardElement
+        onReady={(e) => e.focus()}
+        options={{
+          hidePostalCode: true,
+          disabled: status === "loading",
+          classes: {
+            base: "stripe-card-element",
+            focus: "stripe-card-element-focused",
+            invalid: "stripe-card-element-invalid",
+          },
+        }}
+      />
+      <button
+        className="btn"
+        disabled={status === "loading"}
+        style={{ width: "100%", height: "44px", marginTop: "20px" }}
       >
-        <Alert
-          onClose={handleClose}
-          severity={snackbar.severity}
-          variant="filled"
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-    </>
+        {status === "loading" ? (
+          <CircularProgress size={16} style={{ color: "white" }} />
+        ) : (
+          `Pay $${credits}`
+        )}
+      </button>
+    </form>
   );
 }
 

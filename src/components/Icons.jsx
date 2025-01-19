@@ -1,6 +1,6 @@
 import { RiCoreosFill } from "react-icons/ri";
 import { SiOpenbsd } from "react-icons/si";
-import { FaWindows, FaUbuntu, FaFreebsd } from "react-icons/fa";
+import { FaWindows, FaUbuntu, FaFreebsd, FaLinux } from "react-icons/fa";
 import {
   SiCentos,
   SiDebian,
@@ -59,8 +59,8 @@ export const Icons = {
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 550 339"
-        width={size}
-        height={size}
+        width={size || 18}
+        height={size || 18}
         {...props}
       >
         <path
@@ -122,5 +122,31 @@ export const getIcon = (val) => {
     };
   }
 
-  return { Icon: null, color: null };
+  return { Icon: FaLinux, color: "#0000000" };
 };
+
+export function getOSName(os) {
+  const osMap = {
+    windows: "Windows",
+    ubuntu: "Ubuntu",
+    "fedora-coreos": "Fedora CoreOS",
+    coreos: "CoreOS",
+    freebsd: "FreeBSD",
+    rockylinux: "Rocky Linux",
+    almalinux: "AlmaLinux",
+    debian: "Debian",
+    archlinux: "Arch Linux",
+    centos: "CentOS",
+    flatcar: "Flatcar",
+    alpinelinux: "Alpine Linux",
+    opensuse: "openSUSE",
+    fedora: "Fedora",
+    openbsd: "OpenBSD",
+  };
+
+  // Convert the input to lowercase to handle case insensitivity
+  const lowerCaseOS = os.toLowerCase();
+
+  // Return the proper name if it exists in the map, otherwise return the input as is
+  return osMap[lowerCaseOS] || os;
+}

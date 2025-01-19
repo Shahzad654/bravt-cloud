@@ -7,7 +7,7 @@ import { TbTrash } from "react-icons/tb";
 import {
   useDeleteFirewallRuleMutation,
   useGetFirewallRulesQuery,
-} from "../../redux/apis/apiSlice";
+} from "../../redux/apis/firewalls";
 
 const FirewallRulesTable = ({ ipType }) => {
   const { firewallId } = useParams();
@@ -16,7 +16,7 @@ const FirewallRulesTable = ({ ipType }) => {
   const { modal } = App.useApp();
 
   const rules = useMemo(() => {
-    return data.firewallRules.filter((rule) => rule.ip_type === ipType);
+    return data.rules.filter((rule) => rule.ip_type === ipType);
   }, [data, ipType]);
 
   const [deleteFirewallRule] = useDeleteFirewallRuleMutation();
@@ -48,7 +48,7 @@ const FirewallRulesTable = ({ ipType }) => {
       render: (_, record) => (
         <button
           aria-label="Delete firewall"
-          className="text-zinc-500 hover:text-red-600 transition-colors"
+          className="transition-colors text-zinc-500 hover:text-red-600"
           onClick={() => {
             modal.error({
               title: "Are you absolutely sure?",
@@ -59,12 +59,12 @@ const FirewallRulesTable = ({ ipType }) => {
               onOk: async () => {
                 const { error } = await deleteFirewallRule({
                   id: firewallId,
-                  ruleID: record.id,
+                  ruleId: record.id,
                 });
 
                 if (error) {
                   message.error(
-                    error.message || "Failed to delete firewall rule"
+                    error.data.message || "Failed to delete firewall rule"
                   );
                 } else {
                   message.success("Firewall rule deleted!");

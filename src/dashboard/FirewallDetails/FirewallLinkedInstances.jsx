@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useGetAllInstancesQuery } from "../../redux/apis/apiSlice";
+import { useGetAllInstancesQuery } from "../../redux/apis/instances";
 import { isInstanceInstalling, toSentenceCase } from "../../utils/helpers";
 import { CircularProgress } from "@mui/material";
 import { Table, Tag } from "antd";
@@ -109,9 +109,9 @@ const FirewallLinkedInstances = () => {
       dataIndex: "power_status",
       render: (status, record) => {
         const isInstalling = isInstanceInstalling(record);
+        const isSuspended = record.status === "suspended";
         return (
           <Tag
-            className="border !border-current"
             color={
               isInstalling
                 ? "orange"
@@ -120,14 +120,18 @@ const FirewallLinkedInstances = () => {
                   : "error"
             }
           >
-            {isInstalling && (
+            {isInstalling && !isSuspended && (
               <CircularProgress
                 size={10}
                 style={{ marginRight: "6px" }}
                 color="inherit"
               />
             )}
-            {isInstalling ? "Installing" : toSentenceCase(status.toLowerCase())}
+            {isSuspended
+              ? "Under Maintenance"
+              : isInstalling
+                ? "Installing"
+                : toSentenceCase(status.toLowerCase())}
           </Tag>
         );
       },
@@ -151,16 +155,9 @@ const FirewallLinkedInstances = () => {
       dataSource={data}
       loading={isLoading}
       style={{ marginTop: "25px" }}
-      rowClassName={(record) =>
-        `${isInstanceInstalling(record) ? "pointer-events-none" : "cursor-pointer"}`
-      }
+      rowClassName="cursor-pointer"
       onRow={(record) => ({
-        onClick: () => {
-          console.log(isInstanceInstalling(record));
-          if (!isInstanceInstalling(record)) {
-            navigate(`/instance/${record.id}`);
-          }
-        },
+        onClick: () => navigate(`/instance/${record.id}`),
       })}
       showSorterTooltip={{
         target: "sorter-icon",

@@ -1,88 +1,68 @@
-import { Button, Input, message } from "antd";
+import { Button, Input, message, Spin } from "antd";
 import DashHeader from "../../components/DashHeader";
-import {
-  clearError,
-  clearSshKey,
-  clearStatus,
-  updateSshKey,
-} from "../../redux/apis/createShhSlice";
-import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getAllSshKeys } from "../../redux/apis/getAllShhSlice";
+import { useGetSSHKeyQuery, useUpdateSSHMutation } from "../../redux/apis/ssh";
 
 const { TextArea } = Input;
 
 const UpdateSHH = () => {
   const { id } = useParams();
-  console.log("id", id);
+
+  const { data: sshKey, status } = useGetSSHKeyQuery(id);
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   // Local state for form inputs
   const [name, setName] = useState("");
   const [key, setKey] = useState("");
 
   // State from Redux
-  const { status, error } = useSelector((state) => state.createShh);
-  const { sshKeys } = useSelector((state) =>{ 
-    console.log("state",state);
-    
-    return state.getAllShh});
-  console.log("sshKeys",sshKeys);
-  
-  console.log("status", status);
 
-  // Reset form after successful SSH key update
-  const resetForm = () => {
-    setName("");
-    setKey("");
-  };
-
-  // Fetch SSH keys on component mount
-  useEffect(() => {
-    dispatch(getAllSshKeys());
-  }, [dispatch]);
+  const [updateSSH, { isLoading }] = useUpdateSSHMutation();
 
   // Filter the relevant SSH key by id and set the form values
   useEffect(() => {
-    if (sshKeys && sshKeys.length > 0) {
-      const selectedKey = sshKeys.find((key) => key.id === id);
-      if (selectedKey) {
-        setName(selectedKey.name);
-        setKey(selectedKey.ssh_key);
-      }
+    if (sshKey) {
+      setName(sshKey.name);
+      setKey(sshKey.ssh_key);
     }
-  }, [sshKeys, id]);
+  }, [sshKey, id]);
 
   // Handle updating the SSH key
-  const handleUpdateSshKey = () => {
+  const handleUpdateSshKey = async () => {
     // Validate inputs
     if (!name || !key) {
       message.error("Please provide both name and SSH key.");
       return;
     }
 
-    // Dispatch action to update the SSH key
-    dispatch(updateSshKey({ name, key, sshID: id }));
+    const { error } = await updateSSH({ id, name, key });
+    if (error) {
+      message.error(error.data.message);
+    } else {
+      setKey("");
+      setName("");
+      navigate("/ssh-keys");
+      message.success("SSH key updated");
+    }
   };
 
-  // Handle loading, success, and error states
-  useEffect(() => {
-    if (status === "loading") {
-      message.loading("Updating SSH Key...");
-    } else if (status === "error" && error) {
-      message.error(`Error: ${error}`);
-      dispatch(clearError()); // Clear error after showing it
-    } else if (status === "succeeded") {
-      message.success("SSH Key Updated successfully!");
-      resetForm(); // Reset form fields
-      dispatch(clearSshKey());
-      dispatch(clearStatus()); // Clear SSH key if any
-      navigate("/shhDetails"); // Navigate to SSH details page
-    }
-  }, [status, error, dispatch, navigate]);
+  if (status === "pending") {
+    return (
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "360px",
+        }}
+      >
+        <Spin />
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -106,9 +86,9 @@ const UpdateSHH = () => {
           type="primary"
           block
           onClick={handleUpdateSshKey}
-          disabled={status === "loading"}
+          disabled={isLoading}
         >
-          {status === "loading" ? "Updating..." : "Update SSH Key"}
+          {isLoading ? "Updating..." : "Update SSH Key"}
         </Button>
       </div>
     </div>

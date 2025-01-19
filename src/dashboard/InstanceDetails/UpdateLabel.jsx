@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   useGetInstanceByIdQuery,
   useUpdateInstanceMutation,
-} from "../../redux/apis/apiSlice";
+} from "../../redux/apis/instances";
 import { cn } from "../../utils/helpers";
 import { useParams } from "react-router-dom";
 import { message } from "antd";
@@ -55,7 +55,7 @@ const UpdateLabel = ({ size = "sm" }) => {
     setIsInputMode(false);
 
     if (error) {
-      message.error(error.message || "Failed to update label!");
+      message.error(error.data.message || "Failed to update label!");
     }
   };
 
@@ -76,7 +76,7 @@ const UpdateLabel = ({ size = "sm" }) => {
         type="submit"
         aria-label="Update"
         disabled={isLoading}
-        className="text-emerald-600 transition-opacity aspect-square disabled:opacity-60"
+        className="transition-opacity text-emerald-600 aspect-square disabled:opacity-60"
       >
         <TbCheck size={size === "sm" ? 14 : 20} />
       </button>

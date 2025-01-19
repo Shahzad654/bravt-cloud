@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useGetInstanceByIdQuery } from "../../redux/apis/apiSlice";
+import { useGetInstanceByIdQuery } from "../../redux/apis/instances";
 import { format, subDays } from "date-fns";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "./Chart";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
@@ -22,7 +22,7 @@ const BandwidthUsage = () => {
   const { data } = useGetInstanceByIdQuery(instanceId);
 
   const chartData = useMemo(() => {
-    if (!data?.bandwidthUsage) return [];
+    if (!data?.bandwidth) return [];
 
     const last30Days = Array.from({ length: 30 }, (_, i) => {
       const date = subDays(new Date(), 29 - i);
@@ -30,7 +30,7 @@ const BandwidthUsage = () => {
     });
 
     return last30Days.map((date) => {
-      const usage = data.bandwidthUsage[date] || {
+      const usage = data.bandwidth[date] || {
         incoming_bytes: 0,
         outgoing_bytes: 0,
       };
@@ -40,10 +40,10 @@ const BandwidthUsage = () => {
         sent: usage.outgoing_bytes,
       };
     });
-  }, [data?.bandwidthUsage]);
+  }, [data?.bandwidth]);
 
   return (
-    <Card className="border rounded-xl col-span-2 shadow-sm">
+    <Card className="col-span-2 border shadow-sm rounded-xl">
       <Card.Meta title="Monthly Bandwidth" description="Last 30 days" />
       <ChartContainer config={chartConfig} className="mt-4">
         <BarChart accessibilityLayer data={chartData}>

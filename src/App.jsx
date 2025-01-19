@@ -1,59 +1,62 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import { lazy, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { fetchCurrentUser } from "./redux/apis/userSlice";
 
 import LoggedOut from "./providers/LoggedOut";
 import DashboardLayout from "./providers/DashboardLayout";
 import NotFound from "./components/NotFound";
+import ProtectedLayout from "./providers/ProtectedLayout";
 
-// Lazy loaded components
-const Signup = lazy(() => import("./pages/Signup"));
-const ForgetPassword = lazy(() => import("./pages/ForgetPassword"));
-const ResetPassword = lazy(() => import("./pages/ResetPassword"));
-const BillingInfo = lazy(() => import("./pages/BillingInfo"));
-const Login = lazy(() => import("./pages/Login"));
-const Instance = lazy(() => import("./dashboard/Instance"));
-const Network = lazy(() => import("./dashboard/Network"));
-const Storage = lazy(() => import("./dashboard/Storage"));
-const Snapshot = lazy(() => import("./dashboard/Snapshot"));
-const Firewall = lazy(() => import("./dashboard/Firewall"));
-const Images = lazy(() => import("./dashboard/Images"));
-const Monitoring = lazy(() => import("./dashboard/Monitoring"));
-const Payment = lazy(() => import("./dashboard/Payment"));
-const Ticket = lazy(() => import("./dashboard/Ticket"));
-const LinkCode = lazy(() => import("./dashboard/LinkCode"));
-const ResourceRecord = lazy(() => import("./dashboard/ResourceRecord"));
-const Billing = lazy(() => import("./dashboard/Billing"));
-const Profile = lazy(() => import("./dashboard/Profile"));
-const Authentication = lazy(() => import("./dashboard/Authentication"));
-const DeployInstance = lazy(() => import("./dashboard/DeployInstance"));
-const InstanceDetails = lazy(() => import("./dashboard/InstanceDetails"));
-const FirewallDetails = lazy(() => import("./dashboard/FirewallDetails"));
-const CreateSnapshot = lazy(() => import("./dashboard/CreateSnapshot"));
-const AddSHH = lazy(() => import("./dashboard/ShhDetails/AddSHH"));
-const SSHKeyTable = lazy(() => import("./dashboard/ShhDetails"));
-const UpdateSHH = lazy(() => import("./dashboard/ShhDetails/UpadateSHH"));
-
+import Landing from "./pages/Landing";
+import Signup from "./pages/Signup";
+import ForgetPassword from "./pages/ForgetPassword";
+import ResetPassword from "./pages/ResetPassword";
+import BillingInfo from "./pages/BillingInfo";
+import Login from "./pages/Login";
+import Instance from "./dashboard/Instance";
+import Network from "./dashboard/Network";
+import Storage from "./dashboard/Storage";
+import Snapshot from "./dashboard/Snapshot";
+import Firewall from "./dashboard/Firewall";
+import Images from "./dashboard/Images";
+import Monitoring from "./dashboard/Monitoring";
+import Payment from "./dashboard/Payment";
+import Ticket from "./dashboard/Ticket";
+import LinkCode from "./dashboard/LinkCode";
+import ResourceRecord from "./dashboard/ResourceRecord";
+import Billing from "./dashboard/Billing";
+import Profile from "./dashboard/Profile";
+import Authentication from "./dashboard/Authentication";
+import DeployInstance from "./dashboard/DeployInstance";
+import InstanceDetails from "./dashboard/InstanceDetails";
+import FirewallDetails from "./dashboard/FirewallDetails";
+import CreateSnapshot from "./dashboard/CreateSnapshot";
+import AddSHH from "./dashboard/ShhDetails/AddSHH";
+import SSHKeyTable from "./dashboard/ShhDetails";
+import UpdateSHH from "./dashboard/ShhDetails/UpadateSHH";
+import OAuthCallback from "./pages/OAuthCallback";
+import VerifyCode from "./pages/VerifyCode";
+import SetupPassword from "./pages/SetupPassword";
 
 export default function App() {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(fetchCurrentUser());
-  }, [dispatch]);
-
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Landing />} />
         <Route element={<LoggedOut />}>
-          <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forget-password" element={<ForgetPassword />} />
-          <Route path="/reset-password/:userId" element={<ResetPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="/verify-code" element={<VerifyCode />} />
+        </Route>
+
+        <Route path="/oauth-callback" element={<OAuthCallback />} />
+
+        <Route element={<ProtectedLayout />}>
+          <Route path="/billing-info" element={<BillingInfo />} />
+          <Route path="/setup-password" element={<SetupPassword />} />
         </Route>
 
         <Route element={<DashboardLayout />}>
@@ -75,10 +78,9 @@ export default function App() {
           <Route path="/billing" element={<Billing />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/authentication" element={<Authentication />} />
-          <Route path="/billing-info" element={<BillingInfo />} />
-          <Route path="/addSHH" element={<AddSHH />} />
-          <Route path="/updateSHH/:id" element={<UpdateSHH />} />
-          <Route path="/shhDetails" element={<SSHKeyTable />} />
+          <Route path="/ssh-keys" element={<SSHKeyTable />} />
+          <Route path="/ssh-keys/add" element={<AddSHH />} />
+          <Route path="/ssh-keys/:id" element={<UpdateSHH />} />
         </Route>
 
         <Route path="/*" element={<NotFound />} />

@@ -1,16 +1,16 @@
 import { HiArrowLeft } from "react-icons/hi2";
 import { Link, useParams } from "react-router-dom";
-import { useGetFirewallRulesQuery } from "../../redux/apis/apiSlice";
+import { useGetFirewallRulesQuery } from "../../redux/apis/firewalls";
 import PageSpinner from "../../components/PageSpinner";
 import NotFound from "../../components/NotFound";
 import DeleteFirewallGroup from "./DeleteFirewallGroup";
-import { format } from "date-fns";
 import EditDescription from "./EditDescription";
 import { Card, Tabs } from "antd";
 import { useState } from "react";
 import CreateFirewallRuleModal from "./CreateFirewallRuleModal";
 import FirewallRulesTable from "./FirewallRulesTable";
 import FirewallLinkedInstances from "./FirewallLinkedInstances";
+import { formatDate } from "../../utils/helpers";
 
 const FirewallDetails = () => {
   const { firewallId } = useParams();
@@ -28,7 +28,7 @@ const FirewallDetails = () => {
 
   return (
     <div className="tailwind-layout">
-      <div className="w-full py-8 px-12 space-y-10">
+      <div className="w-full px-12 py-8 space-y-10">
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-4">
             <Link
@@ -48,14 +48,12 @@ const FirewallDetails = () => {
                 </p>
                 <p className="text-xs text-zinc-500">
                   Date created:{" "}
-                  <strong>
-                    {format(data.firewallGroup.date_created, "PP")}
-                  </strong>
+                  <strong>{formatDate(data.firewallGroup.date_created)}</strong>
                 </p>
                 <p className="text-xs text-zinc-500">
                   Date modified:{" "}
                   <strong>
-                    {format(data.firewallGroup.date_modified, "PP")}
+                    {formatDate(data.firewallGroup.date_modified)}
                   </strong>
                 </p>
               </div>
@@ -64,10 +62,10 @@ const FirewallDetails = () => {
 
           <DeleteFirewallGroup />
         </div>
-        <div className="grid grid-cols-3 w-full gap-6">
+        <div className="grid w-full grid-cols-3 gap-6">
           <EditDescription />
           <Card hoverable className="border" onClick={() => setActiveTab("v4")}>
-            <p className="font-medium text-sm text-zinc-500">Group Rules</p>
+            <p className="text-sm font-medium text-zinc-500">Group Rules</p>
             <p>
               <span className="text-3xl font-medium text-primary">
                 {data.firewallGroup.rule_count}
@@ -82,7 +80,7 @@ const FirewallDetails = () => {
             className="border"
             onClick={() => setActiveTab("linked_instance")}
           >
-            <p className="font-medium text-sm text-zinc-500">
+            <p className="text-sm font-medium text-zinc-500">
               Linked Instances
             </p>
             <p className="text-3xl font-medium text-primary">

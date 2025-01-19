@@ -1,5 +1,5 @@
 import { Button, Card, Form, Input, message } from "antd";
-import { useCreateSnapshotMutation } from "../../redux/apis/apiSlice";
+import { useCreateSnapshotMutation } from "../../redux/apis/snapshots";
 import { useParams } from "react-router-dom";
 
 const CreateInstanceSnapShot = () => {
@@ -8,21 +8,18 @@ const CreateInstanceSnapShot = () => {
   const { instanceId } = useParams();
 
   const onFinish = async ({ description }) => {
-    const { error } = await createSnapshot({
-      description,
-      instanceID: instanceId,
-    });
+    const { error } = await createSnapshot({ description, instanceId });
     if (error) {
-      message.error(error.message || "Failed to create snapshot");
+      message.error(error.data.message || "Failed to create snapshot");
     } else {
       message.success("Snapshot created");
     }
   };
 
   return (
-    <div className="bg-white w-full mt-4">
+    <div className="w-full mt-4 bg-white">
       <h1 className="text-2xl font-semibold">Take Snapshot</h1>
-      <Card className="border mt-4 max-w-2xl w-full">
+      <Card className="w-full max-w-2xl mt-4 border">
         <Form
           form={form}
           clearOnDestroy
@@ -42,9 +39,9 @@ const CreateInstanceSnapShot = () => {
             type="primary"
             htmlType="submit"
             loading={isLoading}
-            className="w-full h-9 bg-primary text-white"
+            className="w-full text-white h-9 bg-primary"
           >
-            Upload snapshot
+            Take snapshot
           </Button>
         </Form>
 
@@ -54,8 +51,8 @@ const CreateInstanceSnapShot = () => {
             /GB per month - pricing subject to change.
           </li>
           <li>
-            We recommend using DHCP for networking. By default, Vultr instances
-            are configured to use DHCP.
+            We recommend using DHCP for networking. By default, Bravt Cloud
+            instances are configured to use DHCP.
           </li>
           <li>
             Snapshots can only be restored to equal or bigger disks. If there is

@@ -63,7 +63,7 @@ const DashSidebar = () => {
   const handleLogout = async () => {
     await logoutUser();
     dispatch(setUser(null));
-    navigate("/");
+    navigate("/login");
   };
 
   return (

@@ -25,12 +25,12 @@ import { RiTerminalBoxLine } from "react-icons/ri";
 import NewWindow from "react-new-window";
 import { CircularProgress } from "@mui/material";
 import {
-  useDeleteInstanceMutation,
   useGetAllInstancesQuery,
+  useStartOrStopInstanceMutation,
   useRebootInstanceMutation,
   useReinstallInstanceMutation,
-  useStartOrStopInstanceMutation,
-} from "../redux/apis/apiSlice";
+  useDeleteInstanceMutation,
+} from "../redux/apis/instances";
 
 const InstancesTable = () => {
   const navigate = useNavigate();
@@ -50,14 +50,14 @@ const InstancesTable = () => {
     }),
   });
 
+  const isAnyInstanceInstalling = useMemo(() => {
+    return instances?.some((instance) => isInstanceInstalling(instance));
+  }, [instances]);
+
   useEffect(() => {
     if (instances) {
       previousDataRef.current = instances;
     }
-  }, [instances]);
-
-  const isAnyInstanceInstalling = useMemo(() => {
-    return instances?.some((instance) => isInstanceInstalling(instance));
   }, [instances]);
 
   useEffect(() => {
@@ -83,16 +83,9 @@ const InstancesTable = () => {
         dataSource={instances}
         loading={isLoading}
         style={{ marginTop: "25px" }}
-        rowClassName={(record) =>
-          `${isInstanceInstalling(record) ? "pointer-events-none" : "cursor-pointer"}`
-        }
+        rowClassName="cursor-pointer"
         onRow={(record) => ({
-          onClick: () => {
-            console.log(isInstanceInstalling(record));
-            if (!isInstanceInstalling(record)) {
-              navigate(`/instance/${record.id}`);
-            }
-          },
+          onClick: () => navigate(`/instance/${record.id}`),
         })}
         showSorterTooltip={{
           target: "sorter-icon",
@@ -202,6 +195,7 @@ function useInstancesTableColumns() {
       dataIndex: "power_status",
       render: (status, record) => {
         const isInstalling = isInstanceInstalling(record);
+        const isSuspended = record.status === "suspended";
         return (
           <Tag
             color={
@@ -212,14 +206,18 @@ function useInstancesTableColumns() {
                   : "error"
             }
           >
-            {isInstalling && (
+            {!isSuspended && isInstalling && (
               <CircularProgress
                 size={10}
                 style={{ marginRight: "6px" }}
                 color="inherit"
               />
             )}
-            {isInstalling ? "Installing" : toSentenceCase(status.toLowerCase())}
+            {isSuspended
+              ? "Under Maintenance"
+              : isInstalling
+                ? "Installing"
+                : toSentenceCase(status.toLowerCase())}
           </Tag>
         );
       },
@@ -320,7 +318,7 @@ function useInstancesTableColumns() {
 
                       if (error) {
                         message.error(
-                          error.message || `Failed to ${action} instance!`
+                          error.data.message || `Failed to ${action} instance!`
                         );
                       } else {
                         message.success(
@@ -352,7 +350,7 @@ function useInstancesTableColumns() {
 
                       if (error) {
                         message.error(
-                          error.message || `Failed to reboot instance!`
+                          error.data.message || `Failed to reboot instance!`
                         );
                       } else {
                         message.success(`Instance restarted successfully!`);
@@ -387,7 +385,7 @@ function useInstancesTableColumns() {
 
                       if (error) {
                         message.error(
-                          error.message || `Failed to reinstall instance!`
+                          error.data.message || `Failed to reinstall instance!`
                         );
                       } else {
                         message.success(`Instance reinstalled successfully!`);
@@ -424,7 +422,7 @@ function useInstancesTableColumns() {
 
                       if (error) {
                         message.error(
-                          error.message || `Failed to delete instance!`
+                          error.data.message || `Failed to delete instance!`
                         );
                       } else {
                         message.success(`Instance deleted successfully!`);

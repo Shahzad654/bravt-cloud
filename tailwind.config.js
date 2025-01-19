@@ -4,6 +4,7 @@ export default {
     "./src/dashboard/InstanceDetails/*.{js,ts,jsx,tsx}",
     "./src/dashboard/FirewallDetails/*.{js,ts,jsx,tsx}",
     "./src/dashboard/CreateSnapshot/*.{js,ts,jsx,tsx}",
+    "./src/pages/Landing/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
@@ -11,8 +12,12 @@ export default {
         primary: {
           DEFAULT: "var(--primary-color)",
         },
+        brand: {
+          DEFAULT: "hsl(var(--brand))",
+          foreground: "hsl(var(--brand-foreground))",
+        },
       },
     },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate")],
 };
