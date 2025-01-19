@@ -1,14 +1,13 @@
 import { useState } from "react";
 import styled from "styled-components";
 import LoginImg from "../assets/images/signup.jpg";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import Logo from "../components/Logo";
 import { useVerifyCodeMutation } from "../redux/apis/auth";
 import { message } from "antd";
 
 export default function VerifyCode() {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [code, setCode] = useState("");
   const email = searchParams.get("email");
@@ -32,8 +31,6 @@ export default function VerifyCode() {
       message.error(error.data.message);
       return;
     }
-
-    navigate("/setup-password");
   };
 
   return (

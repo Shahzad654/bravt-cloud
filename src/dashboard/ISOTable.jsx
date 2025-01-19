@@ -12,11 +12,47 @@ const ISOTable = () => {
   const [pollingInterval, setPollingInterval] = useState(0);
   const { data, isLoading } = useListISOsQuery(undefined, {
     pollingInterval,
-    selectFromResult: ({ data, isLoading, ...rest }) => ({
-      data: data ?? previousDataRef.current,
-      isLoading: previousDataRef.current ? false : isLoading,
-      ...rest,
-    }),
+    selectFromResult: ({ data: fetchedData, isLoading, ...rest }) => {
+      if (!fetchedData && !previousDataRef.current) {
+        return { data: undefined, isLoading, ...rest };
+      }
+
+      if (previousDataRef.current && fetchedData) {
+        const updatedData = previousDataRef.current.map((prevItem) => {
+          const stillExists = fetchedData.some(
+            (newItem) => newItem.id === prevItem.id
+          );
+
+          if (!stillExists) {
+            return { ...prevItem, status: "failed" };
+          }
+
+          return (
+            fetchedData.find((newItem) => newItem.id === prevItem.id) ||
+            prevItem
+          );
+        });
+
+        const newItems = fetchedData.filter(
+          (newItem) =>
+            !previousDataRef.current.some(
+              (prevItem) => prevItem.id === newItem.id
+            )
+        );
+
+        return {
+          data: [...updatedData, ...newItems],
+          isLoading: previousDataRef.current ? false : isLoading,
+          ...rest,
+        };
+      }
+
+      return {
+        data: fetchedData ?? previousDataRef.current,
+        isLoading: previousDataRef.current ? false : isLoading,
+        ...rest,
+      };
+    },
   });
 
   const isAnyISOPending = useMemo(() => {

@@ -91,7 +91,7 @@ const CreateFirewallRuleModal = ({ ip_type = "v4" }) => {
           <InputNumber style={{ width: "100%" }} />
         </Form.Item>
 
-        <Form.Item name="notes" label="Notes" rules={[{ required: true }]}>
+        <Form.Item name="notes" label="Notes">
           <Input.TextArea />
         </Form.Item>
       </Modal>
