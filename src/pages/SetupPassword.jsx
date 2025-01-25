@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import LoginImg from "../assets/images/signup.jpg";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import Logo from "../components/Logo";
 import {
@@ -11,18 +11,12 @@ import {
 import { message } from "antd";
 
 export default function SetupPassword() {
-  const navigate = useNavigate();
-
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const [setupPassword, { isLoading }] = useSetupPasswordMutation();
 
   const { data: user } = useGetSessionQuery();
-
-  if (!user.initial) {
-    <Navigate to="/instance" replace />;
-  }
 
   const handleSetupPassword = async (e) => {
     e.preventDefault();
@@ -51,9 +45,11 @@ export default function SetupPassword() {
       message.error(error.data.message);
       return;
     }
-
-    navigate("/billing-info");
   };
+
+  if (!user.initial) {
+    return <Navigate to="/instance" replace />;
+  }
 
   return (
     <Main>

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import LoginImg from "../assets/images/signup.jpg";
 import { Form, Input, InputNumber, message, Select } from "antd";
 import { CircularProgress } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+
 import Logo from "../components/Logo";
 import PhoneInput from "antd-phone-input";
 import {
@@ -12,7 +12,6 @@ import {
 } from "../redux/apis/auth";
 
 export default function BillingInfo() {
-  const navigate = useNavigate();
   const [form] = Form.useForm();
   const [countries, setCountries] = useState([]);
 
@@ -47,7 +46,7 @@ export default function BillingInfo() {
       return;
     }
 
-    navigate("/payment");
+    window.location.href = "/payment";
   };
 
   const formItemLayout = {
