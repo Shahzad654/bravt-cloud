@@ -1,9 +1,9 @@
 import { Outlet, Navigate } from "react-router-dom";
-import DashboardSidebar from "../components/DashboardSidebar";
+import AdminSidebar from "../admin/AdminSidebar";
 import PageSpinner from "../components/PageSpinner";
 import { useGetSessionQuery } from "../redux/apis/auth";
 
-const ProtectedLayout = () => {
+const AdminLayout = () => {
   const { data, isLoading } = useGetSessionQuery();
 
   if (isLoading) {
@@ -18,14 +18,26 @@ const ProtectedLayout = () => {
     return <Navigate to="/setup-password" replace />;
   }
 
+  if (data.role !== "ADMIN") {
+    return <Navigate to="/instance" replace />;
+  }
+
   return (
     <div style={{ display: "flex" }}>
-      <DashboardSidebar />
-      <div style={{ position: "relative", width: "100%", flex: "1 1 0%" }}>
+      <AdminSidebar />
+      <div
+        className="tailwind-layout"
+        style={{
+          position: "relative",
+          width: "100%",
+          flex: "1 1 0%",
+          padding: "24px",
+        }}
+      >
         <Outlet />
       </div>
     </div>
   );
 };
 
-export default ProtectedLayout;
+export default AdminLayout;

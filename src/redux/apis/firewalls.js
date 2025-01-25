@@ -120,7 +120,7 @@ const firewallsApi = createApi({
 
     deleteFirewallRule: builder.mutation({
       query: ({ id, ruleId }) => ({
-        url: `firewall/${id}/${ruleId}`,
+        url: `firewall/rules/${id}/${ruleId}`,
         method: "DELETE",
       }),
       invalidatesTags: (_, __, { id }) => [{ type: "FirewallRules", id }],

@@ -1,6 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
 import PageSpinner from "../components/PageSpinner";
-import { Suspense } from "react";
 import { useGetSessionQuery } from "../redux/apis/auth";
 
 const ProtectedLayout = () => {
@@ -10,13 +9,15 @@ const ProtectedLayout = () => {
     return <PageSpinner />;
   }
 
-  return data ? (
-    <Suspense fallback={<PageSpinner />}>
-      <Outlet />
-    </Suspense>
-  ) : (
-    <Navigate to="/login" replace />
-  );
+  if (data) {
+    if (data.initial === true) {
+      return <Navigate to="/setup-password" replace />;
+    } else {
+      <Outlet />;
+    }
+  }
+
+  return <Navigate to="/login" replace />;
 };
 
 export default ProtectedLayout;

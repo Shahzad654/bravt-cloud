@@ -1,8 +1,9 @@
 import { cn } from "../../utils/helpers";
+import { BlurFade } from "./BlurFade";
 
 export function OrbEffect({ className }) {
   return (
-    <div className={cn("relative w-full pt-12", className)}>
+    <BlurFade delay={1} className={cn("relative w-full pt-12", className)}>
       <div className="relative w-full pt-[20%]">
         {/* Main Orb Container */}
         <div
@@ -48,6 +49,6 @@ export function OrbEffect({ className }) {
           />
         </div>
       </div>
-    </div>
+    </BlurFade>
   );
 }

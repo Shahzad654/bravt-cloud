@@ -3,8 +3,10 @@ import { Table } from "antd";
 
 import { formatPrice } from "../../utils/helpers";
 import { useGetPlansQuery } from "../../redux/apis/instances";
+import { useQueryState } from "nuqs";
 
 const PlansSelect = ({ value, onValueChange, region }) => {
+  const [queryPlan] = useQueryState("selected_plan");
   const { data, isLoading } = useGetPlansQuery(region);
 
   const plan = useMemo(() => {
@@ -12,10 +14,20 @@ const PlansSelect = ({ value, onValueChange, region }) => {
   }, [data, value]);
 
   useEffect(() => {
-    if (data?.length && !plan) {
+    if (!data?.length || value) return;
+
+    if (queryPlan) {
+      const qPlan = data?.find((p) => p.id === queryPlan);
+      if (qPlan) {
+        onValueChange(qPlan.plan);
+        return;
+      }
+    }
+
+    if (!plan) {
       onValueChange(data[0]?.plan);
     }
-  }, [data, plan, onValueChange]);
+  }, [data, plan, queryPlan, onValueChange]);
 
   const columns = [
     {

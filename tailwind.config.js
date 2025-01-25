@@ -5,6 +5,7 @@ export default {
     "./src/dashboard/FirewallDetails/*.{js,ts,jsx,tsx}",
     "./src/dashboard/CreateSnapshot/*.{js,ts,jsx,tsx}",
     "./src/pages/Landing/*.{js,ts,jsx,tsx}",
+    "./src/admin/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {

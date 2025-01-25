@@ -41,7 +41,7 @@ export const REGIONS = {
     coords: { lat: 47.6062, lng: -122.3321 },
   },
   sjc: {
-    city: "San Jose",
+    city: "San Valley",
     countryCode: "US",
     coords: { lat: 37.3382, lng: -121.8863 },
   },
@@ -49,6 +49,11 @@ export const REGIONS = {
     city: "Toronto",
     countryCode: "CA",
     coords: { lat: 43.6532, lng: -79.3832 },
+  },
+  mex: {
+    city: "Mexico City",
+    countryCode: "MX",
+    coords: { lat: 19.4326, lng: -99.1332 },
   },
 
   // Europe
@@ -105,7 +110,7 @@ export const REGIONS = {
     coords: { lat: 19.076, lng: 72.8777 },
   },
   del: {
-    city: "Delhi",
+    city: "Delhi NCR",
     countryCode: "IN",
     coords: { lat: 28.6139, lng: 77.209 },
   },
@@ -166,12 +171,5 @@ export const REGIONS = {
     city: "Sydney",
     countryCode: "AU",
     coords: { lat: -33.8688, lng: 151.2093 },
-  },
-
-  // Central America
-  mex: {
-    city: "Mexico City",
-    countryCode: "MX",
-    coords: { lat: 19.4326, lng: -99.1332 },
   },
 };

@@ -7,7 +7,10 @@ export default function Hero() {
   const { daza: user } = useGetSessionQuery();
 
   return (
-    <section className="py-12 pb-0 overflow-hidden sm:py-24 md:py-32 fade-bottom">
+    <section
+      id="home"
+      className="py-12 pb-0 overflow-hidden sm:py-24 md:py-32 fade-bottom"
+    >
       <div className="relative px-6 py-16 overflow-hidden md:py-28 lg:py-36">
         <div className="container flex flex-col gap-16 mx-auto lg:gap-28">
           <div className="flex flex-col items-center text-center">
@@ -27,7 +30,7 @@ export default function Hero() {
             </BlurFade>
 
             <BlurFade
-              delay={0.5}
+              delay={0.75}
               className="relative z-10 flex flex-col items-center w-full mt-6 space-y-3 lg:mt-8"
             >
               <Link

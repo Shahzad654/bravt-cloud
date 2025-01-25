@@ -1,6 +1,3 @@
-
-
-
 node_modules/
 
 #Macos
@@ -14,4 +11,4 @@ bun.lockb
 
 # output
 dist
-
+build.zip

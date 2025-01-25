@@ -46,7 +46,7 @@ export default function Login() {
       return;
     }
 
-    const { error } = await login(formData);
+    const { error, data } = await login(formData);
 
     if (error) {
       setSnackbar({
@@ -61,7 +61,7 @@ export default function Login() {
         severity: "success",
       });
 
-      navigate("/instance");
+      navigate(data.user.role === "ADMIN" ? "/dashboard" : "/instance");
     }
   };
 

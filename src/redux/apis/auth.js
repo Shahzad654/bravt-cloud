@@ -49,7 +49,6 @@ const authApi = createApi({
         try {
           const { data } = await queryFulfilled;
           localStorage.setItem("access_token", data.token);
-          window.location.href = "/setup-password";
           dispatch(
             authApi.util.updateQueryData("getSession", undefined, (draft) => {
               Object.assign(draft, data.user);

@@ -2,7 +2,7 @@ import { Button, Result } from "antd";
 import { useGetSessionQuery } from "../redux/apis/auth";
 import { Link } from "react-router-dom";
 
-const NotFound = ({ href = "/instance" }) => {
+const NotFound = () => {
   const { data: user } = useGetSessionQuery();
 
   return (
@@ -19,7 +19,17 @@ const NotFound = ({ href = "/instance" }) => {
         title="404"
         subTitle="Sorry, the page you visited does not exist."
         extra={
-          <Link to={user ? href : "/login"}>
+          <Link
+            to={
+              user
+                ? user.initial
+                  ? "/setup-password"
+                  : user.role === "ADMIN"
+                    ? "/dashboard"
+                    : "/instance"
+                : "/login"
+            }
+          >
             <Button type="primary">Back Home</Button>
           </Link>
         }

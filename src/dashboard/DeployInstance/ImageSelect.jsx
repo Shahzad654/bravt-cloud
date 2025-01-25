@@ -99,7 +99,7 @@ function ImageDropdown({ image, value, onValueChange }) {
     return image.versions.map((v) => ({
       key: v.id,
       label: v.name,
-      icon: <Icon color={color} />,
+      icon: <Icon size={18} color={color} />,
       onClick: () => onValueChange(v.id),
     }));
   }, [image, color, onValueChange]);

@@ -13,10 +13,10 @@ import {
 
 import { TbCloudComputing } from "react-icons/tb";
 import {
-  FiDollarSign as MoneyIcon,
-  FiUser as ProfileIcon,
-  FiChevronDown as ExpandMoreIcon,
-  FiChevronUp as ExpandLessIcon,
+  FiDollarSign,
+  FiUser,
+  FiChevronDown,
+  FiChevronUp,
 } from "react-icons/fi";
 
 import Logo from "./Logo";
@@ -55,7 +55,7 @@ const menuItems = [
   },
   {
     label: "Financial",
-    icon: <MoneyIcon size={20} />,
+    icon: <FiDollarSign size={20} />,
     children: [
       { label: "Payment", path: "/payment" },
       // { label: "Resource Record", path: "/resource-record" },
@@ -74,7 +74,7 @@ const menuItems = [
   // },
   {
     label: "Account",
-    icon: <ProfileIcon size={20} />,
+    icon: <FiUser size={20} />,
     children: [
       { label: "Profile", path: "/profile" },
       { label: "SSH keys", path: "/ssh-keys" },
@@ -143,9 +143,9 @@ const DashboardSidebar = () => {
         <ListItemIcon>{item.icon}</ListItemIcon>
         <ListItemText primary={item.label} />
         {openMenus[item.label] ? (
-          <ExpandLessIcon size={16} />
+          <FiChevronUp size={16} />
         ) : (
-          <ExpandMoreIcon size={16} />
+          <FiChevronDown size={16} />
         )}
       </ListItemButton>
       <Collapse in={openMenus[item.label]} timeout="auto" unmountOnExit>
@@ -191,7 +191,7 @@ const DashboardSidebar = () => {
         variant="outlined"
         onClick={handleLogout}
         sx={{
-          margin: "10px 16px",
+          margin: "auto 16px 10px 16px",
           textTransform: "none",
           "&:hover": {
             backgroundColor: "rgba(0, 0, 0, 0.04)",

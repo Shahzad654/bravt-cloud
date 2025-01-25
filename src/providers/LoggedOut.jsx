@@ -1,6 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
 import PageSpinner from "../components/PageSpinner";
-import { Suspense } from "react";
 import { useGetSessionQuery } from "../redux/apis/auth";
 
 const LoggedOut = () => {
@@ -11,11 +10,18 @@ const LoggedOut = () => {
   }
 
   return data ? (
-    <Navigate to="/instance" replace />
+    <Navigate
+      to={
+        data.initial === true
+          ? "/setup-password"
+          : data.role === "ADMIN"
+            ? "/dashboard"
+            : "/instance"
+      }
+      replace
+    />
   ) : (
-    <Suspense fallback={<PageSpinner />}>
-      <Outlet />
-    </Suspense>
+    <Outlet />
   );
 };
 

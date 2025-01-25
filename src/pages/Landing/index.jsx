@@ -1,23 +1,23 @@
-// import Header from "./Header";
-// import Hero from "./Hero";
-// import Locations from "./Locations";
-// import LazyWorldMap from "./LazyWorldMap";
-import { Navigate } from "react-router-dom";
-import { useGetSessionQuery } from "../../redux/apis/auth";
+import Features from "./Features";
+import Footer from "./Footer";
+import Header from "./Header";
+import Hero from "./Hero";
+import Locations from "./Locations";
+import Pricing from "./Pricing";
+import Testimonials from "./Testimonials";
 
 const Landing = () => {
-  const { data } = useGetSessionQuery();
-
-  return <Navigate to={data ? "/instance" : "/login"} replace />;
-
-  // return (
-  //   <div className="tailwind-layout">
-  //     <Header />
-  //     <Hero />
-  //     <Locations />
-  //     <LazyWorldMap />
-  //   </div>
-  // );
+  return (
+    <div className="tailwind-layout">
+      <Header />
+      <Hero />
+      <Locations />
+      <Features />
+      <Pricing />
+      <Testimonials />
+      <Footer />
+    </div>
+  );
 };
 
 export default Landing;
