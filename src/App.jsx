@@ -2,6 +2,7 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import { Routes, Route, useLocation } from "react-router-dom";
+import { ErrorBoundary } from "react-error-boundary";
 
 import LoggedOut from "./providers/LoggedOut";
 import DashboardLayout from "./providers/DashboardLayout";
@@ -43,6 +44,7 @@ import { useEffect } from "react";
 import AdminLayout from "./providers/AdminLayout";
 import AdminDashboard from "./admin/AdminDashboard";
 import AdminPlans from "./admin/AdminPlans";
+import ErrorFallback from "./components/ErrorFallback";
 
 export default function App() {
   const location = useLocation();
@@ -52,54 +54,56 @@ export default function App() {
   }, [location.pathname]);
 
   return (
-    <Routes>
-      <Route index element={<Landing />} />
-      <Route element={<LoggedOut />}>
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/forget-password" element={<ForgetPassword />} />
-        <Route path="/reset-password/:token" element={<ResetPassword />} />
-        <Route path="/verify-code" element={<VerifyCode />} />
-      </Route>
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
+      <Routes>
+        <Route index element={<Landing />} />
+        <Route element={<LoggedOut />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/forget-password" element={<ForgetPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="/verify-code" element={<VerifyCode />} />
+        </Route>
 
-      <Route path="/oauth-callback" element={<OAuthCallback />} />
+        <Route path="/oauth-callback" element={<OAuthCallback />} />
 
-      <Route element={<ProtectedLayout />}>
-        <Route path="/billing-info" element={<BillingInfo />} />
-        <Route path="/setup-password" element={<SetupPassword />} />
-      </Route>
+        <Route element={<ProtectedLayout />}>
+          <Route path="/billing-info" element={<BillingInfo />} />
+          <Route path="/setup-password" element={<SetupPassword />} />
+        </Route>
 
-      <Route element={<DashboardLayout />}>
-        <Route path="/instance" element={<Instance />} />
-        <Route path="/instance/deploy" element={<DeployInstance />} />
-        <Route path="/instance/:instanceId" element={<InstanceDetails />} />
-        <Route path="/network" element={<Network />} />
-        <Route path="/storage" element={<Storage />} />
-        <Route path="/snapshot" element={<Snapshot />} />
-        <Route path="/snapshot/create" element={<CreateSnapshot />} />
-        <Route path="/firewall" element={<Firewall />} />
-        <Route path="/firewall/:firewallId" element={<FirewallDetails />} />
-        <Route path="/images" element={<Images />} />
-        <Route path="/monitoring" element={<Monitoring />} />
-        <Route path="/payment" element={<Payment />} />
-        <Route path="/ticket" element={<Ticket />} />
-        <Route path="/link-code" element={<LinkCode />} />
-        <Route path="/resource-record" element={<ResourceRecord />} />
-        <Route path="/billing" element={<Billing />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/authentication" element={<Authentication />} />
-        <Route path="/ssh-keys" element={<SSHKeyTable />} />
-        <Route path="/ssh-keys/add" element={<AddSHH />} />
-        <Route path="/ssh-keys/:id" element={<UpdateSHH />} />
-        <Route path="/iso" element={<ISO />} />
-      </Route>
+        <Route element={<DashboardLayout />}>
+          <Route path="/instance" element={<Instance />} />
+          <Route path="/instance/deploy" element={<DeployInstance />} />
+          <Route path="/instance/:instanceId" element={<InstanceDetails />} />
+          <Route path="/network" element={<Network />} />
+          <Route path="/storage" element={<Storage />} />
+          <Route path="/snapshot" element={<Snapshot />} />
+          <Route path="/snapshot/create" element={<CreateSnapshot />} />
+          <Route path="/firewall" element={<Firewall />} />
+          <Route path="/firewall/:firewallId" element={<FirewallDetails />} />
+          <Route path="/images" element={<Images />} />
+          <Route path="/monitoring" element={<Monitoring />} />
+          <Route path="/payment" element={<Payment />} />
+          <Route path="/ticket" element={<Ticket />} />
+          <Route path="/link-code" element={<LinkCode />} />
+          <Route path="/resource-record" element={<ResourceRecord />} />
+          <Route path="/billing" element={<Billing />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/authentication" element={<Authentication />} />
+          <Route path="/ssh-keys" element={<SSHKeyTable />} />
+          <Route path="/ssh-keys/add" element={<AddSHH />} />
+          <Route path="/ssh-keys/:id" element={<UpdateSHH />} />
+          <Route path="/iso" element={<ISO />} />
+        </Route>
 
-      <Route element={<AdminLayout />}>
-        <Route path="/dashboard" element={<AdminDashboard />} />
-        <Route path="/plans" element={<AdminPlans />} />
-      </Route>
+        <Route element={<AdminLayout />}>
+          <Route path="/dashboard" element={<AdminDashboard />} />
+          <Route path="/plans" element={<AdminPlans />} />
+        </Route>
 
-      <Route path="/*" element={<NotFound />} />
-    </Routes>
+        <Route path="/*" element={<NotFound />} />
+      </Routes>
+    </ErrorBoundary>
   );
 }

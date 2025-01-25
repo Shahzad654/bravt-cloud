@@ -2,6 +2,7 @@ import { Outlet, Navigate } from "react-router-dom";
 import DashboardSidebar from "../components/DashboardSidebar";
 import PageSpinner from "../components/PageSpinner";
 import { useGetSessionQuery } from "../redux/apis/auth";
+import ErrorBoundary from "../components/ErrorBoundary";
 
 const ProtectedLayout = () => {
   const { data, isLoading } = useGetSessionQuery();
@@ -22,7 +23,9 @@ const ProtectedLayout = () => {
     <div style={{ display: "flex" }}>
       <DashboardSidebar />
       <div style={{ position: "relative", width: "100%", flex: "1 1 0%" }}>
-        <Outlet />
+        <ErrorBoundary>
+          <Outlet />
+        </ErrorBoundary>
       </div>
     </div>
   );

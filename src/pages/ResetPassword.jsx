@@ -14,10 +14,6 @@ export default function ResetPassword() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  if (!email) {
-    throw new Error("No Email!");
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!password || !confirmPassword) {
@@ -50,6 +46,10 @@ export default function ResetPassword() {
     navigate("/login");
     message.success("Password reset successfully!");
   };
+
+  if (!email) {
+    throw new Error("Something is wrong, try again!");
+  }
 
   return (
     <Main>

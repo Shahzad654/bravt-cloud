@@ -18,13 +18,19 @@ export const baseQueryWithReauth = async (args, store, extraOptions) => {
   let result = await baseQuery(args, store, extraOptions);
 
   // 401 error (Token Expiry)
-  if (result.error && result.error.status === 401) {
+  if (result?.error?.status === 401) {
     //Trying to get new access token
-    const { data } = await baseQuery(
-      { url: "auth/refresh", method: "POST" },
-      store,
-      extraOptions
-    );
+
+    const response = await fetch(`${API_URL}/api/auth/refresh`, {
+      credentials: "include",
+      method: "POST",
+    });
+
+    if (!response.ok) {
+      throw new Error("Unauthorized");
+    }
+
+    const data = await response.json();
 
     if (data) {
       localStorage.setItem("access_token", data.token);
