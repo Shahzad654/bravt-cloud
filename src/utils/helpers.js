@@ -3,11 +3,12 @@ import { format } from "date-fns";
 import { twMerge } from "tailwind-merge";
 
 export function formatPrice(amount) {
+  if (!amount) return "";
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
     minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
+    maximumFractionDigits: 3,
   });
 
   return formatter.format(amount);
@@ -30,7 +31,10 @@ export function cn(...inputs) {
 
 export function isInstanceInstalling(instance) {
   if (
-    instance?.server_status !== "ok" ||
+    !(
+      instance?.server_status === "ok" ||
+      instance?.server_status === "installingbooting"
+    ) ||
     instance?.status !== "active" ||
     !["running", "stopped"].includes(instance?.power_status)
   ) {

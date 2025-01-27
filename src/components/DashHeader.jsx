@@ -1,10 +1,11 @@
 import styled from "styled-components";
 import Logo from "../assets/images/logo.png";
-import { Layout, theme } from "antd";
+import { Button, Layout, Popover, Tag, theme } from "antd";
 import { Link } from "react-router-dom";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
-import { LuUser } from "react-icons/lu";
 import { useGetSessionQuery } from "../redux/apis/auth";
+import UserMenu from "./UserMenu";
+import { formatPrice } from "../utils/helpers";
 
 const { Header } = Layout;
 
@@ -33,25 +34,76 @@ const DashHeader = () => {
           </div>
           Docs
         </Link> */}
-        {/* <div className="link">
-          <div className="icon-border">
-            <GrLanguage className="icon" />
-          </div>
-          English
-        </div> */}
-        <Link to="/payment" className="link">
-          <div className="icon-border">
-            <RiMoneyDollarCircleLine className="icon" />
-          </div>
-          {data.credits}
-        </Link>
 
-        <Link to="/profile" className="link">
-          <div className="icon-border">
-            <LuUser className="icon" />
+        <Popover
+          content={
+            <div style={{ width: "250px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: "20px",
+                }}
+              >
+                <p
+                  style={{
+                    fontSize: "16px",
+                    fontWeight: "600",
+                  }}
+                >
+                  Balance
+                </p>
+
+                <p
+                  style={{
+                    fontSize: "16px",
+                    fontWeight: "600",
+                  }}
+                >
+                  {formatPrice(data.credits)}
+                </p>
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: "20px",
+                }}
+              >
+                <p
+                  style={{
+                    fontSize: "16px",
+                    fontWeight: "600",
+                  }}
+                >
+                  Status
+                </p>
+
+                <Tag color={data.isSubscribed ? "green" : "blue"}>
+                  {data.isSubscribed ? "Subscribed" : "Normal"}
+                </Tag>
+              </div>
+
+              <Link to="/payment">
+                <Button type="primary" style={{ width: "100%" }}>
+                  Recharge
+                </Button>
+              </Link>
+            </div>
+          }
+        >
+          <div className="link">
+            <div className="icon-border">
+              <RiMoneyDollarCircleLine className="icon" />
+            </div>
+            {Number(data.credits).toFixed(2)}
           </div>
-          {data.email}
-        </Link>
+        </Popover>
+
+        <UserMenu />
       </NavLinks>
     </StyledHeader>
   );
@@ -88,6 +140,7 @@ const NavLinks = styled.div`
     text-decoration: none;
     font-weight: 500;
     font-size: 1rem;
+    cursor: pointer;
 
     .icon-border {
       width: 32px;

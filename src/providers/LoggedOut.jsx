@@ -9,20 +9,22 @@ const LoggedOut = () => {
     return <PageSpinner />;
   }
 
-  return data ? (
-    <Navigate
-      to={
-        data.initial === true
-          ? "/setup-password"
-          : data.role === "ADMIN"
-            ? "/dashboard"
-            : "/instance"
-      }
-      replace
-    />
-  ) : (
-    <Outlet />
-  );
+  if (data) {
+    return (
+      <Navigate
+        replace
+        to={
+          data.initial === true
+            ? "/setup-password"
+            : data.role === "ADMIN"
+              ? "/dashboard"
+              : "/instance"
+        }
+      />
+    );
+  }
+
+  return <Outlet />;
 };
 
 export default LoggedOut;

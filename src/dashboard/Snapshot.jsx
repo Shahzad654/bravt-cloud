@@ -74,7 +74,7 @@ const Snapshot = () => {
     {
       title: "Charges",
       key: "creditsConsumed",
-      render: () => `${process.env.REACT_APP_SNAPSHOT_COST}/GB`,
+      render: (_, record) => `${record.creditsConsumed}/GB`,
     },
     {
       title: "Status",

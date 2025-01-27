@@ -34,12 +34,12 @@ export const apiErrorMiddleware =
     if (
       isRejectedWithValue(action) &&
       action.meta.arg.type === "query" &&
-      ![401, 403].includes(action.payload.status)
+      ![401, 403].includes(action.payload?.status)
     ) {
       dispatch(
         setError({
-          status: String(action.payload.status),
-          message: action.payload.data.message,
+          status: String(action.payload?.status),
+          message: action.payload.data?.message,
         })
       );
     }

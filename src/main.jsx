@@ -1,4 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
+
 import { Provider } from "react-redux";
 import { createRoot } from "react-dom/client";
 import App from "./App.jsx";

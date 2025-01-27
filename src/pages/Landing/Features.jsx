@@ -98,7 +98,7 @@ export default Features;
 const Feature = ({ title, description, icon: Icon, index }) => {
   return (
     <BlurFade
-      delay={(index + 1) * 0.25}
+      delay={(index + 1) * 0.1}
       className={cn(
         "flex flex-col lg:border-r  py-10 relative group/feature",
         (index === 0 || index === 4) && "lg:border-l",

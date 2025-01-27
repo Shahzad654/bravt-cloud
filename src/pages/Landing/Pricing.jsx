@@ -8,7 +8,7 @@ import { BlurFade } from "./BlurFade";
 
 const Pricing = () => {
   const { data: user } = useGetSessionQuery();
-  const { data, isLoading } = useGetPlansQuery("fra");
+  const { data, isLoading } = useGetPlansQuery("atl");
   const plans = useMemo(() => data?.slice(0, 3), [data]);
 
   return (

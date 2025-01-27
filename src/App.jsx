@@ -13,7 +13,6 @@ import Landing from "./pages/Landing";
 import Signup from "./pages/Signup";
 import ForgetPassword from "./pages/ForgetPassword";
 import ResetPassword from "./pages/ResetPassword";
-import BillingInfo from "./pages/BillingInfo";
 import Login from "./pages/Login";
 import Instance from "./dashboard/Instance";
 import Network from "./dashboard/Network";
@@ -45,6 +44,10 @@ import AdminLayout from "./providers/AdminLayout";
 import AdminDashboard from "./admin/AdminDashboard";
 import AdminPlans from "./admin/AdminPlans";
 import ErrorFallback from "./components/ErrorFallback";
+import ChangePassword from "./pages/ChangePassword";
+import PrivacyPolicy from "./pages/Legal/PrivacyPolicy";
+import AcceptableUsePolicy from "./pages/Legal/AcceptableUse";
+import TermsOfService from "./pages/Legal/Terms";
 
 export default function App() {
   const location = useLocation();
@@ -57,6 +60,9 @@ export default function App() {
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <Routes>
         <Route index element={<Landing />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/acceptable-use" element={<AcceptableUsePolicy />} />
+        <Route path="/terms" element={<TermsOfService />} />
         <Route element={<LoggedOut />}>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
@@ -68,7 +74,6 @@ export default function App() {
         <Route path="/oauth-callback" element={<OAuthCallback />} />
 
         <Route element={<ProtectedLayout />}>
-          <Route path="/billing-info" element={<BillingInfo />} />
           <Route path="/setup-password" element={<SetupPassword />} />
         </Route>
 
@@ -90,6 +95,7 @@ export default function App() {
           <Route path="/resource-record" element={<ResourceRecord />} />
           <Route path="/billing" element={<Billing />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/change-password" element={<ChangePassword />} />
           <Route path="/authentication" element={<Authentication />} />
           <Route path="/ssh-keys" element={<SSHKeyTable />} />
           <Route path="/ssh-keys/add" element={<AddSHH />} />

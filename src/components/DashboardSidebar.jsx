@@ -77,6 +77,7 @@ const menuItems = [
     icon: <FiUser size={20} />,
     children: [
       { label: "Profile", path: "/profile" },
+      { label: "Change Password", path: "/change-password" },
       { label: "SSH keys", path: "/ssh-keys" },
       // { label: "Authentication", path: "/authentication" },
     ],

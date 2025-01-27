@@ -6,6 +6,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Logo from "../components/Logo";
 import { useSendVerificationMutation } from "../redux/apis/auth";
 import { message } from "antd";
+import SignInWithoutEmail from "../components/SignInwithoutEmail";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -69,6 +70,8 @@ export default function Signup() {
             </p>
             <br />
           </form>
+
+          <SignInWithoutEmail />
         </div>
 
         <div className="image-container">

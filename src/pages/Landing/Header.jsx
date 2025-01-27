@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useGetSessionQuery } from "../../redux/apis/auth";
 import { cn, toSentenceCase } from "../../utils/helpers";
 import { useEffect, useState } from "react";
+import UserMenu from "../../components/UserMenu";
 
 const Header = () => {
   const { data, isLoading } = useGetSessionQuery();
@@ -63,28 +64,25 @@ const Header = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          <Link
-            to="/login"
-            className={cn(
-              "gap-2 px-3 py-2 transition-colors rounded-md hover:bg-zinc-100",
-              { "opacity-0 pointer-events-none": isLoading || data }
-            )}
-          >
-            Login
-          </Link>
+          {!data && !isLoading && (
+            <Link
+              to="/login"
+              className="gap-2 px-3 py-2 transition-colors rounded-md hover:bg-zinc-100"
+            >
+              Login
+            </Link>
+          )}
 
-          <Link
-            to={
-              data
-                ? data.role === "ADMIN"
-                  ? "/dashboard"
-                  : "/instance"
-                : "/signup"
-            }
-            className="transition-colors px-3 py-2 gap-2 rounded-md bg-gradient-to-br from-brand via-brand-foreground to-brand-foreground text-white hover:!bg-primary"
-          >
-            Get Started
-          </Link>
+          {data ? (
+            <UserMenu />
+          ) : (
+            <Link
+              to="/signup"
+              className="transition-colors px-3 py-2 gap-2 rounded-md bg-gradient-to-br from-brand via-brand-foreground to-brand-foreground text-white hover:!bg-primary"
+            >
+              Get Started
+            </Link>
+          )}
         </div>
       </div>
     </header>

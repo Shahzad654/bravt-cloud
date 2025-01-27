@@ -5,30 +5,40 @@ import { Flex, Tabs } from "antd";
 import { getCountryName, sortByCharacterPriority } from "../../utils/helpers";
 
 const RegionsSelect = ({ value, onValueChange }) => {
-  const [continent, setContinent] = useState("Europe");
+  const [continent, setContinent] = useState("All Locations");
   const { data, isLoading } = useGetRegionsQuery();
 
-  const regionsByContinent = useMemo(() => {
-    return sortByCharacterPriority(
-      data?.filter((region) => region.continent === continent),
-      "country",
-      "u"
-    );
+  const sortedRegions = useMemo(() => {
+    if (!data) return [];
+
+    const regions =
+      continent === "All Locations"
+        ? data
+        : data.filter((region) => region.continent === continent);
+
+    return sortByCharacterPriority(regions, "country", "u");
   }, [data, continent]);
 
   useEffect(() => {
-    if (regionsByContinent?.length && !value) {
-      onValueChange(regionsByContinent[0].id);
+    if (sortedRegions?.length && !value) {
+      onValueChange(sortedRegions[0].id);
     }
-  }, [regionsByContinent, value, onValueChange]);
+  }, [sortedRegions, value, onValueChange]);
 
   const continents = useMemo(() => {
-    return Array.from(
-      new Set(data?.map((region) => region.continent) || []).values()
-    ).map((c) => ({
-      key: c,
-      label: c,
-    }));
+    if (!data) return [];
+
+    const uniqueContinents = Array.from(
+      new Set(data.map((region) => region.continent))
+    );
+
+    return [
+      { key: "All Locations", label: "All Locations" },
+      ...uniqueContinents.map((c) => ({
+        key: c,
+        label: c,
+      })),
+    ];
   }, [data]);
 
   return (
@@ -38,7 +48,7 @@ const RegionsSelect = ({ value, onValueChange }) => {
       {isLoading ? (
         <Tabs
           activeKey="0"
-          items={Array.from({ length: 6 }).map((_, i) => ({
+          items={Array.from({ length: 7 }).map((_, i) => ({
             key: i.toString(),
             label: (
               <div
@@ -63,7 +73,7 @@ const RegionsSelect = ({ value, onValueChange }) => {
 
       <div className="grid-layout">
         {isLoading
-          ? Array.from({ length: 8 }).map((_, index) => (
+          ? Array.from({ length: 32 }).map((_, index) => (
               <div
                 key={index}
                 className="grid-item animate-pulse"
@@ -72,7 +82,7 @@ const RegionsSelect = ({ value, onValueChange }) => {
                 <div style={{ width: "28px", height: "28px" }} />
               </div>
             ))
-          : regionsByContinent.map((region) => (
+          : sortedRegions.map((region) => (
               <div
                 key={region.id}
                 className={`grid-item ${value === region.id ? "active" : ""}`}

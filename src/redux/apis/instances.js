@@ -1,5 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithReauth } from "../query";
+import { authUtil } from "./auth";
 
 const instancesApi = createApi({
   reducerPath: "instances",
@@ -87,6 +88,8 @@ const instancesApi = createApi({
             )
           );
 
+          dispatch(authUtil.invalidateTags([{ type: "Session" }]));
+
           // eslint-disable-next-line no-empty
         } catch {}
       },
@@ -101,6 +104,13 @@ const instancesApi = createApi({
         { type: "AllInstances" },
         { type: "Instance", id },
       ],
+      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+          dispatch(authUtil.invalidateTags([{ type: "Session" }]));
+          // eslint-disable-next-line no-empty
+        } catch {}
+      },
     }),
 
     reinstallInstance: builder.mutation({
@@ -122,6 +132,7 @@ const instancesApi = createApi({
             )
           );
 
+          dispatch(authUtil.invalidateTags([{ type: "Session" }]));
           // eslint-disable-next-line no-empty
         } catch {}
       },
@@ -178,6 +189,8 @@ const instancesApi = createApi({
           dispatch(
             instancesApi.util.updateQueryData("getInstanceById", id, () => null)
           );
+
+          dispatch(authUtil.invalidateTags([{ type: "Session" }]));
           // eslint-disable-next-line no-empty
         } catch {}
       },

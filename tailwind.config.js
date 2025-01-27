@@ -6,6 +6,7 @@ export default {
     "./src/dashboard/CreateSnapshot/*.{js,ts,jsx,tsx}",
     "./src/pages/Landing/*.{js,ts,jsx,tsx}",
     "./src/admin/*.{js,ts,jsx,tsx}",
+    "./src/pages/Legal/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {

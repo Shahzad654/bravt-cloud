@@ -17,15 +17,11 @@ const authApi = createApi({
         method: "POST",
         body,
       }),
-      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+      onQueryStarted: async (_, { queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
           localStorage.setItem("access_token", data.token);
-          dispatch(
-            authApi.util.updateQueryData("getSession", undefined, (draft) => {
-              Object.assign(draft, data.user);
-            })
-          );
+          window.location.href = "/instance";
           // eslint-disable-next-line no-empty
         } catch {}
       },
@@ -65,7 +61,22 @@ const authApi = createApi({
         try {
           const { data } = await queryFulfilled;
           localStorage.setItem("access_token", data.token);
-          window.location.href = "/billing-info";
+          window.location.href = "/instance";
+          // eslint-disable-next-line no-empty
+        } catch {}
+      },
+    }),
+
+    changePassword: builder.mutation({
+      query: (body) => ({
+        url: "auth/change-password",
+        method: "PATCH",
+        body,
+      }),
+      onQueryStarted: async (_, { queryFulfilled }) => {
+        try {
+          const { data } = await queryFulfilled;
+          localStorage.setItem("access_token", data.token);
           // eslint-disable-next-line no-empty
         } catch {}
       },
@@ -136,6 +147,7 @@ export const {
   useSendPasswordResetVerificationMutation,
   useResetPasswordMutation,
   useUpdateProfileMutation,
+  useChangePasswordMutation,
   useLogoutMutation,
 } = authApi;
 

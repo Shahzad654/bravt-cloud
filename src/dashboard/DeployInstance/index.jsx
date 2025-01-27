@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import styled from "styled-components";
 import {
   Breadcrumb,
@@ -17,8 +17,12 @@ import RegionsSelect from "./RegionsSelect";
 import { useNavigate } from "react-router-dom";
 import SSHKeySelect from "./SSHKeySelect";
 import FirewallGroupSelect from "./FirewallGroupSelect";
-import { useCreateInstanceMutation } from "../../redux/apis/instances";
+import {
+  useCreateInstanceMutation,
+  useGetPlansQuery,
+} from "../../redux/apis/instances";
 import ISOSelect from "./ISOSelect";
+import { formatPrice } from "../../utils/helpers";
 
 const { Content } = Layout;
 
@@ -33,10 +37,22 @@ const DeployInstance = () => {
   const [firewallGroup, setFirewallGroup] = useState("");
   const [selectedISO, setSelectedISO] = useState(null);
 
+  const { data: plans } = useGetPlansQuery(selectedRegion);
+  const plan = useMemo(
+    () => plans?.find((p) => p.plan === selectedPlan),
+    [plans, selectedPlan]
+  );
+
   const [createInstance, { isLoading }] = useCreateInstanceMutation();
 
   const handleCreateInstance = async () => {
-    if (!selectedPlan || !selectedRegion || !hostname || !label) {
+    if (
+      !selectedPlan ||
+      !selectedRegion ||
+      !hostname ||
+      !label ||
+      (!selectedImage && !selectedISO)
+    ) {
       message.error("Please fill all the required fields!");
       return;
     }
@@ -71,7 +87,7 @@ const DeployInstance = () => {
           spinning
           percent="auto"
           fullscreen
-          tip="Creating Instance..."
+          tip={<p style={{ marginTop: "52px" }}>Creating Instance...</p>}
         />
       )}
 
@@ -91,7 +107,7 @@ const DeployInstance = () => {
             </Breadcrumb>
             <div
               style={{
-                padding: 24,
+                padding: "24px 24px 0px 24px",
                 minHeight: 360,
                 background: "white",
                 borderRadius: "8px",
@@ -101,12 +117,6 @@ const DeployInstance = () => {
                 <RegionsSelect
                   value={selectedRegion}
                   onValueChange={setSelectedRegion}
-                />
-
-                <PlansSelect
-                  value={selectedPlan}
-                  onValueChange={setSelectedPlan}
-                  region={selectedRegion}
                 />
 
                 <Tabs
@@ -139,6 +149,12 @@ const DeployInstance = () => {
                       ),
                     },
                   ]}
+                />
+
+                <PlansSelect
+                  value={selectedPlan}
+                  onValueChange={setSelectedPlan}
+                  region={selectedRegion}
                 />
 
                 <div
@@ -190,15 +206,59 @@ const DeployInstance = () => {
                   />
                 </div>
 
-                <Button
-                  type="primary"
-                  size="large"
-                  onClick={handleCreateInstance}
-                  loading={isLoading}
-                  style={{ marginTop: "20px", width: "100%" }}
+                <footer
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    marginTop: "20px",
+                    width: "100%",
+                    position: "sticky",
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    backgroundColor: "white",
+                    zIndex: 40,
+                    padding: "16px 20px",
+                    borderTop: "1px solid #e5e5e5",
+                    boxShadow: "0 -1px 8px rgba(0, 0, 0, 0.1)",
+                  }}
                 >
-                  Create Instance
-                </Button>
+                  <div>
+                    <p
+                      style={{
+                        padding: 0,
+                        margin: 0,
+                        fontSize: "14px",
+                        color: "#a3a3a3",
+                      }}
+                    >
+                      Summary
+                    </p>
+                    <h2
+                      style={{
+                        padding: 0,
+                        margin: 0,
+                        marginTop: "2px",
+                        fontSize: "24px",
+                        color: "var(--primary-color)",
+                      }}
+                    >
+                      {formatPrice(plan?.hourlyCost)}/hour{" "}
+                      <span style={{ fontSize: "12px", color: "gray" }}>
+                        ({formatPrice(plan?.monthlyCost)}/month)
+                      </span>
+                    </h2>
+                  </div>
+                  <Button
+                    type="primary"
+                    size="large"
+                    onClick={handleCreateInstance}
+                    loading={isLoading}
+                  >
+                    Create Instance
+                  </Button>
+                </footer>
               </PageContent>
             </div>
           </Content>

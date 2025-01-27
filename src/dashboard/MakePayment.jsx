@@ -6,6 +6,7 @@ import { BsCreditCard2FrontFill, BsCurrencyDollar } from "react-icons/bs";
 import { FaPaypal } from "react-icons/fa";
 import PaymentForm from "./PaymentForm";
 import Paypal from "./Paypal";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 const { Content } = Layout;
 
@@ -119,7 +120,13 @@ const MakePayment = () => {
               {paymentMethod === "stripe" ? (
                 <PaymentForm credits={value} />
               ) : (
-                <Paypal credits={value} />
+                <PayPalScriptProvider
+                  options={{
+                    clientId: process.env.REACT_APP_PAYPAL_PUBLIC_KEY,
+                  }}
+                >
+                  <Paypal credits={value} />
+                </PayPalScriptProvider>
               )}
             </PageContent>
           </div>

@@ -7,11 +7,17 @@ import { TbCopy, TbCopyCheckFilled } from "react-icons/tb";
 import BandwidthUsage from "./BandwidthUsage";
 import CreditsUsage from "./CreditsUsage";
 import UpdateLabel from "./UpdateLabel";
+import { useState } from "react";
+import { VscEye, VscEyeClosed } from "react-icons/vsc";
+import { Tooltip } from "antd";
 
 const InstanceOverview = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const { instanceId } = useParams();
   const { data } = useGetInstanceByIdQuery(instanceId);
   const { isCopied, copyToClipboard } = useCopyToClipboard();
+  const { isCopied: isPwCopied, copyToClipboard: copyPw } =
+    useCopyToClipboard();
 
   const region = REGIONS[data.region];
 
@@ -119,7 +125,28 @@ const InstanceOverview = () => {
               <tr>
                 <td className="w-2/3 py-2 text-sm text-zinc-500">OS:</td>
                 <td className="py-2">
-                  <div className="text-sm">{data.os}</div>
+                  <div className="text-sm whitespace-pre">{data.os}</div>
+                </td>
+              </tr>
+              <tr>
+                <td className="w-2/3 py-2 text-sm text-zinc-500">Password:</td>
+                <td className="flex items-center gap-2 py-2">
+                  <Tooltip
+                    title={isPwCopied ? "Password copied" : "Click to copy"}
+                  >
+                    <button
+                      onClick={() => copyPw(data.password)}
+                      className="text-sm whitespace-pre cursor-pointer"
+                    >
+                      {showPassword ? data.password : "••••••••••••••••"}
+                    </button>
+                  </Tooltip>
+                  <button
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="flex items-center justify-center text-zinc-500 hover:text-black transition-colors rounded-md size-6 focus-visible:bg-zinc-200 focus-visible:outline-none hover:bg-zinc-200 [&>_svg]:size-5"
+                  >
+                    {showPassword ? <VscEyeClosed /> : <VscEye />}
+                  </button>
                 </td>
               </tr>
             </tbody>

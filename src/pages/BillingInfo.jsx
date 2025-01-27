@@ -46,7 +46,7 @@ export default function BillingInfo() {
       return;
     }
 
-    window.location.href = "/payment";
+    window.location.href = "/instance";
   };
 
   const formItemLayout = {
