@@ -1,21 +1,24 @@
 import { App, message, Table, Tag, Tooltip } from "antd";
-import { LuArchiveRestore } from "react-icons/lu";
-import { useGetSnapshotsQuery } from "../../redux/apis/snapshots";
-import { formatDate, toSentenceCase } from "../../utils/helpers";
+import { toSentenceCase } from "../../utils/helpers";
 import {
   useGetInstanceByIdQuery,
+  useListBackupsQuery,
   useRestoreInstanceMutation,
 } from "../../redux/apis/instances";
 import { useParams } from "react-router-dom";
+import { LuArchiveRestore } from "react-icons/lu";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { format } from "date-fns";
 
-const RestoreSnapshot = () => {
+const BackupsTable = () => {
   const { modal } = App.useApp();
+  const { instanceId } = useParams();
+  const { data: instance } = useGetInstanceByIdQuery(instanceId);
 
   const previousDataRef = useRef();
   const [pollingInterval, setPollingInterval] = useState(0);
 
-  const { data, isLoading } = useGetSnapshotsQuery(undefined, {
+  const { data, isLoading } = useListBackupsQuery(instanceId, {
     pollingInterval,
     selectFromResult: ({ data, isLoading, ...rest }) => ({
       data: data ?? previousDataRef.current,
@@ -24,8 +27,8 @@ const RestoreSnapshot = () => {
     }),
   });
 
-  const isAnySnapshotPending = useMemo(() => {
-    return data?.some((snapshot) => snapshot.status === "pending");
+  const isAnyBackupPending = useMemo(() => {
+    return data?.some((backup) => backup.status === "pending");
   }, [data]);
 
   useEffect(() => {
@@ -35,36 +38,29 @@ const RestoreSnapshot = () => {
   }, [data]);
 
   useEffect(() => {
-    if (isAnySnapshotPending) {
+    if (isAnyBackupPending) {
       setPollingInterval(5000);
     } else {
       setPollingInterval(0);
     }
-  }, [isAnySnapshotPending]);
+  }, [isAnyBackupPending]);
 
   const [restoreInstance] = useRestoreInstanceMutation();
-
-  const { instanceId } = useParams();
-  const { data: instance } = useGetInstanceByIdQuery(instanceId);
 
   const columns = [
     {
       title: "Label",
       dataIndex: "description",
-      sorter: (a, b) => a.description?.localeCompare(b.description),
-      showSorterTooltip: {
-        target: "full-header",
-      },
     },
     {
       title: "Size",
-      dataIndex: "compressed_size",
-      render: (val) => `${(val / 1024 / 1024 / 1024).toFixed(2)} GB`,
+      dataIndex: "size",
+      render: (val) => `${val / 1024 / 1024 / 1024} GB`,
     },
     {
       title: "Date",
       dataIndex: "date_created",
-      render: formatDate,
+      render: (val) => format(val, "dd MMM yyyy hh:mm a"),
     },
     {
       title: "Status",
@@ -86,29 +82,28 @@ const RestoreSnapshot = () => {
         const isPending = record.status === "pending";
 
         return (
-          <Tooltip title={isPending ? "Snapshot Pending" : "Restore snapshot"}>
+          <Tooltip title={isPending ? "Backup Pending" : "Restore backup"}>
             <button
               disabled={isPending}
-              aria-label="Restore snapshot"
+              aria-label="Restore backup"
               className="px-4 disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={() => {
                 modal.confirm({
-                  title: "Restore snapshot",
-                  content: `This will restore snapshot "${record.description}" on ${instance.label ? `instance "${instance.label}"` : "this instance"}`,
+                  title: "Restore backup",
+                  content: `This will restore backup "${record.description}" on ${instance.label ? `instance "${instance.label}"` : "this instance"}`,
                   okText: "Restore",
                   okCancel: true,
                   onOk: async () => {
                     const { error } = await restoreInstance({
                       id: instanceId,
-                      snapshot_id: record.id,
+                      backup_id: record.id,
                     });
-
                     if (error) {
                       message.error(
-                        error.data.message || "Failed to restore snapshot"
+                        error.data.message || "Failed to restore backup"
                       );
                     } else {
-                      message.success("Snapshot Restored!");
+                      message.success("Backup Restored!");
                     }
                   },
                 });
@@ -124,7 +119,7 @@ const RestoreSnapshot = () => {
 
   return (
     <div className="w-full mt-4 bg-white">
-      <h1 className="text-2xl font-semibold">Restore Snapshot</h1>
+      <h1 className="text-2xl font-semibold">Restore Backup</h1>
       <Table
         columns={columns}
         dataSource={data}
@@ -138,4 +133,4 @@ const RestoreSnapshot = () => {
   );
 };
 
-export default RestoreSnapshot;
+export default BackupsTable;

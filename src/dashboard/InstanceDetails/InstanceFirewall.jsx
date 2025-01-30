@@ -30,14 +30,16 @@ const InstanceFirewall = () => {
       id: instanceId,
       firewall_group_id: firewall_group_id,
     });
+
     if (error) {
       message.error(error.data.message || "Failed to update firewall!");
-    } else {
-      notification.success({
-        message: "Instance firewall updated!",
-        description: "It may take over 2 minutes for these changes to apply!",
-      });
+      return;
     }
+
+    notification.success({
+      message: "Instance firewall updated!",
+      description: "It may take over 2 minutes for these changes to apply!",
+    });
   };
 
   return (

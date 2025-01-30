@@ -3,7 +3,10 @@ import { format } from "date-fns";
 import { twMerge } from "tailwind-merge";
 
 export function formatPrice(amount) {
-  if (!amount) return "";
+  if (isNaN(Number(amount))) {
+    return "";
+  }
+
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
@@ -31,10 +34,8 @@ export function cn(...inputs) {
 
 export function isInstanceInstalling(instance) {
   if (
-    !(
-      instance?.server_status === "ok" ||
-      instance?.server_status === "installingbooting"
-    ) ||
+    (instance?.server_status !== "ok" &&
+      instance?.server_status !== "installingbooting") ||
     instance?.status !== "active" ||
     !["running", "stopped"].includes(instance?.power_status)
   ) {
@@ -73,4 +74,12 @@ export function formatDate(date) {
 export function getCountryName(countryCode) {
   const regions = new Intl.DisplayNames(["en"], { type: "region" });
   return regions.of(countryCode);
+}
+
+export function toMonthlyPrice(amount) {
+  if (isNaN(Number(amount))) {
+    return "";
+  }
+
+  return Number(amount) * 30 * 24;
 }

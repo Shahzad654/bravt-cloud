@@ -3,6 +3,7 @@ import InstanceOverview from "./InstanceOverview";
 import InstanceSettings from "./InstanceSettings";
 import CreateInstanceSnapShot from "./CreateInstanceSnapShot";
 import RestoreSnapshot from "./RestoreSnapshot";
+import InstanceBackups from "./InstanceBackups";
 
 const InstanceTabs = () => {
   return (
@@ -28,6 +29,11 @@ const InstanceTabs = () => {
               <RestoreSnapshot />
             </div>
           ),
+        },
+        {
+          key: "4",
+          label: "Backups",
+          children: <InstanceBackups />,
         },
       ]}
     />

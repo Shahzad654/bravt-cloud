@@ -116,7 +116,7 @@ export const getIcon = (val) => {
     return false;
   });
 
-  if (matchedKey) {
+  if (matchedKey && Icons[matchedKey]) {
     return {
       Icon: Icons[matchedKey].icon,
       color: Icons[matchedKey].color,

@@ -27,7 +27,7 @@ const PlansSelect = ({ value, onValueChange, region }) => {
     if (!plan) {
       onValueChange(data[0]?.plan);
     }
-  }, [data, plan, queryPlan, onValueChange]);
+  }, [data, plan, queryPlan, value, onValueChange]);
 
   const columns = [
     {

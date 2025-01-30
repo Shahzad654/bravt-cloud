@@ -1,6 +1,6 @@
 import { Spin } from "antd";
 
-const PageSpinner = () => {
+const PageSpinner = ({ style }) => {
   return (
     <div
       style={{
@@ -9,6 +9,7 @@ const PageSpinner = () => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        ...style,
       }}
     >
       <Spin size="default" spinning />

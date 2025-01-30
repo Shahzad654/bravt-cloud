@@ -22,60 +22,121 @@ import {
   useGetPlansQuery,
 } from "../../redux/apis/instances";
 import ISOSelect from "./ISOSelect";
-import { formatPrice } from "../../utils/helpers";
+import { formatPrice, toMonthlyPrice } from "../../utils/helpers";
+import BackupsRadio from "./BackupsRadio";
 
 const { Content } = Layout;
 
 const DeployInstance = () => {
   const navigate = useNavigate();
-  const [selectedRegion, setSelectedRegion] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [selectedPlan, setSelectedPlan] = useState(null);
-  const [label, setLabel] = useState("");
-  const [hostname, setHostname] = useState("");
-  const [sshKeys, setSSHKeys] = useState([]);
-  const [firewallGroup, setFirewallGroup] = useState("");
-  const [selectedISO, setSelectedISO] = useState(null);
 
-  const { data: plans } = useGetPlansQuery(selectedRegion);
-  const plan = useMemo(
-    () => plans?.find((p) => p.plan === selectedPlan),
-    [plans, selectedPlan]
-  );
+  const [formState, setFormState] = useState({
+    region: null,
+    image: null,
+    iso: null,
+    plan: null,
+    label: "",
+    hostname: "",
+    sshKeys: [],
+    firewallGroup: "",
+    backups: "enabled",
+  });
 
+  const [errors, setErrors] = useState({});
+
+  const { data: plans } = useGetPlansQuery(formState.region);
   const [createInstance, { isLoading }] = useCreateInstanceMutation();
 
+  const plan = useMemo(
+    () => plans?.find((p) => p.plan === formState.plan),
+    [plans, formState.plan]
+  );
+
+  const updateFormField = (field, value) => {
+    setFormState((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+
+    if (errors[field]) {
+      setErrors((prev) => ({
+        ...prev,
+        [field]: null,
+      }));
+    }
+  };
+
+  const handleImageSelect = (value) => {
+    setFormState((prev) => ({
+      ...prev,
+      image: value,
+      iso: null,
+    }));
+    setErrors((prev) => ({
+      ...prev,
+      image: null,
+      iso: null,
+    }));
+  };
+
+  const handleISOSelect = (value) => {
+    setFormState((prev) => ({
+      ...prev,
+      iso: value,
+      image: null,
+    }));
+    setErrors((prev) => ({
+      ...prev,
+      image: null,
+      iso: null,
+    }));
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formState.region) newErrors.region = "Region is required";
+    if (!formState.plan) newErrors.plan = "Plan is required";
+    if (!formState.hostname) newErrors.hostname = "Hostname is required";
+    if (!formState.label) newErrors.label = "Label is required";
+    if (!formState.image && !formState.iso)
+      newErrors.image = "Either OS or ISO must be selected";
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleCreateInstance = async () => {
-    if (
-      !selectedPlan ||
-      !selectedRegion ||
-      !hostname ||
-      !label ||
-      (!selectedImage && !selectedISO)
-    ) {
+    if (!validateForm()) {
       message.error("Please fill all the required fields!");
       return;
     }
 
-    const { error, data } = await createInstance({
-      label,
-      hostname,
-      region: selectedRegion,
-      plan: selectedPlan,
-      os_id: selectedImage,
-      sshkey_id: sshKeys,
-      firewall_group_id: firewallGroup,
-      iso_id: selectedISO,
-    });
+    try {
+      const { error, data } = await createInstance({
+        label: formState.label,
+        hostname: formState.hostname,
+        region: formState.region,
+        plan: formState.plan,
+        os_id: formState.image,
+        sshkey_id: formState.sshKeys,
+        firewall_group_id: formState.firewallGroup,
+        iso_id: formState.iso,
+        backups: formState.backups,
+      });
 
-    if (error) {
-      message.error(error.data.message || "Failed to create instance!");
-    } else {
+      if (error) {
+        message.error(error.data.message || "Failed to create instance!");
+        return;
+      }
+
       navigate(`/instance/${data.id}`);
       notification.success({
         message: "Instance created successfully!",
         description: "Your instance will be ready within 3 to 5 minutes",
       });
+    } catch {
+      message.error("Failed to create instance!");
     }
   };
 
@@ -115,8 +176,9 @@ const DeployInstance = () => {
             >
               <PageContent>
                 <RegionsSelect
-                  value={selectedRegion}
-                  onValueChange={setSelectedRegion}
+                  value={formState.region}
+                  onValueChange={(val) => updateFormField("region", val)}
+                  error={errors.region}
                 />
 
                 <Tabs
@@ -127,11 +189,9 @@ const DeployInstance = () => {
                       key: "os",
                       children: (
                         <ImageSelect
-                          value={selectedImage}
-                          onValueChange={(val) => {
-                            setSelectedImage(val);
-                            setSelectedISO(null);
-                          }}
+                          value={formState.image}
+                          onValueChange={handleImageSelect}
+                          error={errors.image}
                         />
                       ),
                     },
@@ -140,11 +200,9 @@ const DeployInstance = () => {
                       label: "ISO",
                       children: (
                         <ISOSelect
-                          value={selectedISO}
-                          onValueChange={(val) => {
-                            setSelectedISO(val);
-                            setSelectedImage(null);
-                          }}
+                          value={formState.iso}
+                          onValueChange={handleISOSelect}
+                          error={errors.image}
                         />
                       ),
                     },
@@ -152,9 +210,10 @@ const DeployInstance = () => {
                 />
 
                 <PlansSelect
-                  value={selectedPlan}
-                  onValueChange={setSelectedPlan}
-                  region={selectedRegion}
+                  value={formState.plan}
+                  onValueChange={(val) => updateFormField("plan", val)}
+                  region={formState.region}
+                  error={errors.plan}
                 />
 
                 <div
@@ -172,9 +231,21 @@ const DeployInstance = () => {
                     <Input
                       id="label"
                       placeholder="Label"
-                      value={label}
-                      onChange={(e) => setLabel(e.target.value)}
+                      value={formState.label}
+                      onChange={(e) => updateFormField("label", e.target.value)}
+                      status={errors.label ? "error" : ""}
                     />
+                    {errors.label && (
+                      <div
+                        style={{
+                          color: "red",
+                          fontSize: "12px",
+                          marginTop: "4px",
+                        }}
+                      >
+                        {errors.label}
+                      </div>
+                    )}
                   </div>
 
                   <div>
@@ -184,9 +255,23 @@ const DeployInstance = () => {
                     <Input
                       id="hostname"
                       placeholder="Hostname"
-                      value={hostname}
-                      onChange={(e) => setHostname(e.target.value)}
+                      value={formState.hostname}
+                      onChange={(e) =>
+                        updateFormField("hostname", e.target.value)
+                      }
+                      status={errors.hostname ? "error" : ""}
                     />
+                    {errors.hostname && (
+                      <div
+                        style={{
+                          color: "red",
+                          fontSize: "12px",
+                          marginTop: "4px",
+                        }}
+                      >
+                        {errors.hostname}
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -198,13 +283,24 @@ const DeployInstance = () => {
                     gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
                   }}
                 >
-                  <SSHKeySelect sshKeys={sshKeys} setSSHKeys={setSSHKeys} />
+                  <SSHKeySelect
+                    sshKeys={formState.sshKeys}
+                    setSSHKeys={(val) => updateFormField("sshKeys", val)}
+                  />
 
                   <FirewallGroupSelect
-                    firewallGroup={firewallGroup}
-                    setFirewallGroup={setFirewallGroup}
+                    firewallGroup={formState.firewallGroup}
+                    setFirewallGroup={(val) =>
+                      updateFormField("firewallGroup", val)
+                    }
                   />
                 </div>
+
+                <BackupsRadio
+                  value={formState.backups}
+                  plan={plan}
+                  onValueChange={(val) => updateFormField("backups", val)}
+                />
 
                 <footer
                   style={{
@@ -244,10 +340,23 @@ const DeployInstance = () => {
                         color: "var(--primary-color)",
                       }}
                     >
-                      {formatPrice(plan?.hourlyCost)}/hour{" "}
-                      <span style={{ fontSize: "12px", color: "gray" }}>
-                        ({formatPrice(plan?.monthlyCost)}/month)
-                      </span>
+                      {formatPrice(
+                        Number(plan?.monthlyCost) +
+                          (formState.backups === "enabled"
+                            ? toMonthlyPrice(plan?.backupCost)
+                            : 0)
+                      )}
+                      /month{" "}
+                      <sub style={{ fontSize: "12px", color: "gray" }}>
+                        (
+                        {formatPrice(
+                          Number(plan?.hourlyCost) +
+                            (formState.backups === "enabled"
+                              ? Number(plan?.backupCost)
+                              : 0)
+                        )}
+                        /hour)
+                      </sub>
                     </h2>
                   </div>
                   <Button

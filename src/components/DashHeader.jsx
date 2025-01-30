@@ -99,7 +99,7 @@ const DashHeader = () => {
             <div className="icon-border">
               <RiMoneyDollarCircleLine className="icon" />
             </div>
-            {Number(data.credits).toFixed(2)}
+            {data.credits}
           </div>
         </Popover>
 

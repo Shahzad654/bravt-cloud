@@ -5,7 +5,7 @@ import { authUtil } from "./auth";
 const instancesApi = createApi({
   reducerPath: "instances",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["AllInstances", "Instance"],
+  tagTypes: ["AllInstances", "Instance", "BackupSchedule"],
   endpoints: (builder) => ({
     getImages: builder.query({
       query: () => "instance/os",
@@ -31,6 +31,15 @@ const instancesApi = createApi({
 
     getInstanceAvailableUpgrades: builder.query({
       query: (id) => `instance/upgrades/${id}`,
+    }),
+
+    getInstanceBackupSchedule: builder.query({
+      query: (id) => `instance/backup-schedule/${id}`,
+      providesTags: () => [{ type: "BackupSchedule" }],
+    }),
+
+    listBackups: builder.query({
+      query: (id) => `instance/backups/${id}`,
     }),
 
     createInstance: builder.mutation({
@@ -195,6 +204,19 @@ const instancesApi = createApi({
         } catch {}
       },
     }),
+
+    updateInstanceBackupSchedule: builder.mutation({
+      query: ({ id, ...body }) => ({
+        url: `instance/backup-schedule/${id}`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: (_, __, { id }) => [
+        { type: "BackupSchedule" },
+        { type: "Instance", id },
+        { type: "AllInstances" },
+      ],
+    }),
   }),
 });
 
@@ -206,6 +228,8 @@ export const {
   useGetAllInstancesQuery,
   useGetInstanceByIdQuery,
   useGetInstanceAvailableUpgradesQuery,
+  useGetInstanceBackupScheduleQuery,
+  useListBackupsQuery,
 
   useCreateInstanceMutation,
   useUpdateInstanceMutation,
@@ -214,6 +238,7 @@ export const {
   useReinstallInstanceMutation,
   useRestoreInstanceMutation,
   useDeleteInstanceMutation,
+  useUpdateInstanceBackupScheduleMutation,
 } = instancesApi;
 
 export default instancesApi;

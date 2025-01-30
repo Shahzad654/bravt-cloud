@@ -39,7 +39,7 @@ const Instance = () => {
                 className="btn add-btn"
                 onClick={() => navigate("/instance/deploy")}
               >
-                <LuPlus size={16} /> Add
+                <LuPlus size={16} /> Deploy Instance
               </button>
             </PageContent>
             <InstancesTable />
