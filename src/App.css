@@ -1,0 +1,280 @@
+#root {
+  --xl-heading: 3.4rem;
+  --l-heading: 2.4rem;
+  --main-heading: 2rem;
+  --m-heading: 1.75rem;
+  --ms-heading: 1.25rem;
+  --s-heading: 1.125rem;
+  --text: 1rem;
+
+  --section-width: 70%;
+  --section-margin: 80px;
+
+  --s-radius: 6px;
+  --m-radius: 8px;
+  --l-radius: 24px;
+
+  --nav-height: 70px;
+
+  --primary-color: #0f7aff;
+  --bg-color: rgb(238, 245, 255);
+  --text-color: #41434d;
+  --brand: 210 100% 50%;
+  --brand-foreground: 213 100% 60%;
+
+  --price-cards-width: 50%;
+}
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  overflow-y: auto;
+  /* overflow-x: hidden; */
+  height: 100vh;
+}
+
+h1 {
+  font-size: var(--l-heading);
+  font-weight: 600;
+}
+
+h2 {
+  font-size: var(--main-heading);
+  font-weight: 600;
+}
+
+h3 {
+  font-size: var(--m-heading);
+  font-weight: 700;
+}
+
+h4 {
+  font-size: var(--ms-heading);
+  font-weight: 600;
+}
+
+h5 {
+  font-size: var(--s-heading);
+  font-weight: 500;
+}
+
+h6 {
+  font-size: var(--xl-heading);
+}
+
+p {
+  font-size: var(--text);
+}
+
+input {
+  outline: none;
+  border-radius: var(--s-radius);
+  color: var(--text-color);
+  padding: 6px 14px;
+  border: 2px solid var(--bg-color);
+  height: 38px;
+  width: 100%;
+}
+
+.btn {
+  cursor: pointer;
+  outline: none;
+  color: white !important;
+  transition: all 0.15s ease-in-out;
+  background-color: var(--primary-color) !important;
+  border-radius: var(--s-radius);
+  padding: 6px 14px;
+  min-width: 230px;
+  max-height: 45px;
+  min-height: 36px;
+  border: none;
+  touch-action: pinch-zoom;
+  white-space: nowrap;
+  transition-property: opacity;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  &:hover {
+    opacity: 0.7;
+  }
+  &:disabled {
+    opacity: 0.6;
+  }
+}
+
+li,
+button,
+input,
+select,
+article,
+title,
+header,
+textarea,
+a,
+label,
+span {
+  font-size: var(--text);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--primary-color);
+  outline-color: var(--primary-color);
+}
+
+select {
+  border-radius: var(--m-radius);
+  border-color: var(--bg-color);
+  padding: 5px 8px;
+}
+
+.outline-btn {
+  border-style: none;
+  padding: 6px 18px 6px 18px;
+  border-radius: var(--s-radius);
+  color: var(--primary-color);
+  background-color: transparent;
+  border: 1px solid var(--primary-color);
+
+  &:hover {
+    background-color: var(--primary-color);
+    color: white;
+  }
+}
+
+.small-btn {
+  cursor: pointer;
+  outline: none;
+  color: white;
+  transition: all 0.15s ease-in-out;
+  background-color: var(--primary-color);
+  border-radius: var(--s-radius);
+  padding: 6px 8px;
+  min-width: 100px;
+  max-height: 45px;
+  border: none;
+  touch-action: pinch-zoom;
+  white-space: nowrap;
+}
+
+.contained-btn {
+  border-style: none;
+  padding: 8px 14px 8px 14px;
+  border-radius: var(--s-radius);
+  color: white;
+  background-color: var(--primary-color);
+
+  .gift-icon {
+    color: white;
+    margin-right: 2px;
+  }
+}
+
+.stripe-card-element {
+  width: 100%;
+  border: 2px solid #d1d5db;
+  padding: 12px 12px;
+  border-radius: 10px;
+  transition-property: color, border-color;
+  text-decoration-color: fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.stripe-card-element-focused {
+  border-color: var(--primary-color);
+}
+
+.stripe-card-element-invalid {
+  border-color: red !important;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.pointer-events-none {
+  pointer-events: none;
+}
+
+.typing-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.dot {
+  background-color: currentColor;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  opacity: 0;
+  animation: typingDot 1.4s infinite;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typingDot {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (max-width: 640px) {
+  #root {
+    --section-width: 80%;
+    --price-cards-width: 80%;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1024px) {
+  #root {
+    --section-width: 75%;
+    --price-cards-width: 60%;
+  }
+}
+
+.tailwind-layout {
+  @tailwind base;
+  @tailwind components;
+  @tailwind utilities;
+}
+
+/* For Chrome, Safari, Edge, Opera */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* For Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}

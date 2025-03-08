@@ -1,0 +1,215 @@
+import React, { useMemo } from "react"
+import { LuHeadset } from "react-icons/lu"
+import { styled } from "@mui/material/styles"
+import { useNavigate, useLocation } from "react-router-dom"
+import {
+  Drawer,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Collapse
+} from "@mui/material"
+
+import { TbCloudComputing } from "react-icons/tb"
+import {
+  FiDollarSign,
+  FiUser,
+  FiChevronDown,
+  FiChevronUp
+} from "react-icons/fi"
+
+import Logo from "./Logo"
+
+const DRAWER_WIDTH = 240
+
+const StyledDrawer = styled(Drawer)(({ theme }) => ({
+  width: DRAWER_WIDTH,
+  flexShrink: 0,
+  zIndex: 10,
+  "& .MuiDrawer-paper": {
+    width: DRAWER_WIDTH,
+    backgroundColor: theme.palette.background.paper,
+    borderRight: `1px solid ${theme.palette.divider}`,
+    [theme.breakpoints.down("sm")]: {
+      minHeight: "250vh"
+    }
+  }
+}))
+
+const menuItems = [
+  {
+    label: "Compute",
+    icon: <TbCloudComputing size={20} />,
+    children: [
+      { label: "Instance", path: "/instance" },
+      // { label: "Network", path: "/network" },
+      // { label: "Block Storage", path: "/storage" },
+      { label: "Snapshot", path: "/snapshot" },
+      { label: "Firewall", path: "/firewall" },
+      { label: "ISO", path: "/iso" }
+      // { label: "Images", path: "/images" },
+      // { label: "Monitoring", path: "/monitoring" },
+    ]
+  },
+  {
+    label: "Financial",
+    icon: <FiDollarSign size={20} />,
+    children: [
+      { label: "Payment", path: "/payment" }
+      // { label: "Resource Record", path: "/resource-record" },
+      // { label: "Billing", path: "/billing" },
+    ]
+  },
+  // {
+  //   label: "Support",
+  //   icon: <QuestionIcon size={20} />,
+  //   children: [{ label: "Ticket", path: "/ticket" }],
+  // },
+  // {
+  //   label: "Affiliate",
+  //   icon: <AppstoreIcon size={20} />,
+  //   children: [{ label: "Link code", path: "/link-code" }],
+  // },
+  {
+    label: "Account",
+    icon: <FiUser size={20} />,
+    children: [
+      { label: "Profile", path: "/profile" },
+      { label: "Change Password", path: "/change-password" },
+      { label: "SSH keys", path: "/ssh-keys" },
+      { label: "Security", path: "/security" }
+    ]
+  }
+]
+
+const DashboardSidebar = () => {
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  const defaultOpenMenus = useMemo(() => {
+    const currentPath = location.pathname
+    const initialOpenMenus = {}
+    menuItems.forEach((item) => {
+      const hasMatchingChild = item.children.some((child) =>
+        currentPath.startsWith(child.path)
+      )
+      if (hasMatchingChild) {
+        initialOpenMenus[item.label] = true
+      }
+    })
+
+    return initialOpenMenus
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const [openMenus, setOpenMenus] = React.useState(defaultOpenMenus || {})
+
+  const handleMenuClick = (label) => {
+    setOpenMenus((prev) => ({
+      ...prev,
+      [label]: !prev[label]
+    }))
+  }
+
+  const handleItemClick = (path) => {
+    navigate(path)
+  }
+
+  const isPathActive = (path) => {
+    return location.pathname.startsWith(path)
+  }
+
+  const renderMenuItem = (item) => (
+    <React.Fragment key={item.label}>
+      <ListItemButton
+        onClick={() => handleMenuClick(item.label)}
+        sx={{
+          bgcolor: openMenus[item.label]
+            ? "rgba(0, 0, 0, 0.02)"
+            : "transparent",
+          "&:hover": {
+            backgroundColor: "rgba(0, 0, 0, 0.04)"
+          }
+        }}
+      >
+        <ListItemIcon>{item.icon}</ListItemIcon>
+        <ListItemText primary={item.label} />
+        {openMenus[item.label] ? (
+          <FiChevronUp size={16} />
+        ) : (
+          <FiChevronDown size={16} />
+        )}
+      </ListItemButton>
+      <Collapse in={openMenus[item.label]} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          {item.children.map((child) => (
+            <ListItemButton
+              key={child.label}
+              sx={{
+                pl: 9,
+                "&:hover": {
+                  backgroundColor: "rgba(0, 0, 0, 0.04)"
+                },
+                "&.Mui-selected": {
+                  backgroundColor: "rgba(0, 0, 0, 0.08)"
+                }
+              }}
+              onClick={() => handleItemClick(child.path)}
+              selected={isPathActive(child.path)}
+            >
+              <ListItemText
+                primary={child.label}
+                sx={{
+                  "& .MuiTypography-root": {
+                    fontSize: "0.9rem",
+                    fontWeight: isPathActive(child.path) ? 500 : 400
+                  }
+                }}
+              />
+            </ListItemButton>
+          ))}
+        </List>
+      </Collapse>
+    </React.Fragment>
+  )
+
+  return (
+    <StyledDrawer variant="permanent" anchor="left">
+      <div style={{ padding: "16px" }}>
+        <Logo href="/instance" />
+      </div>
+      <List>{menuItems.map(renderMenuItem)}</List>
+
+      <List sx={{ marginTop: "auto" }}>
+        <ListItemButton
+          sx={{
+            "&:hover": {
+              backgroundColor: "rgba(0, 0, 0, 0.04)"
+            },
+            "&.Mui-selected": {
+              backgroundColor: "rgba(0, 0, 0, 0.08)"
+            }
+          }}
+          onClick={() => navigate("/tickets")}
+          selected={isPathActive("/tickets")}
+        >
+          <ListItemIcon>
+            <LuHeadset size={18} />
+          </ListItemIcon>
+          <ListItemText
+            primary={"Support"}
+            sx={{
+              "& .MuiTypography-root": {
+                fontSize: "0.9rem",
+                fontWeight: isPathActive("/tickets") ? 500 : 400
+              }
+            }}
+          />
+        </ListItemButton>
+      </List>
+    </StyledDrawer>
+  )
+}
+
+export default DashboardSidebar
