@@ -28,6 +28,7 @@ import {
   toMonthlyPrice
 } from "../../utils/helpers"
 import BackupsRadio from "./BackupsRadio"
+import SnapshotSelect from "./SnapshotsSelect"
 
 const { Content } = Layout
 
@@ -41,6 +42,7 @@ const DeployInstance = () => {
     plan: null,
     label: "",
     hostname: "",
+    snapshot_id: "",
     sshKeys: [],
     firewallGroup: "",
     backups: "enabled"
@@ -73,12 +75,14 @@ const DeployInstance = () => {
     setFormState((prev) => ({
       ...prev,
       image: value,
-      iso: null
+      iso: null,
+      snapshot_id: null
     }))
     setErrors((prev) => ({
       ...prev,
       image: null,
-      iso: null
+      iso: null,
+      snapshot_id: null
     }))
   }
 
@@ -86,12 +90,29 @@ const DeployInstance = () => {
     setFormState((prev) => ({
       ...prev,
       iso: value,
+      image: null,
+      snapshot_id: null
+    }))
+    setErrors((prev) => ({
+      ...prev,
+      image: null,
+      iso: null,
+      snapshot_id: null
+    }))
+  }
+
+  const handleSnapshotSelect = (value) => {
+    setFormState((prev) => ({
+      ...prev,
+      snapshot_id: value,
+      iso: null,
       image: null
     }))
     setErrors((prev) => ({
       ...prev,
       image: null,
-      iso: null
+      iso: null,
+      snapshot_id: null
     }))
   }
 
@@ -101,8 +122,8 @@ const DeployInstance = () => {
     if (!formState.plan) newErrors.plan = "Plan is required"
     if (!formState.hostname) newErrors.hostname = "Hostname is required"
     if (!formState.label) newErrors.label = "Label is required"
-    if (!formState.image && !formState.iso)
-      newErrors.image = "Either OS or ISO must be selected"
+    if (!formState.image && !formState.iso && !formState.snapshot_id)
+      newErrors.image = "Either OS or ISO or Snapshot must be selected"
 
     setErrors(newErrors)
 
@@ -123,6 +144,7 @@ const DeployInstance = () => {
         plan: formState.plan,
         os_id: formState.image,
         sshkey_id: formState.sshKeys,
+        snapshot_id: formState.snapshot_id,
         firewall_group_id: formState.firewallGroup,
         iso_id: formState.iso,
         backups: formState.backups
@@ -146,13 +168,7 @@ const DeployInstance = () => {
   return (
     <>
       {isLoading && (
-        <Spin
-          size="large"
-          spinning
-          percent="auto"
-          fullscreen
-          tip={<p style={{ marginTop: "52px" }}>Creating Instance...</p>}
-        />
+        <Spin size="large" spinning fullscreen tip={"Creating Instance..."} />
       )}
 
       <Layout style={{ minHeight: "100vh" }}>
@@ -195,6 +211,17 @@ const DeployInstance = () => {
                           value={formState.image}
                           onValueChange={handleImageSelect}
                           error={errors.image}
+                        />
+                      )
+                    },
+                    {
+                      key: "snapshot",
+                      label: "Snapshot",
+                      children: (
+                        <SnapshotSelect
+                          value={formState.snapshot_id}
+                          onValueChange={handleSnapshotSelect}
+                          error={errors.snapshot_id}
                         />
                       )
                     },
