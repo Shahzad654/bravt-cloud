@@ -1,12 +1,17 @@
-import { Dropdown, Flex } from "antd";
-import { LuUser, LuLogOut, LuLock } from "react-icons/lu";
-import { useGetSessionQuery, useLogoutMutation } from "../redux/apis/auth";
-import { useNavigate } from "react-router-dom";
+import { Dropdown, Flex } from "antd"
+import { LuUser, LuLogOut, LuLock } from "react-icons/lu"
+import {
+  useGetSessionQuery,
+  useLogoutMutation,
+  useStopImpersonateMutation
+} from "../redux/apis/auth"
+import { useNavigate } from "react-router-dom"
 
 const UserMenu = () => {
-  const { data: user } = useGetSessionQuery();
-  const navigate = useNavigate();
-  const [logout] = useLogoutMutation();
+  const { data: user } = useGetSessionQuery()
+  const navigate = useNavigate()
+  const [logout] = useLogoutMutation()
+  const [stopImpersonate] = useStopImpersonateMutation()
 
   return (
     <Dropdown
@@ -15,20 +20,21 @@ const UserMenu = () => {
           {
             icon: <LuUser size={18} />,
             label: "Profile",
-            onClick: () => navigate("/profile"),
+            onClick: () => navigate("/profile")
           },
           {
             icon: <LuLock size={18} />,
             label: "Change Password",
-            onClick: () => navigate("/change-password"),
+            onClick: () => navigate("/change-password")
           },
           {
             icon: <LuLogOut size={18} />,
-            label: "Logout",
+            label: user.impersonatedBy ? "Stop Impersonating" : "Logout",
             danger: true,
-            onClick: async () => logout(),
-          },
-        ],
+            onClick: async () =>
+              user.impersonatedBy ? stopImpersonate() : logout()
+          }
+        ]
       }}
     >
       <Flex
@@ -43,7 +49,7 @@ const UserMenu = () => {
         {user.email}
       </Flex>
     </Dropdown>
-  );
-};
+  )
+}
 
-export default UserMenu;
+export default UserMenu

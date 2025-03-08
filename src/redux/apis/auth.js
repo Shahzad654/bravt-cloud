@@ -146,6 +146,21 @@ const authApi = createApi({
       }
     }),
 
+    stopImpersonate: builder.mutation({
+      query: () => ({
+        url: "auth/impersonate/stop",
+        method: "POST"
+      }),
+      onQueryStarted: async (_, { queryFulfilled }) => {
+        try {
+          const { data } = await queryFulfilled
+          setAccessToken(data.token)
+          window.location.href = process.env.REACT_APP_ADMIN_URL
+          // eslint-disable-next-line no-empty
+        } catch {}
+      }
+    }),
+
     generate2FASecret: builder.mutation({
       query: () => ({
         url: "auth/2fa",
@@ -207,7 +222,8 @@ export const {
   useGenerate2FASecretMutation,
   useEnable2FAMutation,
   useDisable2FAMutation,
-  useVerify2FALoginMutation
+  useVerify2FALoginMutation,
+  useStopImpersonateMutation
 } = authApi
 
 export default authApi
