@@ -1,14 +1,14 @@
-import { BsDisc } from "react-icons/bs"
 import { TbDiscOff } from "react-icons/tb"
-import { formatDate } from "../../utils/helpers"
+import { formatDate, toSentenceCase } from "../../utils/helpers"
 import { useGetGlobalSnapshotsQuery } from "../../redux/apis/snapshots"
+import { getIcon } from "../../components/Icons"
 
 const SnapshotSelect = ({ value, onValueChange }) => {
   const { isLoading, data } = useGetGlobalSnapshotsQuery()
 
   if (isLoading) {
     return (
-      <div className="grid-layout">
+      <>
         {Array.from({ length: 8 }).map((_, index) => (
           <div
             key={index}
@@ -16,7 +16,7 @@ const SnapshotSelect = ({ value, onValueChange }) => {
             style={{ backgroundColor: "#d1d5db", height: "100px" }}
           />
         ))}
-      </div>
+      </>
     )
   }
 
@@ -39,58 +39,59 @@ const SnapshotSelect = ({ value, onValueChange }) => {
   }
 
   return (
-    <div className="grid-layout">
-      {data.map((item) => (
-        <div
-          key={item.id}
-          className={`grid-item ${value === item.id ? "active" : ""}`}
-          onClick={() => onValueChange(item.id)}
-          style={{
-            justifyContent: "normal",
-            paddingLeft: "18px",
-            paddingRight: "18px"
-          }}
-        >
-          <BsDisc
-            size={30}
-            color={value === item.id ? "var(--primary-color)" : "gray"}
-            style={{ flexShrink: 0 }}
-          />
-
+    <>
+      {data.map((item) => {
+        const { Icon, color } = getIcon(item.description)
+        return (
           <div
-            className="content"
+            key={item.id}
+            className={`grid-item ${value === item.id ? "active" : ""}`}
+            onClick={() => onValueChange(item.id)}
             style={{
-              display: "flex",
-              flexDirection: "column"
+              justifyContent: "normal",
+              paddingLeft: "18px",
+              paddingRight: "18px"
             }}
           >
-            <span style={{ fontSize: "14px" }}>{item.description}</span>
-            <span
+            <Icon size={30} color={color} style={{ flexShrink: 0 }} />
+
+            <div
+              className="content"
               style={{
-                fontSize: "11px",
-                color: "gray",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap"
+                display: "flex",
+                flexDirection: "column"
               }}
             >
-              {item.id}
-            </span>
-            <span
-              style={{
-                fontSize: "11px",
-                color: "gray",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap"
-              }}
-            >
-              {formatDate(item.date_created)}
-            </span>
+              <span style={{ fontSize: "14px" }}>
+                {toSentenceCase(item.type.toLowerCase())}
+              </span>
+              <span
+                style={{
+                  fontSize: "11px",
+                  color: "gray",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap"
+                }}
+              >
+                {item.description}
+              </span>
+              <span
+                style={{
+                  fontSize: "11px",
+                  color: "gray",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap"
+                }}
+              >
+                {formatDate(item.date_created)}
+              </span>
+            </div>
           </div>
-        </div>
-      ))}
-    </div>
+        )
+      })}
+    </>
   )
 }
 

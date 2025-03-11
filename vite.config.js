@@ -5,12 +5,6 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "")
   return {
     define: {
-      "process.env.REACT_APP_STRIPE_PUBLIC_KEY": JSON.stringify(
-        env.REACT_APP_STRIPE_PUBLIC_KEY
-      ),
-      "process.env.REACT_APP_PAYPAL_PUBLIC_KEY": JSON.stringify(
-        env.REACT_APP_PAYPAL_PUBLIC_KEY
-      ),
       "process.env.REACT_APP_SNAPSHOT_COST": JSON.stringify(
         env.REACT_APP_SNAPSHOT_COST
       ),

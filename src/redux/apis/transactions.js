@@ -1,5 +1,5 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQueryWithReauth } from "../query";
+import { createApi } from "@reduxjs/toolkit/query/react"
+import { baseQueryWithReauth } from "../query"
 
 const transactionsApi = createApi({
   reducerPath: "transactions",
@@ -8,52 +8,57 @@ const transactionsApi = createApi({
   endpoints: (builder) => ({
     listTransactions: builder.query({
       query: () => "payment/transactions",
-      providesTags: () => [{ type: "Transactions" }],
+      providesTags: () => [{ type: "Transactions" }]
+    }),
+
+    getClientId: builder.query({
+      query: (type) => `payment/api-key/${type}`
     }),
 
     getStripePaymentIntent: builder.mutation({
       query: (body) => ({
         url: "payment/stripe",
         method: "POST",
-        body,
+        body
       }),
-      invalidatesTags: () => [{ type: "Transactions" }],
+      invalidatesTags: () => [{ type: "Transactions" }]
     }),
 
     createPaypalOrder: builder.mutation({
       query: (body) => ({
         url: "payment/paypal",
         method: "POST",
-        body,
+        body
       }),
-      invalidatesTags: () => [{ type: "Transactions" }],
+      invalidatesTags: () => [{ type: "Transactions" }]
     }),
 
     capturePaypalOrder: builder.mutation({
       query: (id) => ({
         url: `payment/paypal/${id}/capture`,
-        method: "POST",
+        method: "POST"
       }),
-      invalidatesTags: () => [{ type: "Transactions" }],
+      invalidatesTags: () => [{ type: "Transactions" }]
     }),
 
     cancelPaypalOrder: builder.mutation({
       query: (id) => ({
         url: `payment/paypal/${id}/cancel`,
-        method: "POST",
+        method: "POST"
       }),
-      invalidatesTags: () => [{ type: "Transactions" }],
-    }),
-  }),
-});
+      invalidatesTags: () => [{ type: "Transactions" }]
+    })
+  })
+})
 
 export const {
   util: transactionsUtil,
   useListTransactionsQuery,
+  useGetClientIdQuery,
   useGetStripePaymentIntentMutation,
   useCreatePaypalOrderMutation,
   useCapturePaypalOrderMutation,
-  useCancelPaypalOrderMutation,
-} = transactionsApi;
+  useCancelPaypalOrderMutation
+} = transactionsApi
 
-export default transactionsApi;
+export default transactionsApi
