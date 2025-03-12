@@ -1,4 +1,3 @@
-import { TbDiscOff } from "react-icons/tb"
 import { formatDate, toSentenceCase } from "../../utils/helpers"
 import { useGetGlobalSnapshotsQuery } from "../../redux/apis/snapshots"
 import { getIcon } from "../../components/Icons"
@@ -9,7 +8,7 @@ const SnapshotSelect = ({ value, onValueChange }) => {
   if (isLoading) {
     return (
       <>
-        {Array.from({ length: 8 }).map((_, index) => (
+        {Array.from({ length: 4 }).map((_, index) => (
           <div
             key={index}
             className="grid-item animate-pulse"
@@ -20,23 +19,7 @@ const SnapshotSelect = ({ value, onValueChange }) => {
     )
   }
 
-  if (!data?.length) {
-    return (
-      <div
-        style={{
-          padding: "40px 0",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexDirection: "column",
-          rowGap: "8px"
-        }}
-      >
-        <TbDiscOff size={28} color="gray" />
-        <span style={{ fontSize: "16px" }}>No snapshots found!</span>
-      </div>
-    )
-  }
+  if (!data?.length) return null
 
   return (
     <>
