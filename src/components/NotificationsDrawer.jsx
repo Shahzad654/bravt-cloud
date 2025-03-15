@@ -27,11 +27,11 @@ export default function NotificationsDrawer({ open, onClose }) {
 function Notification({ notification }) {
   return (
     <div>
-      <Flex justify="space-between" align="center">
+      <Flex justify="space-between" align="start">
         <p style={{ fontSize: "16px", fontWeight: "600" }}>
           {notification.title}
         </p>
-        <p style={{ fontSize: "11px", color: "gray" }}>
+        <p style={{ fontSize: "11px", color: "gray", whiteSpace: "nowrap" }}>
           {format(notification.createdAt, "PPP")}
         </p>
       </Flex>

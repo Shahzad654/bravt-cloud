@@ -1,37 +1,67 @@
-import { useState } from "react";
-import styled from "styled-components";
-import LoginImg from "../assets/images/signup.jpg";
-import { useSearchParams } from "react-router-dom";
-import CircularProgress from "@mui/material/CircularProgress";
-import Logo from "../components/Logo";
-import { useVerifyCodeMutation } from "../redux/apis/auth";
-import { message } from "antd";
+import { useState } from "react"
+import { useCountdown } from "usehooks-ts"
+import styled from "styled-components"
+import LoginImg from "../assets/images/signup.jpg"
+import { useSearchParams } from "react-router-dom"
+import CircularProgress from "@mui/material/CircularProgress"
+import Logo from "../components/Logo"
+import {
+  useSendVerificationMutation,
+  useVerifyCodeMutation
+} from "../redux/apis/auth"
+import { message } from "antd"
 
 export default function VerifyCode() {
-  const [searchParams] = useSearchParams();
-  const [code, setCode] = useState("");
-  const email = searchParams.get("email");
+  const [searchParams] = useSearchParams()
+  const [code, setCode] = useState("")
+  const email = searchParams.get("email")
+  const [count, { startCountdown, resetCountdown }] = useCountdown({
+    countStart: 60
+  })
 
-  const [verifyCode, { isLoading }] = useVerifyCodeMutation();
+  const [verifyCode, { isLoading }] = useVerifyCodeMutation()
+  const [resend, { isLoading: isResending, isSuccess }] =
+    useSendVerificationMutation()
 
   if (!email) {
-    throw new Error("No email!");
+    throw new Error("No email!")
+  }
+
+  const handleResendCode = async () => {
+    if (isSuccess && count > 0) {
+      return
+    }
+
+    if (!email) {
+      message.error("Please enter a valid email.")
+      return
+    }
+
+    const { error } = await resend({ email })
+    if (error) {
+      message.error(error.data.message)
+      return
+    }
+
+    message.success("Check your email for verification code")
+    resetCountdown()
+    startCountdown()
   }
 
   const handleVerifyCode = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (!code || code.length !== 6) {
-      message.error("Invalid verification code");
-      return;
+      message.error("Invalid verification code")
+      return
     }
 
-    const { error } = await verifyCode({ email, code });
+    const { error } = await verifyCode({ email, code })
     if (error) {
-      message.error(error.data.message);
-      return;
+      message.error(error.data.message)
+      return
     }
-  };
+  }
 
   return (
     <Main>
@@ -43,7 +73,7 @@ export default function VerifyCode() {
             <p
               style={{
                 fontSize: "14px",
-                color: "gray",
+                color: "gray"
               }}
             >
               We have sent a verification code to{" "}
@@ -58,6 +88,7 @@ export default function VerifyCode() {
               required
               placeholder="Enter otp code"
               value={code}
+              min={1}
               onChange={(e) => setCode(e.target.value)}
             />
 
@@ -74,6 +105,27 @@ export default function VerifyCode() {
               )}
             </button>
           </form>
+
+          {isSuccess && count > 0 ? (
+            <p
+              style={{
+                fontSize: "14px",
+                color: "gray",
+                whiteSpace: "nowrap"
+              }}
+            >
+              Sending code in {count}s
+            </p>
+          ) : (
+            <button
+              type="button"
+              disabled={isResending}
+              onClick={handleResendCode}
+              className="resend-code-btn"
+            >
+              Didn&apos;t receive code?
+            </button>
+          )}
         </div>
 
         <div className="image-container">
@@ -81,7 +133,7 @@ export default function VerifyCode() {
         </div>
       </StyledSignUp>
     </Main>
-  );
+  )
 }
 
 const Main = styled.div`
@@ -99,7 +151,7 @@ const Main = styled.div`
   @media (max-width: 640px) {
     height: 100vh;
   }
-`;
+`
 
 const StyledSignUp = styled.div`
   width: 70%;
@@ -132,6 +184,21 @@ const StyledSignUp = styled.div`
     }
   }
 
+  .resend-code-btn {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    white-space: nowrap;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    color: var(--primary-color);
+    &:hover {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+  }
+
   .image-container {
     img {
       max-width: 500px;
@@ -156,4 +223,4 @@ const StyledSignUp = styled.div`
     width: 80%;
     margin: auto;
   }
-`;
+`
