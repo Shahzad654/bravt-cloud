@@ -197,6 +197,10 @@ const StyledSignUp = styled.div`
       text-decoration: underline;
       text-underline-offset: 4px;
     }
+    &:disabled {
+      pointer-events: none;
+      opacity: 0.5;
+    }
   }
 
   .image-container {
