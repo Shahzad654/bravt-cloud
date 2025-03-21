@@ -7,12 +7,7 @@ export function MessageBubble({ message }) {
   const isCurrentMessage = message.sender.id === user.id
 
   return (
-    <li
-      className={cn(
-        "group/message flex w-full items-center gap-3",
-        isCurrentMessage ? "ml-auto flex-row-reverse" : "mr-auto flex-row"
-      )}
-    >
+    <li className="group/message flex w-full items-center gap-3 ml-auto flex-row-reverse">
       <div className="max-w-full w-fit md:max-w-lg">
         <p
           className={cn(

@@ -97,7 +97,7 @@ const DashHeader = () => {
                     fontWeight: "600"
                   }}
                 >
-                  {formatPrice(data.credits)}
+                  {formatPrice(data.credits, 3)}
                 </p>
               </div>
 
@@ -135,7 +135,7 @@ const DashHeader = () => {
             <div className="icon-border">
               <RiMoneyDollarCircleLine className="icon" />
             </div>
-            {data.credits}
+            {formatPrice(data.credits, 3, "decimal")}
           </div>
         </Popover>
 

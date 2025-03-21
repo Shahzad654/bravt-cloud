@@ -207,18 +207,22 @@ const DeployInstance = () => {
                       label: "Operating System",
                       key: "os",
                       children: (
-                        <div className="grid-layout">
-                          <ImageSelect
-                            value={formState.image}
-                            onValueChange={handleImageSelect}
-                            error={errors.image}
-                          />
-                          <SnapshotSelect
-                            value={formState.snapshot_id}
-                            onValueChange={handleSnapshotSelect}
-                            error={errors.snapshot_id}
-                          />
-                        </div>
+                        <ImageSelect
+                          value={formState.image}
+                          onValueChange={handleImageSelect}
+                          error={errors.image}
+                        />
+                      )
+                    },
+                    {
+                      label: "Custom OS",
+                      key: "custom_os",
+                      children: (
+                        <SnapshotSelect
+                          value={formState.snapshot_id}
+                          onValueChange={handleSnapshotSelect}
+                          error={errors.snapshot_id}
+                        />
                       )
                     },
                     {

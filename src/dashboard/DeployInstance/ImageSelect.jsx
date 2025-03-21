@@ -29,7 +29,7 @@ const ImageSelect = ({ value, onValueChange }) => {
 
   if (isLoading) {
     return (
-      <>
+      <div className="grid-layout">
         {Array.from({ length: 14 }).map((_, index) => (
           <div
             key={index}
@@ -37,12 +37,12 @@ const ImageSelect = ({ value, onValueChange }) => {
             style={{ backgroundColor: "#d1d5db", height: "100px" }}
           />
         ))}
-      </>
+      </div>
     )
   }
 
   return (
-    <>
+    <div className="grid-layout">
       {groupedData?.map((item) => {
         const { Icon, color } = getIcon(item.family)
 
@@ -78,7 +78,7 @@ const ImageSelect = ({ value, onValueChange }) => {
           />
         )
       })}
-    </>
+    </div>
   )
 }
 

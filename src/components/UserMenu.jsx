@@ -1,5 +1,5 @@
 import { Dropdown, Flex } from "antd"
-import { LuUser, LuLogOut, LuLock } from "react-icons/lu"
+import { LuUser, LuLogOut, LuLock, LuShield, LuMail } from "react-icons/lu"
 import {
   useGetSessionQuery,
   useLogoutMutation,
@@ -23,9 +23,19 @@ const UserMenu = () => {
             onClick: () => navigate("/profile")
           },
           {
+            icon: <LuMail size={18} />,
+            label: "Change Email",
+            onClick: () => navigate("/change-email")
+          },
+          {
             icon: <LuLock size={18} />,
             label: "Change Password",
             onClick: () => navigate("/change-password")
+          },
+          {
+            icon: <LuShield size={18} />,
+            label: "Security",
+            onClick: () => navigate("/security")
           },
           {
             icon: <LuLogOut size={18} />,

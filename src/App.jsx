@@ -48,6 +48,8 @@ import TermsOfService from "./pages/Legal/Terms"
 import Tickets from "./pages/Tickets"
 import TicketDetails from "./pages/Tickets/TicketDetails"
 import Verify2FALogin from "./dashboard/Verify2FALogin"
+import ChangeEmailRequest from "./dashboard/ChangeEmailRequest"
+import ChangeEmailVerify from "./dashboard/ChangeEmailVerify"
 
 export default function App() {
   const location = useLocation()
@@ -102,6 +104,8 @@ export default function App() {
           <Route path="/ssh-keys/:id" element={<UpdateSHH />} />
           <Route path="/iso" element={<ISO />} />
           <Route path="/security" element={<Authentication />} />
+          <Route path="/change-email" element={<ChangeEmailRequest />} />
+          <Route path="/change-email/verify" element={<ChangeEmailVerify />} />
           <Route path="/tickets">
             <Route index element={<Tickets />} />
             <Route path=":ticketId" element={<TicketDetails />} />

@@ -1,33 +1,34 @@
-import { Button, Form, Input, message, Select } from "antd";
-import { useCreateSnapshotMutation } from "../../redux/apis/snapshots";
-import { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import { useGetAllInstancesQuery } from "../../redux/apis/instances";
+import { Button, Form, Input, message, Select } from "antd"
+import { useCreateSnapshotMutation } from "../../redux/apis/snapshots"
+import { useMemo } from "react"
+import { useNavigate } from "react-router-dom"
+import { useGetAllInstancesQuery } from "../../redux/apis/instances"
+import SnapshotFeatures from "../InstanceDetails/SnapshotFeatures"
 
 const CreateSnapshot = () => {
-  const { data, status } = useGetAllInstancesQuery();
+  const { data, status } = useGetAllInstancesQuery()
 
-  const [form] = Form.useForm();
-  const navigate = useNavigate();
+  const [form] = Form.useForm()
+  const navigate = useNavigate()
 
   const options = useMemo(() => {
     return data?.map((item) => ({
       label: `${item.label} - ${item.ram.toFixed()} MB - ${item.main_ip}`,
-      value: item.id,
-    }));
-  }, [data]);
+      value: item.id
+    }))
+  }, [data])
 
-  const [createSnapshot, { isLoading }] = useCreateSnapshotMutation();
+  const [createSnapshot, { isLoading }] = useCreateSnapshotMutation()
 
   const onFinish = async (values) => {
-    const { error } = await createSnapshot(values);
+    const { error } = await createSnapshot(values)
     if (error) {
-      message.error(error.data.message || "Failed to create snapshot");
+      message.error(error.data.message || "Failed to create snapshot")
     } else {
-      message.success("Snapshot created");
-      navigate("/snapshot");
+      message.success("Snapshot created")
+      navigate("/snapshot")
     }
-  };
+  }
 
   return (
     <div className="tailwind-layout">
@@ -76,24 +77,11 @@ const CreateSnapshot = () => {
             </Button>
           </Form>
 
-          <ul className="space-y-2 list-disc px-4 mt-6 !text-sm leading-snug text-zinc-400">
-            <li>
-              Stored snapshots will cost ${process.env.REACT_APP_SNAPSHOT_COST}
-              /GB per month - pricing subject to change.
-            </li>
-            <li>
-              We recommend using DHCP for networking. By default, Bravt Cloud
-              instances are configured to use DHCP.
-            </li>
-            <li>
-              Snapshots can only be restored to equal or bigger disks. If there
-              is a single partition, it will be automatically expanded.
-            </li>
-          </ul>
+          <SnapshotFeatures />
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CreateSnapshot;
+export default CreateSnapshot

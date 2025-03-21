@@ -161,6 +161,32 @@ const authApi = createApi({
       }
     }),
 
+    changeEmailRequest: builder.mutation({
+      query: (body) => ({
+        url: "auth/change-email",
+        method: "POST",
+        body
+      })
+    }),
+
+    changeEmail: builder.mutation({
+      query: (body) => ({
+        url: "auth/change-email/verify",
+        method: "PATCH",
+        body
+      }),
+      onQueryStarted: async ({ email }, { dispatch }) => {
+        try {
+          dispatch(
+            authApi.util.updateQueryData("getSession", undefined, (draft) => {
+              Object.assign(draft, { email })
+            })
+          )
+          // eslint-disable-next-line no-empty
+        } catch {}
+      }
+    }),
+
     generate2FASecret: builder.mutation({
       query: () => ({
         url: "auth/2fa",
@@ -223,7 +249,9 @@ export const {
   useEnable2FAMutation,
   useDisable2FAMutation,
   useVerify2FALoginMutation,
-  useStopImpersonateMutation
+  useStopImpersonateMutation,
+  useChangeEmailRequestMutation,
+  useChangeEmailMutation
 } = authApi
 
 export default authApi

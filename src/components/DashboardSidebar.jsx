@@ -77,6 +77,7 @@ const menuItems = [
     children: [
       { label: "Profile", path: "/profile" },
       { label: "Change Password", path: "/change-password" },
+      { label: "Change Email", path: "/change-email" },
       { label: "SSH keys", path: "/ssh-keys" },
       { label: "Security", path: "/security" }
     ]

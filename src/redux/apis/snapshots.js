@@ -16,6 +16,10 @@ const snapshotsApi = createApi({
       query: () => "snapshot/global"
     }),
 
+    getSnapshotCost: builder.query({
+      query: () => "snapshot/cost"
+    }),
+
     createSnapshot: builder.mutation({
       query: (body) => ({
         url: "snapshot",
@@ -55,6 +59,7 @@ export const {
   util: snapshotsUtil,
   useGetSnapshotsQuery,
   useGetGlobalSnapshotsQuery,
+  useGetSnapshotCostQuery,
   useCreateSnapshotMutation,
   useDeleteSnapshotMutation
 } = snapshotsApi

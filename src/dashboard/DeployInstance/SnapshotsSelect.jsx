@@ -1,28 +1,44 @@
 import { formatDate, toSentenceCase } from "../../utils/helpers"
 import { useGetGlobalSnapshotsQuery } from "../../redux/apis/snapshots"
 import { getIcon } from "../../components/Icons"
+import { TbDiscOff } from "react-icons/tb"
 
 const SnapshotSelect = ({ value, onValueChange }) => {
   const { isLoading, data } = useGetGlobalSnapshotsQuery()
 
   if (isLoading) {
     return (
-      <>
-        {Array.from({ length: 4 }).map((_, index) => (
+      <div className="grid-layout">
+        {Array.from({ length: 8 }).map((_, index) => (
           <div
             key={index}
             className="grid-item animate-pulse"
             style={{ backgroundColor: "#d1d5db", height: "100px" }}
           />
         ))}
-      </>
+      </div>
     )
   }
 
-  if (!data?.length) return null
+  if (!data?.length)
+    return (
+      <div
+        style={{
+          padding: "40px 0",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
+          rowGap: "8px"
+        }}
+      >
+        <TbDiscOff size={28} color="gray" />
+        <span style={{ fontSize: "16px" }}>No custom OS found!</span>
+      </div>
+    )
 
   return (
-    <>
+    <div className="grid-layout">
       {data.map((item) => {
         const { Icon, color } = getIcon(item.description)
         return (
@@ -74,7 +90,7 @@ const SnapshotSelect = ({ value, onValueChange }) => {
           </div>
         )
       })}
-    </>
+    </div>
   )
 }
 

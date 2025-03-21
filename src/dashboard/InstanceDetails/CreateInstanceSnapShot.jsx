@@ -1,20 +1,21 @@
-import { Button, Card, Form, Input, message } from "antd";
-import { useCreateSnapshotMutation } from "../../redux/apis/snapshots";
-import { useParams } from "react-router-dom";
+import { Button, Card, Form, Input, message } from "antd"
+import { useCreateSnapshotMutation } from "../../redux/apis/snapshots"
+import { useParams } from "react-router-dom"
+import SnapshotFeatures from "./SnapshotFeatures"
 
 const CreateInstanceSnapShot = () => {
-  const [form] = Form.useForm();
-  const [createSnapshot, { isLoading }] = useCreateSnapshotMutation();
-  const { instanceId } = useParams();
+  const [form] = Form.useForm()
+  const [createSnapshot, { isLoading }] = useCreateSnapshotMutation()
+  const { instanceId } = useParams()
 
   const onFinish = async ({ description }) => {
-    const { error } = await createSnapshot({ description, instanceId });
+    const { error } = await createSnapshot({ description, instanceId })
     if (error) {
-      message.error(error.data.message || "Failed to create snapshot");
+      message.error(error.data.message || "Failed to create snapshot")
     } else {
-      message.success("Snapshot created");
+      message.success("Snapshot created")
     }
-  };
+  }
 
   return (
     <div className="w-full mt-4 bg-white">
@@ -45,23 +46,10 @@ const CreateInstanceSnapShot = () => {
           </Button>
         </Form>
 
-        <ul className="space-y-2 list-disc px-4 mt-6 !text-sm leading-snug text-zinc-400">
-          <li>
-            Stored snapshots will cost ${process.env.REACT_APP_SNAPSHOT_COST}
-            /GB per month - pricing subject to change.
-          </li>
-          <li>
-            We recommend using DHCP for networking. By default, Bravt Cloud
-            instances are configured to use DHCP.
-          </li>
-          <li>
-            Snapshots can only be restored to equal or bigger disks. If there is
-            a single partition, it will be automatically expanded.
-          </li>
-        </ul>
+        <SnapshotFeatures />
       </Card>
     </div>
-  );
-};
+  )
+}
 
-export default CreateInstanceSnapShot;
+export default CreateInstanceSnapShot

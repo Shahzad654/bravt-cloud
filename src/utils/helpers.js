@@ -7,16 +7,20 @@ import {
 } from "date-fns"
 import { twMerge } from "tailwind-merge"
 
-export function formatPrice(amount) {
+export function formatPrice(
+  amount,
+  maximumFractionDigits = 7,
+  style = "currency"
+) {
   if (isNaN(Number(amount))) {
     return ""
   }
 
   const formatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
+    style,
     currency: "USD",
     minimumFractionDigits: 0,
-    maximumFractionDigits: 3
+    maximumFractionDigits
   })
 
   return formatter.format(amount)
