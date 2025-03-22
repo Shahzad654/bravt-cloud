@@ -1,19 +1,20 @@
-import { FcGoogle } from "react-icons/fc";
-import { FaGithub } from "react-icons/fa";
-import styled from "styled-components";
-import { API_URL } from "../utils/constants";
-import { useQueryState } from "nuqs";
-import { message } from "antd";
-import { useEffect } from "react";
+import { FcGoogle } from "react-icons/fc"
+import { FaGithub } from "react-icons/fa"
+import styled from "styled-components"
+import { API_URL } from "../utils/constants"
+import { useQueryState } from "nuqs"
+import { message } from "antd"
+import { useEffect } from "react"
 
 export default function SignInWithoutEmail() {
-  const [error, setError] = useQueryState("oauth_error");
+  const [error, setError] = useQueryState("oauth_error")
+  const [invitedBy] = useQueryState("ref")
   useEffect(() => {
     if (error) {
-      message.error(error);
-      setError(null);
+      message.error(error)
+      setError(null)
     }
-  }, [error, setError]);
+  }, [error, setError])
 
   return (
     <StyledSignIn>
@@ -23,18 +24,32 @@ export default function SignInWithoutEmail() {
         <div />
       </div>
       <button
-        onClick={() => window.open(`${API_URL}/api/auth/google`, "_self")}
+        onClick={() =>
+          window.open(
+            `${API_URL}/api/auth/google${
+              invitedBy ? `?invitedBy=${invitedBy}` : ""
+            }`,
+            "_self"
+          )
+        }
       >
         <FcGoogle /> Continue with Google
       </button>
 
       <button
-        onClick={() => window.open(`${API_URL}/api/auth/github`, "_self")}
+        onClick={() =>
+          window.open(
+            `${API_URL}/api/auth/github${
+              invitedBy ? `?invitedBy=${invitedBy}` : ""
+            }`,
+            "_self"
+          )
+        }
       >
         <FaGithub /> Continue with GitHub
       </button>
     </StyledSignIn>
-  );
+  )
 }
 
 const StyledSignIn = styled.div`
@@ -73,4 +88,4 @@ const StyledSignIn = styled.div`
       height: 25px;
     }
   }
-`;
+`
