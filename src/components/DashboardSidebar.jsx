@@ -79,7 +79,8 @@ const menuItems = [
       { label: "Change Password", path: "/change-password" },
       { label: "Change Email", path: "/change-email" },
       { label: "SSH keys", path: "/ssh-keys" },
-      { label: "Security", path: "/security" }
+      { label: "Security", path: "/security" },
+      { label: "Affiliate", path: "/affiliate" }
     ]
   }
 ]

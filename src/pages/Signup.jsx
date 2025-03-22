@@ -1,35 +1,39 @@
-import { useState } from "react";
-import styled from "styled-components";
-import LoginImg from "../assets/images/signup.jpg";
-import { Link, useNavigate } from "react-router-dom";
-import CircularProgress from "@mui/material/CircularProgress";
-import Logo from "../components/Logo";
-import { useSendVerificationMutation } from "../redux/apis/auth";
-import { message } from "antd";
-import SignInWithoutEmail from "../components/SignInwithoutEmail";
+import { useState } from "react"
+import styled from "styled-components"
+import LoginImg from "../assets/images/signup.jpg"
+import { Link, useNavigate, useSearchParams } from "react-router-dom"
+import CircularProgress from "@mui/material/CircularProgress"
+import Logo from "../components/Logo"
+import { useSendVerificationMutation } from "../redux/apis/auth"
+import { message } from "antd"
+import SignInWithoutEmail from "../components/SignInwithoutEmail"
 
 export default function Signup() {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const navigate = useNavigate()
+  const [email, setEmail] = useState("")
+  const [searchParams] = useSearchParams()
 
-  const [sendVerification, { isLoading }] = useSendVerificationMutation();
+  const [sendVerification, { isLoading }] = useSendVerificationMutation()
 
   const handleSendCode = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
+    const invitedBy = searchParams.get("invite")?.trim() ?? null
 
     if (!email) {
-      message.error("Please enter a valid email.");
-      return;
+      message.error("Please enter a valid email.")
+      return
     }
 
-    const { error } = await sendVerification({ email });
+    const { error } = await sendVerification({ email, invitedBy })
     if (error) {
-      message.error(error.data.message);
-      return;
+      message.error(error.data.message)
+      return
     }
 
-    navigate(`/verify-code?email=${email}`);
-  };
+    navigate(
+      `/verify-code?email=${email}${invitedBy ? `&invitedBy=${invitedBy}` : ""}`
+    )
+  }
 
   return (
     <Main>
@@ -79,7 +83,7 @@ export default function Signup() {
         </div>
       </StyledSignUp>
     </Main>
-  );
+  )
 }
 
 const Main = styled.div`
@@ -97,7 +101,7 @@ const Main = styled.div`
   @media (max-width: 640px) {
     height: 100vh;
   }
-`;
+`
 
 const StyledSignUp = styled.div`
   width: 70%;
@@ -154,4 +158,4 @@ const StyledSignUp = styled.div`
     width: 80%;
     margin: auto;
   }
-`;
+`

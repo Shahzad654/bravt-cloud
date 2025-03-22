@@ -5,11 +5,13 @@ import {
   useGetTicketByIdQuery
 } from "../../redux/apis/tickets"
 import { useParams } from "react-router-dom"
+import { useTicketMessagesQuery } from "../../queries/useTicketMessagesQuery"
 
 export default function ComposeTicketForm() {
   const inputRef = useRef()
   const { ticketId } = useParams()
   const { data: ticket } = useGetTicketByIdQuery(ticketId)
+  const { addMessage } = useTicketMessagesQuery(false)
 
   const [sendMessage, { isLoading }] = useCreateTicketMessageMutation()
 
@@ -21,13 +23,14 @@ export default function ComposeTicketForm() {
       return
     }
 
-    const { error } = await sendMessage({ ticketId, message })
+    const { error, data } = await sendMessage({ ticketId, message })
 
     if (error) {
       message.error(error.data.message)
       return
     }
 
+    addMessage(data)
     inputRef.current.value = ""
     setTimeout(() => inputRef.current?.focus(), 100)
   }

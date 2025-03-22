@@ -10,6 +10,7 @@ import isoApi from "./apis/iso"
 import apiErrorReducer, { apiErrorMiddleware } from "./apiError"
 import notificationsApi from "./apis/notifications"
 import ticketsApi from "./apis/tickets"
+import affiliateApi from "./apis/affiliate"
 
 const store = configureStore({
   reducer: {
@@ -22,6 +23,7 @@ const store = configureStore({
     [isoApi.reducerPath]: isoApi.reducer,
     [notificationsApi.reducerPath]: notificationsApi.reducer,
     [ticketsApi.reducerPath]: ticketsApi.reducer,
+    [affiliateApi.reducerPath]: affiliateApi.reducer,
     apiError: apiErrorReducer
   },
   middleware: (getDefaultMiddleware) => {
@@ -35,6 +37,7 @@ const store = configureStore({
       isoApi.middleware,
       notificationsApi.middleware,
       ticketsApi.middleware,
+      affiliateApi.middleware,
       apiErrorMiddleware
     )
   }

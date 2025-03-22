@@ -50,6 +50,7 @@ import TicketDetails from "./pages/Tickets/TicketDetails"
 import Verify2FALogin from "./dashboard/Verify2FALogin"
 import ChangeEmailRequest from "./dashboard/ChangeEmailRequest"
 import ChangeEmailVerify from "./dashboard/ChangeEmailVerify"
+import Affiliate from "./dashboard/Affiliate"
 
 export default function App() {
   const location = useLocation()
@@ -106,6 +107,7 @@ export default function App() {
           <Route path="/security" element={<Authentication />} />
           <Route path="/change-email" element={<ChangeEmailRequest />} />
           <Route path="/change-email/verify" element={<ChangeEmailVerify />} />
+          <Route path="/affiliate" element={<Affiliate />} />
           <Route path="/tickets">
             <Route index element={<Tickets />} />
             <Route path=":ticketId" element={<TicketDetails />} />
