@@ -18,7 +18,6 @@ export default function Signup() {
   const handleSendCode = async (e) => {
     e.preventDefault()
     const invitedBy = searchParams.get("ref")?.trim() ?? null
-
     if (!email) {
       message.error("Please enter a valid email.")
       return
