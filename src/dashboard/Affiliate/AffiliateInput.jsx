@@ -55,7 +55,7 @@ export default function AffiliateInput() {
       </Input.Group>
 
       <CommissionInfo>
-        <Skeleton loading={!isLoading} paragraph={{ rows: 0 }}>
+        <Skeleton loading={isLoading} paragraph={{ rows: 0 }}>
           <LuDollarSign style={{ fontSize: "24px", color: "#52c41a" }} />
           <Text>
             Earn{" "}
