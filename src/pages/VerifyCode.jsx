@@ -37,7 +37,7 @@ export default function VerifyCode() {
       return
     }
 
-    const invitedBy = searchParams.get("invite")?.trim() ?? null
+    const invitedBy = searchParams.get("ref")?.trim() ?? null
     const { error } = await resend({ email, invitedBy })
     if (error) {
       message.error(error.data.message)
