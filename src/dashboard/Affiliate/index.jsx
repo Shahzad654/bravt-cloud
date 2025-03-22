@@ -2,6 +2,7 @@ import { Typography } from "antd"
 import DashHeader from "../../components/DashHeader"
 import AffiliateInput from "./AffiliateInput"
 import AffiliateStats from "./AffiliateStats"
+import AffliateTable from "./AffliateTable"
 
 export default function Affiliate() {
   return (
@@ -17,6 +18,7 @@ export default function Affiliate() {
 
         <AffiliateStats />
         <AffiliateInput />
+        <AffliateTable/>
       </div>
     </>
   )
