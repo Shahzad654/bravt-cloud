@@ -10,6 +10,9 @@ const affiliateApi = createApi({
     }),
     getAffiliatedUsers: builder.query({
       query: () => "/affiliate/users"
+    }),
+    getAffiliateStats: builder.query({
+      query: () => "/affiliate/stats"
     })
   })
 })
@@ -17,7 +20,8 @@ const affiliateApi = createApi({
 export const {
   util: affiliateUtil,
   useGetCommissionQuery,
-  useGetAffiliatedUsersQuery
+  useGetAffiliatedUsersQuery,
+  useGetAffiliateStatsQuery
 } = affiliateApi
 
 export default affiliateApi
