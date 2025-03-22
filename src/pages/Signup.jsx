@@ -31,7 +31,7 @@ export default function Signup() {
     }
 
     navigate(
-      `/verify-code?email=${email}${invitedBy ? `&invitedBy=${invitedBy}` : ""}`
+      `/verify-code?email=${email}${invitedBy ? `&ref=${invitedBy}` : ""}`
     )
   }
 
