@@ -56,7 +56,7 @@ export default function AffiliateStats() {
             {formatPrice(data?.totalAffiliated, 0, "decimal")}
           </Title>
         )}
-        <Text type="secondary">Users Referred</Text>
+        <Text type="secondary">Total Referrals</Text>
       </StyledCard>
       <StyledCard>
         <IconWrapper style={{ background: "#9C27B015" }}>
@@ -76,7 +76,7 @@ export default function AffiliateStats() {
             {formatPrice(data?.totalActiveReferrals, 0, "decimal")}
           </Title>
         )}
-        <Text type="secondary">Active Referrals</Text>
+        <Text type="secondary">Successful Referrals</Text>
       </StyledCard>
     </StatsContainer>
   )
