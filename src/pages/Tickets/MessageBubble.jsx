@@ -23,13 +23,10 @@ export function MessageBubble({ message }) {
             isCurrentMessage ? "bg-primary text-white" : "bg-zinc-200"
           )}
         >
-          {message.images.map((image, idx) => (
-            <Zoom
-              key={`${image}-${idx}`}
-              zoomImg={{ src: image, draggable: false }}
-            >
+          {message.files.map((image) => (
+            <Zoom key={image.id} zoomImg={{ src: image.url, draggable: false }}>
               <img
-                src={image}
+                src={image.url}
                 alt="Image"
                 className="min-w-[300px] rounded-md object-contain"
               />
