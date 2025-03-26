@@ -6,19 +6,19 @@ const Tags = () => {
   const [tagInput, setTagInput] = useState("");
   const [tags, setTags] = useState([]);
 
-//   const handleAddTag = () => {
-//     if (tagInput.trim()) {
-//       setTags([
-//         ...tags,
-//         {
-//           key: tags.length,
-//           tag: tagInput,
-//           dateAdded: moment().format("YYYY-MM-DD HH:mm:ss"),
-//         },
-//       ]);
-//       setTagInput("");
-//     }
-//   };
+  //   const handleAddTag = () => {
+  //     if (tagInput.trim()) {
+  //       setTags([
+  //         ...tags,
+  //         {
+  //           key: tags.length,
+  //           tag: tagInput,
+  //           dateAdded: moment().format("YYYY-MM-DD HH:mm:ss"),
+  //         },
+  //       ]);
+  //       setTagInput("");
+  //     }
+  //   };
 
   const columns = [
     {
@@ -36,7 +36,7 @@ const Tags = () => {
   return (
     <div style={{ padding: "20px" }}>
       <div style={{ padding: "20px" }}>
-      <h4>Add Tag</h4>
+        <h4>Add Tag</h4>
         <div
           style={{
             marginBottom: "20px",
@@ -44,16 +44,13 @@ const Tags = () => {
             alignItems: "center",
           }}
         >
-        
           <Input
-            placeholder='Add Tag'
+            placeholder="Add Tag"
             value={tagInput}
             onChange={(e) => setTagInput(e.target.value)}
             style={{ width: "200px", marginRight: "10px" }}
           />
-          <Button type='primary'>
-            Add
-          </Button>
+          <Button type="primary">Add</Button>
         </div>
         <h4>Existing Tags</h4>
         <Table

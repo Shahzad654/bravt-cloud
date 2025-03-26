@@ -1,6 +1,6 @@
-import { createApi } from "@reduxjs/toolkit/query/react"
-import { baseQueryWithReauth } from "../query"
-import { authUtil } from "./auth"
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQueryWithReauth } from "../query";
+import { authUtil } from "./auth";
 
 const instancesApi = createApi({
   reducerPath: "instances",
@@ -8,186 +8,186 @@ const instancesApi = createApi({
   tagTypes: ["AllInstances", "Instance", "BackupSchedule"],
   endpoints: (builder) => ({
     getImages: builder.query({
-      query: () => "instance/os"
+      query: () => "instance/os",
     }),
 
     getRegions: builder.query({
-      query: () => "instance/regions"
+      query: () => "instance/regions",
     }),
 
     getPlans: builder.query({
-      query: (region) => `instance/plans?region=${region}`
+      query: (region) => `instance/plans?region=${region}`,
     }),
 
     getAllInstances: builder.query({
       query: (groupId) => `instance${groupId ? `?groupId=${groupId}` : ""}`,
-      providesTags: () => [{ type: "AllInstances" }]
+      providesTags: () => [{ type: "AllInstances" }],
     }),
 
     getInstanceById: builder.query({
       query: (id) => `instance/${id}`,
-      providesTags: (_, __, id) => [{ type: "Instance", id }]
+      providesTags: (_, __, id) => [{ type: "Instance", id }],
     }),
 
     getInstanceAvailableUpgrades: builder.query({
-      query: (id) => `instance/upgrades/${id}`
+      query: (id) => `instance/upgrades/${id}`,
     }),
 
     getInstanceBackupSchedule: builder.query({
       query: (id) => `instance/backup-schedule/${id}`,
-      providesTags: () => [{ type: "BackupSchedule" }]
+      providesTags: () => [{ type: "BackupSchedule" }],
     }),
 
     listBackups: builder.query({
-      query: (id) => `instance/backups/${id}`
+      query: (id) => `instance/backups/${id}`,
     }),
 
     createInstance: builder.mutation({
       query: (body) => ({
         url: "instance",
         method: "POST",
-        body
+        body,
       }),
       invalidatesTags: () => [{ type: "AllInstances" }],
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         try {
-          await queryFulfilled
-          dispatch(authUtil.invalidateTags([{ type: "Session" }]))
+          await queryFulfilled;
+          dispatch(authUtil.invalidateTags([{ type: "Session" }]));
           // eslint-disable-next-line no-empty
         } catch {}
-      }
+      },
     }),
 
     updateInstance: builder.mutation({
       query: ({ id, ...body }) => ({
         url: `instance/${id}`,
         method: "PATCH",
-        body
+        body,
       }),
       invalidatesTags: () => [{ type: "AllInstances" }],
       onQueryStarted: async ({ id }, { dispatch, queryFulfilled }) => {
         try {
-          const { data } = await queryFulfilled
+          const { data } = await queryFulfilled;
           dispatch(
             instancesApi.util.updateQueryData(
               "getInstanceById",
               id,
               (draft) => {
-                Object.assign(draft, data)
-              }
-            )
-          )
+                Object.assign(draft, data);
+              },
+            ),
+          );
           // eslint-disable-next-line no-empty
         } catch {}
-      }
+      },
     }),
 
     startOrStopInstance: builder.mutation({
       query: ({ id, action }) => ({
         url: `instance/${action}/${id}`,
-        method: "POST"
+        method: "POST",
       }),
       invalidatesTags: () => [{ type: "AllInstances" }],
       onQueryStarted: async ({ id, action }, { dispatch, queryFulfilled }) => {
         try {
-          await queryFulfilled
+          await queryFulfilled;
 
-          const power_status = action === "start" ? "running" : "stopped"
+          const power_status = action === "start" ? "running" : "stopped";
 
           dispatch(
             instancesApi.util.updateQueryData(
               "getInstanceById",
               id,
               (draft) => {
-                Object.assign(draft, { power_status })
-              }
-            )
-          )
+                Object.assign(draft, { power_status });
+              },
+            ),
+          );
 
-          dispatch(authUtil.invalidateTags([{ type: "Session" }]))
+          dispatch(authUtil.invalidateTags([{ type: "Session" }]));
 
           // eslint-disable-next-line no-empty
         } catch {}
-      }
+      },
     }),
 
     rebootInstance: builder.mutation({
       query: ({ id }) => ({
         url: `instance/reboot/${id}`,
-        method: "POST"
+        method: "POST",
       }),
       invalidatesTags: (_, __, { id }) => [
         { type: "AllInstances" },
-        { type: "Instance", id }
+        { type: "Instance", id },
       ],
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         try {
-          await queryFulfilled
-          dispatch(authUtil.invalidateTags([{ type: "Session" }]))
+          await queryFulfilled;
+          dispatch(authUtil.invalidateTags([{ type: "Session" }]));
           // eslint-disable-next-line no-empty
         } catch {}
-      }
+      },
     }),
 
     reinstallInstance: builder.mutation({
       query: ({ id }) => ({
         url: `instance/reinstall/${id}`,
-        method: "POST"
+        method: "POST",
       }),
       invalidatesTags: () => [{ type: "AllInstances" }],
       onQueryStarted: async ({ id }, { dispatch, queryFulfilled }) => {
         try {
-          const { data } = await queryFulfilled
+          const { data } = await queryFulfilled;
           dispatch(
             instancesApi.util.updateQueryData(
               "getInstanceById",
               id,
               (draft) => {
-                Object.assign(draft, data)
-              }
-            )
-          )
+                Object.assign(draft, data);
+              },
+            ),
+          );
 
-          dispatch(authUtil.invalidateTags([{ type: "Session" }]))
+          dispatch(authUtil.invalidateTags([{ type: "Session" }]));
           // eslint-disable-next-line no-empty
         } catch {}
-      }
+      },
     }),
 
     restoreInstance: builder.mutation({
       query: ({ id, ...body }) => ({
         url: `instance/restore/${id}`,
         method: "POST",
-        body
+        body,
       }),
       invalidatesTags: (_, __) => [{ type: "AllInstances" }],
       onQueryStarted: async ({ id }, { dispatch, queryFulfilled }) => {
         try {
-          await queryFulfilled
+          await queryFulfilled;
           dispatch(
             instancesApi.util.updateQueryData(
               "getInstanceById",
               id,
               (draft) => {
-                Object.assign(draft, { status: "locked" })
-              }
-            )
-          )
+                Object.assign(draft, { status: "locked" });
+              },
+            ),
+          );
 
           // eslint-disable-next-line no-empty
         } catch {}
-      }
+      },
     }),
 
     deleteInstance: builder.mutation({
       query: ({ id }) => ({
         url: `instance/${id}`,
-        method: "DELETE"
+        method: "DELETE",
       }),
       invalidatesTags: (_, __, { id }) => [{ type: "Instance", id }],
       onQueryStarted: async ({ id }, { dispatch, queryFulfilled }) => {
         try {
-          await queryFulfilled
+          await queryFulfilled;
           dispatch(
             instancesApi.util.updateQueryData(
               "getAllInstances",
@@ -195,37 +195,41 @@ const instancesApi = createApi({
               (draft) => {
                 for (let i = draft.length - 1; i >= 0; i--) {
                   if (draft[i].id === id) {
-                    draft.splice(i, 1)
+                    draft.splice(i, 1);
                   }
                 }
-              }
-            )
-          )
+              },
+            ),
+          );
 
           dispatch(
-            instancesApi.util.updateQueryData("getInstanceById", id, () => null)
-          )
+            instancesApi.util.updateQueryData(
+              "getInstanceById",
+              id,
+              () => null,
+            ),
+          );
 
-          dispatch(authUtil.invalidateTags([{ type: "Session" }]))
+          dispatch(authUtil.invalidateTags([{ type: "Session" }]));
           // eslint-disable-next-line no-empty
         } catch {}
-      }
+      },
     }),
 
     updateInstanceBackupSchedule: builder.mutation({
       query: ({ id, ...body }) => ({
         url: `instance/backup-schedule/${id}`,
         method: "POST",
-        body
+        body,
       }),
       invalidatesTags: (_, __, { id }) => [
         { type: "BackupSchedule" },
         { type: "Instance", id },
-        { type: "AllInstances" }
-      ]
-    })
-  })
-})
+        { type: "AllInstances" },
+      ],
+    }),
+  }),
+});
 
 export const {
   util: instancesUtil,
@@ -245,7 +249,7 @@ export const {
   useReinstallInstanceMutation,
   useRestoreInstanceMutation,
   useDeleteInstanceMutation,
-  useUpdateInstanceBackupScheduleMutation
-} = instancesApi
+  useUpdateInstanceBackupScheduleMutation,
+} = instancesApi;
 
-export default instancesApi
+export default instancesApi;

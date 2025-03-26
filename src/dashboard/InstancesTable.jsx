@@ -195,15 +195,17 @@ function useInstancesTableColumns() {
       dataIndex: "power_status",
       render: (status, record) => {
         const isInstalling = isInstanceInstalling(record);
-        const isSuspended = record.status === "suspended";
+        const isSuspended = record.status === "suspended" || record.suspended;
         return (
           <Tag
             color={
-              isInstalling
-                ? "orange"
-                : status === "running"
-                  ? "success"
-                  : "error"
+              record.suspended
+                ? "error"
+                : isInstalling
+                  ? "orange"
+                  : status === "running"
+                    ? "success"
+                    : "error"
             }
           >
             {!isSuspended && isInstalling && (
@@ -213,11 +215,13 @@ function useInstancesTableColumns() {
                 color="inherit"
               />
             )}
-            {isSuspended
-              ? "Under Maintenance"
-              : isInstalling
-                ? "Installing"
-                : toSentenceCase(status.toLowerCase())}
+            {record.suspended
+              ? "Suspended"
+              : isSuspended
+                ? "Under Maintenance"
+                : isInstalling
+                  ? "Installing"
+                  : toSentenceCase(status.toLowerCase())}
           </Tag>
         );
       },
@@ -251,7 +255,7 @@ function useInstancesTableColumns() {
       key: "actions",
       render: (_, record) => (
         <Dropdown
-          disabled={isInstanceInstalling(record)}
+          disabled={isInstanceInstalling(record) || record?.suspended}
           menu={{
             items: [
               {
@@ -318,11 +322,13 @@ function useInstancesTableColumns() {
 
                       if (error) {
                         message.error(
-                          error.data.message || `Failed to ${action} instance!`
+                          error.data.message || `Failed to ${action} instance!`,
                         );
                       } else {
                         message.success(
-                          `Instance ${action}${action === "stop" ? "p" : ""}ed successfully!`
+                          `Instance ${action}${
+                            action === "stop" ? "p" : ""
+                          }ed successfully!`,
                         );
                       }
                     },
@@ -350,7 +356,7 @@ function useInstancesTableColumns() {
 
                       if (error) {
                         message.error(
-                          error.data.message || `Failed to reboot instance!`
+                          error.data.message || `Failed to reboot instance!`,
                         );
                       } else {
                         message.success(`Instance restarted successfully!`);
@@ -385,7 +391,7 @@ function useInstancesTableColumns() {
 
                       if (error) {
                         message.error(
-                          error.data.message || `Failed to reinstall instance!`
+                          error.data.message || `Failed to reinstall instance!`,
                         );
                       } else {
                         message.success(`Instance reinstalled successfully!`);
@@ -411,7 +417,11 @@ function useInstancesTableColumns() {
                   domEvent.preventDefault();
                   modal.error({
                     title: "Are you absolutely sure?",
-                    content: `${record.label ? `Instance "${record.label}"` : "This instance"} will be deleted permanently. This action can't be undone!`,
+                    content: `${
+                      record.label
+                        ? `Instance "${record.label}"`
+                        : "This instance"
+                    } will be deleted permanently. This action can't be undone!`,
                     okText: "Delete",
                     okCancel: true,
                     okButtonProps: { color: "danger" },
@@ -422,7 +432,7 @@ function useInstancesTableColumns() {
 
                       if (error) {
                         message.error(
-                          error.data.message || `Failed to delete instance!`
+                          error.data.message || `Failed to delete instance!`,
                         );
                       } else {
                         message.success(`Instance deleted successfully!`);

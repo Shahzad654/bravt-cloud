@@ -1,7 +1,7 @@
-import { useState } from "react"
-import { Modal, Form, Input, Select, message } from "antd"
-import { useCreateTicketMutation } from "../../redux/apis/tickets"
-import { useNavigate } from "react-router-dom"
+import { useState } from "react";
+import { Modal, Form, Input, Select, message } from "antd";
+import { useCreateTicketMutation } from "../../redux/apis/tickets";
+import { useNavigate } from "react-router-dom";
 
 const predefinedTopics = [
   "Server Deployment Issues",
@@ -9,38 +9,38 @@ const predefinedTopics = [
   "Technical Support",
   "Account Management",
   "Service Upgrades",
-  "Other"
-]
+  "Other",
+];
 
 export default function CreateTicketDialog({ isModalOpen, setIsModalOpen }) {
-  const [form] = Form.useForm()
-  const [selectedTopic, setSelectedTopic] = useState(null)
+  const [form] = Form.useForm();
+  const [selectedTopic, setSelectedTopic] = useState(null);
 
-  const [createTicket, { isLoading }] = useCreateTicketMutation()
-  const navigate = useNavigate()
+  const [createTicket, { isLoading }] = useCreateTicketMutation();
+  const navigate = useNavigate();
 
   const handleCreateTicket = async (values) => {
     const { error, data } = await createTicket({
       ...values,
-      topic: values.customTopic ?? values.topic
-    })
+      topic: values.customTopic ?? values.topic,
+    });
 
     if (error) {
-      message.error(error.data.message)
-      return
+      message.error(error.data.message);
+      return;
     }
 
-    navigate(`/tickets/${data.id}`)
-    setIsModalOpen(false)
-    form.resetFields()
-  }
+    navigate(`/tickets/${data.id}`);
+    setIsModalOpen(false);
+    form.resetFields();
+  };
 
   const handleTopicChange = (value) => {
-    setSelectedTopic(value)
+    setSelectedTopic(value);
     if (value !== "Other") {
-      form.setFieldValue("customTopic", "")
+      form.setFieldValue("customTopic", "");
     }
-  }
+  };
 
   return (
     <Modal
@@ -49,11 +49,11 @@ export default function CreateTicketDialog({ isModalOpen, setIsModalOpen }) {
       destroyOnClose
       onOk={() => form.submit()}
       okButtonProps={{
-        loading: isLoading
+        loading: isLoading,
       }}
       onCancel={() => {
-        setIsModalOpen(false)
-        form.resetFields()
+        setIsModalOpen(false);
+        form.resetFields();
       }}
     >
       <Form
@@ -98,5 +98,5 @@ export default function CreateTicketDialog({ isModalOpen, setIsModalOpen }) {
         </Form.Item>
       </Form>
     </Modal>
-  )
+  );
 }

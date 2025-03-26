@@ -1,29 +1,29 @@
-import { Alert, Button, Typography } from "antd"
-import styled from "styled-components"
-import { use2FAStore } from "../stores/use-2fa-store"
-import { useDispatch } from "react-redux"
-import { authUtil } from "../redux/apis/auth"
-import { LuDownload } from "react-icons/lu"
+import { Alert, Button, Typography } from "antd";
+import styled from "styled-components";
+import { use2FAStore } from "../stores/use-2fa-store";
+import { useDispatch } from "react-redux";
+import { authUtil } from "../redux/apis/auth";
+import { LuDownload } from "react-icons/lu";
 
-const { Title, Paragraph } = Typography
+const { Title, Paragraph } = Typography;
 
 export default function SaveRecoveryCodes() {
-  const { recoveryCodes, update } = use2FAStore()
-  const dispatch = useDispatch()
+  const { recoveryCodes, update } = use2FAStore();
+  const dispatch = useDispatch();
 
   const downloadRecoveryCodes = () => {
-    const textContent = recoveryCodes.join("\n")
-    const blob = new Blob([textContent], { type: "text/plain" })
-    const url = URL.createObjectURL(blob)
+    const textContent = recoveryCodes.join("\n");
+    const blob = new Blob([textContent], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
 
-    const a = document.createElement("a")
-    a.href = url
-    a.download = "recovery-codes.txt"
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
-  }
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "recovery-codes.txt";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <>
@@ -54,7 +54,7 @@ export default function SaveRecoveryCodes() {
         style={{
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between"
+          justifyContent: "space-between",
         }}
       >
         <Button onClick={downloadRecoveryCodes} icon={<LuDownload />}>
@@ -68,20 +68,20 @@ export default function SaveRecoveryCodes() {
               recoveryCodes: [],
               step: 0,
               secret: "",
-              qrCodeUrl: ""
-            })
+              qrCodeUrl: "",
+            });
             dispatch(
               authUtil.updateQueryData("getSession", undefined, (draft) => {
-                Object.assign(draft, { twoFactorEnabled: new Date() })
-              })
-            )
+                Object.assign(draft, { twoFactorEnabled: new Date() });
+              }),
+            );
           }}
         >
           Finish
         </Button>
       </div>
     </>
-  )
+  );
 }
 
 const RecoveryCodesContainer = styled.div`
@@ -89,7 +89,7 @@ const RecoveryCodesContainer = styled.div`
   padding: 16px;
   background-color: #f9f9f9;
   border-radius: 8px;
-`
+`;
 
 const RecoveryCode = styled.div`
   font-family: monospace;
@@ -100,4 +100,4 @@ const RecoveryCode = styled.div`
   margin-bottom: 8px;
   display: flex;
   justify-content: space-between;
-`
+`;

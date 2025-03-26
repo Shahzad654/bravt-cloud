@@ -1,51 +1,51 @@
-import { useParams } from "react-router-dom"
-import { useGetInstanceByIdQuery } from "../../redux/apis/instances"
-import { PieChart, Pie, Label } from "recharts"
-import { useMemo } from "react"
-import { Card } from "antd"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "./Chart"
-import { useGetSessionQuery } from "../../redux/apis/auth"
-import { formatPrice } from "../../utils/helpers"
+import { useParams } from "react-router-dom";
+import { useGetInstanceByIdQuery } from "../../redux/apis/instances";
+import { PieChart, Pie, Label } from "recharts";
+import { useMemo } from "react";
+import { Card } from "antd";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "./Chart";
+import { useGetSessionQuery } from "../../redux/apis/auth";
+import { formatPrice } from "../../utils/helpers";
 
 const chartConfig = {
   credits: {
-    label: "Credits"
+    label: "Credits",
   },
   remaining: {
     label: "Current balance",
-    color: "var(--primary-color)"
+    color: "var(--primary-color)",
   },
   consumed: {
     label: "Instance Usage",
-    color: "#e76e50"
-  }
-}
+    color: "#e76e50",
+  },
+};
 
 const CreditsUsage = () => {
-  const { instanceId } = useParams()
-  const { data } = useGetInstanceByIdQuery(instanceId)
+  const { instanceId } = useParams();
+  const { data } = useGetInstanceByIdQuery(instanceId);
 
-  const { data: user } = useGetSessionQuery()
+  const { data: user } = useGetSessionQuery();
 
   const chartData = useMemo(() => {
-    if (!data) return []
+    if (!data) return [];
 
-    const consumed = data.creditsConsumed || 0
-    const remaining = user.credits || 0
+    const consumed = data.creditsConsumed || 0;
+    const remaining = user.credits || 0;
 
     return [
       {
         name: "Instance Usage",
         value: Number(consumed),
-        fill: "var(--color-consumed)"
+        fill: "var(--color-consumed)",
       },
       {
         name: "Current Balance",
         value: Number(remaining),
-        fill: "var(--color-remaining)"
-      }
-    ]
-  }, [data, user])
+        fill: "var(--color-remaining)",
+      },
+    ];
+  }, [data, user]);
 
   return (
     <Card className="col-span-1 border shadow-sm rounded-xl h-fit">
@@ -95,7 +95,7 @@ const CreditsUsage = () => {
                         Credits
                       </tspan>
                     </text>
-                  )
+                  );
                 }
               }}
             />
@@ -103,7 +103,7 @@ const CreditsUsage = () => {
         </PieChart>
       </ChartContainer>
     </Card>
-  )
-}
+  );
+};
 
-export default CreditsUsage
+export default CreditsUsage;

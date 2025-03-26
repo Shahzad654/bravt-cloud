@@ -1,5 +1,5 @@
-import styled from "styled-components"
-import DashHeader from "../components/DashHeader"
+import styled from "styled-components";
+import DashHeader from "../components/DashHeader";
 import {
   Alert,
   Button,
@@ -11,51 +11,51 @@ import {
   Space,
   Spin,
   Tag,
-  Typography
-} from "antd"
+  Typography,
+} from "antd";
 import {
   LuCircleCheck,
   LuLock,
   LuShieldCheck,
-  LuSmartphone
-} from "react-icons/lu"
+  LuSmartphone,
+} from "react-icons/lu";
 import {
   authUtil,
   useDisable2FAMutation,
-  useGetSessionQuery
-} from "../redux/apis/auth"
-import { useState } from "react"
-import { useDispatch } from "react-redux"
+  useGetSessionQuery,
+} from "../redux/apis/auth";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 
-const { Title, Paragraph } = Typography
+const { Title, Paragraph } = Typography;
 
 export default function Disable2FA() {
-  const { data: user } = useGetSessionQuery()
-  const [disable2FA, { isLoading }] = useDisable2FAMutation()
-  const dispatch = useDispatch()
+  const { data: user } = useGetSessionQuery();
+  const [disable2FA, { isLoading }] = useDisable2FAMutation();
+  const dispatch = useDispatch();
 
-  const [password, setPassword] = useState("")
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [password, setPassword] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleDisable2FA = async () => {
-    const { error } = await disable2FA({ password })
+    const { error } = await disable2FA({ password });
     if (error) {
-      message.error(error.data.message)
-      return
+      message.error(error.data.message);
+      return;
     }
 
-    setIsModalOpen(false)
+    setIsModalOpen(false);
     dispatch(
       authUtil.updateQueryData("getSession", undefined, (draft) => {
-        Object.assign(draft, { twoFactorEnabled: null, twoFactorSecret: null })
-      })
-    )
-  }
+        Object.assign(draft, { twoFactorEnabled: null, twoFactorSecret: null });
+      }),
+    );
+  };
 
   const handleClose = () => {
-    setIsModalOpen(false)
-    setPassword("")
-  }
+    setIsModalOpen(false);
+    setPassword("");
+  };
 
   return (
     <>
@@ -90,7 +90,7 @@ export default function Disable2FA() {
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  columnGap: "8px"
+                  columnGap: "8px",
                 }}
               >
                 <IconWrapper>
@@ -155,7 +155,7 @@ export default function Disable2FA() {
         </Spin>
       </Modal>
     </>
-  )
+  );
 }
 
 const StyledCard = styled(Card)`
@@ -167,12 +167,12 @@ const StyledCard = styled(Card)`
   .ant-card-head {
     border-bottom: 1px solid #f0f0f0;
   }
-`
+`;
 
 const IconWrapper = styled.div`
   color: var(--primary-color);
-`
+`;
 
 const StatusTag = styled(Tag)`
   margin-left: 8px;
-`
+`;

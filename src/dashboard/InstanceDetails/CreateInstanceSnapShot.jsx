@@ -1,21 +1,21 @@
-import { Button, Card, Form, Input, message } from "antd"
-import { useCreateSnapshotMutation } from "../../redux/apis/snapshots"
-import { useParams } from "react-router-dom"
-import SnapshotFeatures from "./SnapshotFeatures"
+import { Button, Card, Form, Input, message } from "antd";
+import { useCreateSnapshotMutation } from "../../redux/apis/snapshots";
+import { useParams } from "react-router-dom";
+import SnapshotFeatures from "./SnapshotFeatures";
 
 const CreateInstanceSnapShot = () => {
-  const [form] = Form.useForm()
-  const [createSnapshot, { isLoading }] = useCreateSnapshotMutation()
-  const { instanceId } = useParams()
+  const [form] = Form.useForm();
+  const [createSnapshot, { isLoading }] = useCreateSnapshotMutation();
+  const { instanceId } = useParams();
 
   const onFinish = async ({ description }) => {
-    const { error } = await createSnapshot({ description, instanceId })
+    const { error } = await createSnapshot({ description, instanceId });
     if (error) {
-      message.error(error.data.message || "Failed to create snapshot")
+      message.error(error.data.message || "Failed to create snapshot");
     } else {
-      message.success("Snapshot created")
+      message.success("Snapshot created");
     }
-  }
+  };
 
   return (
     <div className="w-full mt-4 bg-white">
@@ -49,7 +49,7 @@ const CreateInstanceSnapShot = () => {
         <SnapshotFeatures />
       </Card>
     </div>
-  )
-}
+  );
+};
 
-export default CreateInstanceSnapShot
+export default CreateInstanceSnapShot;

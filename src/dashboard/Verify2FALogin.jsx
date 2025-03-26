@@ -1,6 +1,6 @@
-import { useNavigate, useParams } from "react-router-dom"
-import { useVerify2FALoginMutation } from "../redux/apis/auth"
-import { useState } from "react"
+import { useNavigate, useParams } from "react-router-dom";
+import { useVerify2FALoginMutation } from "../redux/apis/auth";
+import { useState } from "react";
 import {
   Alert,
   Button,
@@ -9,26 +9,26 @@ import {
   message,
   notification,
   Space,
-  Typography
-} from "antd"
-import styled from "styled-components"
-import { LuKeyRound, LuShield } from "react-icons/lu"
+  Typography,
+} from "antd";
+import styled from "styled-components";
+import { LuKeyRound, LuShield } from "react-icons/lu";
 
-const { Title, Paragraph } = Typography
+const { Title, Paragraph } = Typography;
 
 const StyledCard = styled(Card)`
   width: 100%;
   max-width: 480px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   border-radius: 12px;
-`
+`;
 
 const IconWrapper = styled.div`
   display: inline-flex;
   align-items: center;
   margin-right: 8px;
   color: #1677ff;
-`
+`;
 
 const VerificationContainer = styled.div`
   display: flex;
@@ -38,19 +38,19 @@ const VerificationContainer = styled.div`
   min-height: 100vh;
   padding: 24px;
   background-color: #f5f5f5;
-`
+`;
 
 export default function Verify2FALogin() {
-  const [code, setCode] = useState("")
+  const [code, setCode] = useState("");
 
-  const { tempToken } = useParams()
-  const navigate = useNavigate()
+  const { tempToken } = useParams();
+  const navigate = useNavigate();
 
-  const [verify2FALogin, { isLoading }] = useVerify2FALoginMutation()
+  const [verify2FALogin, { isLoading }] = useVerify2FALoginMutation();
 
   const handleVerify2FALogin = async (e) => {
-    e.preventDefault()
-    const { error } = await verify2FALogin({ tempToken, code })
+    e.preventDefault();
+    const { error } = await verify2FALogin({ tempToken, code });
     if (error) {
       if (error.status === 410) {
         notification.error({
@@ -64,17 +64,17 @@ export default function Verify2FALogin() {
             >
               Login
             </Button>
-          )
-        })
+          ),
+        });
       } else {
-        message.error(error.data.message)
+        message.error(error.data.message);
       }
 
-      return
+      return;
     }
 
-    message.success("Logged in successfully!")
-  }
+    message.success("Logged in successfully!");
+  };
 
   return (
     <VerificationContainer>
@@ -140,5 +140,5 @@ export default function Verify2FALogin() {
         </Space>
       </StyledCard>
     </VerificationContainer>
-  )
+  );
 }

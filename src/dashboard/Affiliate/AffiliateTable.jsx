@@ -1,25 +1,25 @@
-import { Card, Table, Typography } from "antd"
-import styled from "styled-components"
-import { useGetAffiliatedUsersQuery } from "../../redux/apis/affiliate"
-import { formatDate } from "date-fns"
-import { formatPrice } from "../../utils/helpers"
+import { Card, Table, Typography } from "antd";
+import styled from "styled-components";
+import { useGetAffiliatedUsersQuery } from "../../redux/apis/affiliate";
+import { formatDate } from "date-fns";
+import { formatPrice } from "../../utils/helpers";
 
-const { Title, Text } = Typography
+const { Title, Text } = Typography;
 
 export default function AffiliateTable() {
-  const { isLoading, data = [] } = useGetAffiliatedUsersQuery()
+  const { isLoading, data = [] } = useGetAffiliatedUsersQuery();
 
   const columns = [
     {
       title: "User",
       dataIndex: "firstName",
       render: (firstName, record) =>
-        firstName ? `${firstName} ${record.lastName ?? ""}` : record.email
+        firstName ? `${firstName} ${record.lastName ?? ""}` : record.email,
     },
     {
       title: "Date",
       dataIndex: "createdAt",
-      render: (createdAt) => formatDate(createdAt, "PP")
+      render: (createdAt) => formatDate(createdAt, "PP"),
     },
     {
       title: "Status",
@@ -28,14 +28,14 @@ export default function AffiliateTable() {
         <Text style={{ color: commission !== null ? "#4CAF50" : "#FFA000" }}>
           {commission === null ? "Pending" : "Completed"}
         </Text>
-      )
+      ),
     },
     {
       title: "Commission",
       dataIndex: "commission",
-      render: (commission) => formatPrice(commission, 3)
-    }
-  ]
+      render: (commission) => formatPrice(commission, 3),
+    },
+  ];
   return (
     <StyledCard>
       <Title level={4}>Recent Referrals</Title>
@@ -46,7 +46,7 @@ export default function AffiliateTable() {
         pagination={{ pageSize: 5 }}
       />
     </StyledCard>
-  )
+  );
 }
 
 const StyledCard = styled(Card)`
@@ -56,4 +56,4 @@ const StyledCard = styled(Card)`
   .ant-card-body {
     padding: 24px;
   }
-`
+`;

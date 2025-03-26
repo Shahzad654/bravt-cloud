@@ -1,20 +1,20 @@
-import { TbServerBolt } from "react-icons/tb"
-import { LuZap } from "react-icons/lu"
-import { useGetPlansQuery } from "../../redux/apis/instances"
-import { useMemo } from "react"
-import { Link } from "react-router-dom"
-import { useGetSessionQuery } from "../../redux/apis/auth"
-import { BlurFade } from "./BlurFade"
+import { TbServerBolt } from "react-icons/tb";
+import { LuZap } from "react-icons/lu";
+import { useGetPlansQuery } from "../../redux/apis/instances";
+import { useMemo } from "react";
+import { Link } from "react-router-dom";
+import { useGetSessionQuery } from "../../redux/apis/auth";
+import { BlurFade } from "./BlurFade";
 import {
   calculateSavings,
   formatPrice,
-  toMonthlyPrice
-} from "../../utils/helpers"
+  toMonthlyPrice,
+} from "../../utils/helpers";
 
 const Pricing = () => {
-  const { data: user } = useGetSessionQuery()
-  const { data, isLoading } = useGetPlansQuery("atl")
-  const plans = useMemo(() => data?.slice(0, 3), [data])
+  const { data: user } = useGetSessionQuery();
+  const { data, isLoading } = useGetPlansQuery("atl");
+  const plans = useMemo(() => data?.slice(0, 3), [data]);
 
   return (
     <section
@@ -103,7 +103,7 @@ const Pricing = () => {
                             Save{" "}
                             {calculateSavings(
                               plan.hourlyCost,
-                              plan.promotionalPrice
+                              plan.promotionalPrice,
                             )}
                             %
                           </span>
@@ -156,7 +156,7 @@ const Pricing = () => {
                       "Unlimited Snapshots",
                       "24/7 Premium Support",
                       "Unlimited Firewall Groups",
-                      "Private Network"
+                      "Private Network",
                     ]?.map((feature, featureIndex) => (
                       <li
                         key={featureIndex}
@@ -186,7 +186,7 @@ const Pricing = () => {
             ))}
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default Pricing
+export default Pricing;

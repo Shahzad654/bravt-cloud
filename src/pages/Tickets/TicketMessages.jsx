@@ -69,28 +69,18 @@ const TicketMessages = () => {
   }, [hasNextPage, isFetchingNextPage, fetchNextPage])
 
   useEffect(() => {
-    const container = containerRef.current
-    if (!container || !data.length) return
+    if (initialLoad.current && containerRef.current) {
+      requestAnimationFrame(() => {
+        containerRef.current.scrollTop = containerRef.current.scrollHeight
+        initialLoad.current = false
+      })
 
-    if (initialLoad.current) {
-      scrollToBottom("auto")
-      initialLoad.current = false
+      setTimeout(() => scrollToBottom(), 50)
     } else {
-      const isNearBottom =
-        container.scrollHeight - container.scrollTop - container.clientHeight <
-        400
-
-      if (isNearBottom) {
-        scrollToBottom()
-      }
+      setTimeout(() => scrollToBottom(), 50)
     }
-  }, [data, scrollToBottom])
-
-  useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.scrollTop = containerRef.current.scrollHeight
-    }
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data])
 
   const groupedMessages = useMemo(() => {
     return data.reduce((grouped, msg) => {

@@ -5,6 +5,7 @@ import { FaTicketAlt, FaPlus } from "react-icons/fa"
 import { useNavigate } from "react-router-dom"
 import CreateTicketDialog from "./CreateTicketDialog"
 import { useListTicketsQuery } from "../../redux/apis/tickets"
+import DashHeader from "../../components/DashHeader"
 
 const Ticket = () => {
   const navigate = useNavigate()
@@ -58,41 +59,44 @@ const Ticket = () => {
   ]
 
   return (
-    <div style={{ padding: "24px" }}>
-      <div
-        style={{
-          marginBottom: "16px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center"
-        }}
-      >
-        <h1 style={{ margin: 0 }}>Support Tickets</h1>
-        <Button
-          type="primary"
-          icon={<FaPlus />}
-          onClick={() => setIsModalOpen(true)}
+    <>
+      <DashHeader />
+      <div style={{ padding: "24px" }}>
+        <div
+          style={{
+            marginBottom: "16px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center"
+          }}
         >
-          Create New Ticket
-        </Button>
+          <h1 style={{ margin: 0 }}>Support Tickets</h1>
+          <Button
+            type="primary"
+            icon={<FaPlus />}
+            onClick={() => setIsModalOpen(true)}
+          >
+            Create New Ticket
+          </Button>
+        </div>
+
+        <Table
+          columns={columns}
+          dataSource={tickets}
+          rowKey="id"
+          loading={isLoading}
+          rowClassName="cursor-pointer"
+          onRow={(record) => ({
+            onClick: () => navigate(`/tickets/${record.id}`)
+          })}
+        />
+
+        <CreateTicketDialog
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+        />
       </div>
-
-      <Table
-        columns={columns}
-        dataSource={tickets}
-        rowKey="id"
-        loading={isLoading}
-        rowClassName="cursor-pointer"
-        onRow={(record) => ({
-          onClick: () => navigate(`/tickets/${record.id}`)
-        })}
-      />
-
-      <CreateTicketDialog
-        isModalOpen={isModalOpen}
-        setIsModalOpen={setIsModalOpen}
-      />
-    </div>
+    </>
   )
 }
 

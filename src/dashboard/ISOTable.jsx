@@ -20,7 +20,7 @@ const ISOTable = () => {
       if (previousDataRef.current && fetchedData) {
         const updatedData = previousDataRef.current.map((prevItem) => {
           const stillExists = fetchedData.some(
-            (newItem) => newItem.id === prevItem.id
+            (newItem) => newItem.id === prevItem.id,
           );
 
           if (!stillExists) {
@@ -36,8 +36,8 @@ const ISOTable = () => {
         const newItems = fetchedData.filter(
           (newItem) =>
             !previousDataRef.current.some(
-              (prevItem) => prevItem.id === newItem.id
-            )
+              (prevItem) => prevItem.id === newItem.id,
+            ),
         );
 
         return {

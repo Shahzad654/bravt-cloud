@@ -44,7 +44,7 @@ const InstanceActions = () => {
       <div className="flex items-center gap-4">
         <Tooltip title="View console">
           <button
-            disabled={isInstalling}
+            disabled={isInstalling || data?.suspended}
             aria-label="View console"
             className="transition-colors text-zinc-500 hover:text-primary disabled:opacity-50 disabled:pointer-events-none"
             onClick={() => setIsConsoleOpen(true)}
@@ -55,13 +55,15 @@ const InstanceActions = () => {
 
         <Tooltip title={`Server ${isRunning ? "stop" : "start"}`}>
           <button
-            disabled={isInstalling}
+            disabled={isInstalling || data?.suspended}
             aria-label={`Server ${isRunning ? " stop" : "start"}`}
             className="transition-colors text-zinc-500 hover:text-primary disabled:opacity-50 disabled:pointer-events-none"
             onClick={() => {
               modal.confirm({
                 title: "Are you sure?",
-                content: `This will ${isRunning ? "stop" : "start"} your instance!`,
+                content: `This will ${
+                  isRunning ? "stop" : "start"
+                } your instance!`,
                 okText: "Confirm",
                 okCancel: true,
                 onOk: async () => {
@@ -73,11 +75,13 @@ const InstanceActions = () => {
                   if (error) {
                     message.error(
                       error.data.message ||
-                        `Failed to ${isRunning ? "stop" : "start"} instance!`
+                        `Failed to ${isRunning ? "stop" : "start"} instance!`,
                     );
                   } else {
                     message.success(
-                      `Instance ${isRunning ? "stopped" : "started"} successfully!`
+                      `Instance ${
+                        isRunning ? "stopped" : "started"
+                      } successfully!`,
                     );
                   }
                 },
@@ -94,7 +98,7 @@ const InstanceActions = () => {
 
         <Tooltip title="Server restart">
           <button
-            disabled={isInstalling}
+            disabled={isInstalling || data?.suspended}
             aria-label="Server restart"
             className="transition-colors text-zinc-500 hover:text-primary disabled:opacity-50 disabled:pointer-events-none"
             onClick={() => {
@@ -108,7 +112,7 @@ const InstanceActions = () => {
 
                   if (error) {
                     message.error(
-                      error.data.message || `Failed to reboot instance!`
+                      error.data.message || `Failed to reboot instance!`,
                     );
                   } else {
                     message.success(`Instance restarted successfully!`);
@@ -123,7 +127,7 @@ const InstanceActions = () => {
 
         <Tooltip title="Server reinstall">
           <button
-            disabled={isInstalling}
+            disabled={isInstalling || data?.suspended}
             aria-label="Server reinstall"
             className="transition-colors text-zinc-500 hover:text-primary disabled:opacity-50 disabled:pointer-events-none"
             onClick={() => {
@@ -139,7 +143,7 @@ const InstanceActions = () => {
 
                   if (error) {
                     message.error(
-                      error.data.message || `Failed to reinstall instance!`
+                      error.data.message || `Failed to reinstall instance!`,
                     );
                   } else {
                     message.success(`Instance reinstalled successfully!`);
@@ -154,13 +158,15 @@ const InstanceActions = () => {
 
         <Tooltip title="Server destroy">
           <button
-            disabled={isInstalling}
+            disabled={isInstalling || data?.suspended}
             aria-label="Server destroy"
             className="transition-colors text-zinc-500 hover:text-red-600 disabled:opacity-50 disabled:pointer-events-none"
             onClick={() => {
               modal.error({
                 title: "Are you absolutely sure?",
-                content: `${data.label ? `Instance "${data.label}"` : "This instance"} will be deleted permanently. This action can't be undone!`,
+                content: `${
+                  data.label ? `Instance "${data.label}"` : "This instance"
+                } will be deleted permanently. This action can't be undone!`,
                 okText: "Delete",
                 okCancel: true,
                 okButtonProps: { color: "danger" },
@@ -168,7 +174,7 @@ const InstanceActions = () => {
                   const { error } = await deleteInstance({ id: instanceId });
                   if (error) {
                     message.error(
-                      error.data.message || `Failed to delete instance!`
+                      error.data.message || `Failed to delete instance!`,
                     );
                   } else {
                     navigate("/instance");

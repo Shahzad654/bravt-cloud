@@ -1,22 +1,22 @@
-import { Button, Input, message, Spin, Typography } from "antd"
-import { use2FAStore } from "../stores/use-2fa-store"
-import { useEnable2FAMutation } from "../redux/apis/auth"
+import { Button, Input, message, Spin, Typography } from "antd";
+import { use2FAStore } from "../stores/use-2fa-store";
+import { useEnable2FAMutation } from "../redux/apis/auth";
 
-const { Title, Paragraph } = Typography
+const { Title, Paragraph } = Typography;
 
 export default function Verify2FACode() {
-  const { code, update } = use2FAStore()
-  const [verifyCode, { isLoading }] = useEnable2FAMutation()
+  const { code, update } = use2FAStore();
+  const [verifyCode, { isLoading }] = useEnable2FAMutation();
 
   const handleVerify = async () => {
-    const { error, data } = await verifyCode({ code })
+    const { error, data } = await verifyCode({ code });
     if (error) {
-      message.error(error.data.message)
-      return
+      message.error(error.data.message);
+      return;
     }
 
-    update({ recoveryCodes: data.recoveryCodes, step: 2 })
-  }
+    update({ recoveryCodes: data.recoveryCodes, step: 2 });
+  };
 
   return (
     <Spin spinning={isLoading}>
@@ -42,5 +42,5 @@ export default function Verify2FACode() {
         <Button onClick={() => update({ step: 0 })}>Back</Button>
       </div>
     </Spin>
-  )
+  );
 }

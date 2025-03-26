@@ -1,12 +1,12 @@
-import { Button, Typography } from "antd"
-import QRCode from "react-qr-code"
-import { use2FAStore } from "../stores/use-2fa-store"
-import styled from "styled-components"
+import { Button, Typography } from "antd";
+import QRCode from "react-qr-code";
+import { use2FAStore } from "../stores/use-2fa-store";
+import styled from "styled-components";
 
-const { Title, Paragraph, Text } = Typography
+const { Title, Paragraph, Text } = Typography;
 
 export default function Enable2FA() {
-  const { qrCodeUrl, secret, update } = use2FAStore()
+  const { qrCodeUrl, secret, update } = use2FAStore();
 
   return (
     <>
@@ -39,7 +39,7 @@ export default function Enable2FA() {
         </Button>
       </div>
     </>
-  )
+  );
 }
 
 const QRCodeContainer = styled.div`
@@ -49,4 +49,4 @@ const QRCodeContainer = styled.div`
   padding: 24px;
   background-color: #f9f9f9;
   border-radius: 8px;
-`
+`;

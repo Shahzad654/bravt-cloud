@@ -17,7 +17,7 @@ const IpAddressInput = ({ ipType }) => {
 
     if (!isValid) {
       callback(
-        `Please input a valid IPv${ipType === "v4" ? "4" : "6"} address!`
+        `Please input a valid IPv${ipType === "v4" ? "4" : "6"} address!`,
       );
     } else {
       callback();

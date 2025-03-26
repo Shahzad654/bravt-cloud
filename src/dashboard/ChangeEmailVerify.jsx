@@ -1,36 +1,36 @@
-import { useEffect } from "react"
-import { Form, Input, Button, message } from "antd"
-import { useNavigate, useSearchParams } from "react-router-dom"
-import { useChangeEmailMutation } from "../redux/apis/auth"
-import DashHeader from "../components/DashHeader"
+import { useEffect } from "react";
+import { Form, Input, Button, message } from "antd";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useChangeEmailMutation } from "../redux/apis/auth";
+import DashHeader from "../components/DashHeader";
 
 export default function ChangeEmailVerify() {
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const email = searchParams.get("email")
-  const [form] = Form.useForm()
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const email = searchParams.get("email");
+  const [form] = Form.useForm();
 
   useEffect(() => {
     if (!email) {
-      message.error("No email provided")
-      navigate("/change-email")
+      message.error("No email provided");
+      navigate("/change-email");
     }
-  }, [email, navigate])
+  }, [email, navigate]);
 
-  const [changeEmail, { isLoading }] = useChangeEmailMutation()
+  const [changeEmail, { isLoading }] = useChangeEmailMutation();
 
   const handleSubmit = async (values) => {
-    const { error } = await changeEmail({ ...values, email })
+    const { error } = await changeEmail({ ...values, email });
     if (error) {
-      message.error(error.data.message)
-      return
+      message.error(error.data.message);
+      return;
     }
 
-    message.success("Email changed successfully")
-    navigate("/instance")
-  }
+    message.success("Email changed successfully");
+    navigate("/instance");
+  };
 
-  if (!email) return null
+  if (!email) return null;
 
   return (
     <>
@@ -54,9 +54,9 @@ export default function ChangeEmailVerify() {
             rules={[
               {
                 required: true,
-                message: "Please input the verification code!"
+                message: "Please input the verification code!",
               },
-              { len: 6, message: "Verification code must be 6 characters!" }
+              { len: 6, message: "Verification code must be 6 characters!" },
             ]}
           >
             <Input placeholder="Enter 6-digit code" maxLength={6} />
@@ -79,5 +79,5 @@ export default function ChangeEmailVerify() {
         </Form>
       </div>
     </>
-  )
+  );
 }

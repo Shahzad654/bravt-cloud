@@ -1,8 +1,8 @@
-import { Typography } from "antd"
-import DashHeader from "../../components/DashHeader"
-import AffiliateInput from "./AffiliateInput"
-import AffiliateStats from "./AffiliateStats"
-import AffiliateTable from "./AffiliateTable"
+import { Typography } from "antd";
+import DashHeader from "../../components/DashHeader";
+import AffiliateInput from "./AffiliateInput";
+import AffiliateStats from "./AffiliateStats";
+import AffiliateTable from "./AffiliateTable";
 
 export default function Affiliate() {
   return (
@@ -21,5 +21,5 @@ export default function Affiliate() {
         <AffiliateTable />
       </div>
     </>
-  )
+  );
 }

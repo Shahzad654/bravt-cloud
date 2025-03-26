@@ -1,35 +1,35 @@
-import { useMemo } from "react"
-import { getIcon, getOSName } from "../../components/Icons"
-import { useGetImagesQuery } from "../../redux/apis/instances"
-import { sortByCharacterPriority } from "../../utils/helpers"
-import { Dropdown } from "antd"
-import { TbChevronDown } from "react-icons/tb"
+import { useMemo } from "react";
+import { getIcon, getOSName } from "../../components/Icons";
+import { useGetImagesQuery } from "../../redux/apis/instances";
+import { sortByCharacterPriority } from "../../utils/helpers";
+import { Dropdown } from "antd";
+import { TbChevronDown } from "react-icons/tb";
 
 function formatOSName(name, family) {
-  return name.replace(new RegExp(`^${getOSName(family)}\\s`, "i"), "")
+  return name.replace(new RegExp(`^${getOSName(family)}\\s`, "i"), "");
 }
 
 const ImageSelect = ({ value, onValueChange }) => {
-  const { data, isLoading } = useGetImagesQuery()
+  const { data, isLoading } = useGetImagesQuery();
 
   const groupedData = useMemo(() => {
-    const sorted = sortByCharacterPriority(data, "family", "u") || []
+    const sorted = sortByCharacterPriority(data, "family", "u") || [];
     return sorted?.reduce((acc, item) => {
-      const existingGroup = acc.find((group) => group.family === item.family)
+      const existingGroup = acc.find((group) => group.family === item.family);
 
       if (existingGroup) {
-        existingGroup.versions.push(item)
+        existingGroup.versions.push(item);
       } else {
-        acc.push({ family: item.family, versions: [item] })
+        acc.push({ family: item.family, versions: [item] });
       }
 
-      return acc
-    }, [])
-  }, [data])
+      return acc;
+    }, []);
+  }, [data]);
 
   if (isLoading) {
     return (
-      <div className="grid-layout">
+      <>
         {Array.from({ length: 14 }).map((_, index) => (
           <div
             key={index}
@@ -37,17 +37,17 @@ const ImageSelect = ({ value, onValueChange }) => {
             style={{ backgroundColor: "#d1d5db", height: "100px" }}
           />
         ))}
-      </div>
-    )
+      </>
+    );
   }
 
   return (
-    <div className="grid-layout">
+    <>
       {groupedData?.map((item) => {
-        const { Icon, color } = getIcon(item.family)
+        const { Icon, color } = getIcon(item.family);
 
         if (item.versions.length === 1) {
-          const image = item.versions[0]
+          const image = item.versions[0];
           return (
             <div
               key={image.id}
@@ -66,7 +66,7 @@ const ImageSelect = ({ value, onValueChange }) => {
                 ({formatOSName(image.name, item.family)})
               </span>
             </div>
-          )
+          );
         }
 
         return (
@@ -76,33 +76,33 @@ const ImageSelect = ({ value, onValueChange }) => {
             value={value}
             onValueChange={onValueChange}
           />
-        )
+        );
       })}
-    </div>
-  )
-}
+    </>
+  );
+};
 
-export default ImageSelect
+export default ImageSelect;
 
 function ImageDropdown({ image, value, onValueChange }) {
-  const { Icon, color } = getIcon(image.family)
+  const { Icon, color } = getIcon(image.family);
 
   const isSelected = useMemo(() => {
-    return image.versions.some((v) => v.id === value)
-  }, [value, image])
+    return image.versions.some((v) => v.id === value);
+  }, [value, image]);
 
   const selectedVersion = useMemo(() => {
-    return image.versions.find((v) => v.id === value) || image.versions[0]
-  }, [image, value])
+    return image.versions.find((v) => v.id === value) || image.versions[0];
+  }, [image, value]);
 
   const items = useMemo(() => {
     return image.versions.map((v) => ({
       key: v.id,
       label: v.name,
       icon: <Icon size={18} color={color} />,
-      onClick: () => onValueChange(v.id)
-    }))
-  }, [image, color, onValueChange])
+      onClick: () => onValueChange(v.id),
+    }));
+  }, [image, color, onValueChange]);
 
   return (
     <Dropdown
@@ -112,7 +112,7 @@ function ImageDropdown({ image, value, onValueChange }) {
         defaultActiveFirst: true,
         selectable: true,
         defaultSelectedKeys: [value],
-        items
+        items,
       }}
     >
       <div
@@ -132,5 +132,5 @@ function ImageDropdown({ image, value, onValueChange }) {
         </span>
       </div>
     </Dropdown>
-  )
+  );
 }

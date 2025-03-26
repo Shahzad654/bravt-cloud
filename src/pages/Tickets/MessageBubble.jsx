@@ -1,3 +1,6 @@
+import "react-medium-image-zoom/dist/styles.css"
+
+import Zoom from "react-medium-image-zoom"
 import { formatDate } from "date-fns"
 import { useGetSessionQuery } from "../../redux/apis/auth"
 import { cn } from "../../utils/helpers"
@@ -7,16 +10,36 @@ export function MessageBubble({ message }) {
   const isCurrentMessage = message.sender.id === user.id
 
   return (
-    <li className="group/message flex w-full items-center gap-3 ml-auto flex-row-reverse">
+    <li
+      className={cn(
+        "group/message flex w-full items-center gap-3",
+        isCurrentMessage ? "ml-auto flex-row-reverse" : "mr-auto"
+      )}
+    >
       <div className="max-w-full w-fit md:max-w-lg">
-        <p
+        <div
           className={cn(
-            "whitespace-pre-wrap break-words rounded-lg px-3 py-1.5 text-sm font-medium md:max-w-lg",
-            isCurrentMessage ? "bg-primary  text-white" : "bg-zinc-100"
+            "flex flex-col gap-2 rounded-lg p-2 md:max-w-lg",
+            isCurrentMessage ? "bg-primary text-white" : "bg-zinc-200"
           )}
         >
-          {message.message}
-        </p>
+          {message.images.map((image, idx) => (
+            <Zoom
+              key={`${image}-${idx}`}
+              zoomImg={{ src: image, draggable: false }}
+            >
+              <img
+                src={image}
+                alt="Image"
+                className="min-w-[300px] rounded-md object-contain"
+              />
+            </Zoom>
+          ))}
+
+          <p className="whitespace-pre-wrap break-words text-sm font-medium">
+            {message.message}
+          </p>
+        </div>
 
         <div
           className={cn("mt-1 flex items-center gap-2", {

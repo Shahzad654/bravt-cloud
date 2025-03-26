@@ -26,10 +26,10 @@ const ticketsApi = createApi({
     }),
 
     createTicketMessage: builder.mutation({
-      query: ({ ticketId, ...body }) => ({
+      query: ({ ticketId, formData }) => ({
         url: `tickets/message/${ticketId}`,
         method: "POST",
-        body
+        body: formData
       }),
       onQueryStarted: async ({ ticketId }, { dispatch, queryFulfilled }) => {
         try {

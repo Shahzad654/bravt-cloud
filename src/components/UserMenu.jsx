@@ -1,17 +1,17 @@
-import { Dropdown, Flex } from "antd"
-import { LuUser, LuLogOut, LuLock, LuShield, LuMail } from "react-icons/lu"
+import { Dropdown, Flex } from "antd";
+import { LuUser, LuLogOut, LuLock, LuShield, LuMail } from "react-icons/lu";
 import {
   useGetSessionQuery,
   useLogoutMutation,
-  useStopImpersonateMutation
-} from "../redux/apis/auth"
-import { useNavigate } from "react-router-dom"
+  useStopImpersonateMutation,
+} from "../redux/apis/auth";
+import { useNavigate } from "react-router-dom";
 
 const UserMenu = () => {
-  const { data: user } = useGetSessionQuery()
-  const navigate = useNavigate()
-  const [logout] = useLogoutMutation()
-  const [stopImpersonate] = useStopImpersonateMutation()
+  const { data: user } = useGetSessionQuery();
+  const navigate = useNavigate();
+  const [logout] = useLogoutMutation();
+  const [stopImpersonate] = useStopImpersonateMutation();
 
   return (
     <Dropdown
@@ -20,31 +20,31 @@ const UserMenu = () => {
           {
             icon: <LuUser size={18} />,
             label: "Profile",
-            onClick: () => navigate("/profile")
+            onClick: () => navigate("/profile"),
           },
           {
             icon: <LuMail size={18} />,
             label: "Change Email",
-            onClick: () => navigate("/change-email")
+            onClick: () => navigate("/change-email"),
           },
           {
             icon: <LuLock size={18} />,
             label: "Change Password",
-            onClick: () => navigate("/change-password")
+            onClick: () => navigate("/change-password"),
           },
           {
             icon: <LuShield size={18} />,
             label: "Security",
-            onClick: () => navigate("/security")
+            onClick: () => navigate("/security"),
           },
           {
             icon: <LuLogOut size={18} />,
             label: user.impersonatedBy ? "Stop Impersonating" : "Logout",
             danger: true,
             onClick: async () =>
-              user.impersonatedBy ? stopImpersonate() : logout()
-          }
-        ]
+              user.impersonatedBy ? stopImpersonate() : logout(),
+          },
+        ],
       }}
     >
       <Flex
@@ -59,7 +59,7 @@ const UserMenu = () => {
         {user.email}
       </Flex>
     </Dropdown>
-  )
-}
+  );
+};
 
-export default UserMenu
+export default UserMenu;

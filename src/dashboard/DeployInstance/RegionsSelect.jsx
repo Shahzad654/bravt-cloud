@@ -29,7 +29,7 @@ const RegionsSelect = ({ value, onValueChange }) => {
     if (!data) return [];
 
     const uniqueContinents = Array.from(
-      new Set(data.map((region) => region.continent))
+      new Set(data.map((region) => region.continent)),
     );
 
     return [

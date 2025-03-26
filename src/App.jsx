@@ -39,7 +39,6 @@ import UpdateSHH from "./dashboard/ShhDetails/UpadateSHH"
 import OAuthCallback from "./pages/OAuthCallback"
 import VerifyCode from "./pages/VerifyCode"
 import SetupPassword from "./pages/SetupPassword"
-import ISO from "./dashboard/ISO"
 import ErrorFallback from "./components/ErrorFallback"
 import ChangePassword from "./pages/ChangePassword"
 import PrivacyPolicy from "./pages/Legal/PrivacyPolicy"
@@ -103,7 +102,6 @@ export default function App() {
           <Route path="/ssh-keys" element={<SSHKeyTable />} />
           <Route path="/ssh-keys/add" element={<AddSHH />} />
           <Route path="/ssh-keys/:id" element={<UpdateSHH />} />
-          <Route path="/iso" element={<ISO />} />
           <Route path="/security" element={<Authentication />} />
           <Route path="/change-email" element={<ChangeEmailRequest />} />
           <Route path="/change-email/verify" element={<ChangeEmailVerify />} />

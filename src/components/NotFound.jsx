@@ -1,9 +1,9 @@
-import { Button, Result } from "antd"
-import { useGetSessionQuery } from "../redux/apis/auth"
-import { Link } from "react-router-dom"
+import { Button, Result } from "antd";
+import { useGetSessionQuery } from "../redux/apis/auth";
+import { Link } from "react-router-dom";
 
 const NotFound = () => {
-  const { data: user } = useGetSessionQuery()
+  const { data: user } = useGetSessionQuery();
 
   return (
     <div
@@ -11,7 +11,7 @@ const NotFound = () => {
         minHeight: "100vh",
         display: "flex",
         alignItems: "center",
-        justifyContent: "center"
+        justifyContent: "center",
       }}
     >
       <Result
@@ -29,7 +29,7 @@ const NotFound = () => {
         }
       />
     </div>
-  )
-}
+  );
+};
 
-export default NotFound
+export default NotFound;

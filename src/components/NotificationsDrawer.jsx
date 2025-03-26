@@ -1,15 +1,15 @@
-import { Drawer, Flex, Typography } from "antd"
+import { Drawer, Flex, Typography } from "antd";
 import {
   useListNotificationsQuery,
-  useListUnseenNotificationsCountQuery
-} from "../redux/apis/notifications"
-import { format } from "date-fns"
+  useListUnseenNotificationsCountQuery,
+} from "../redux/apis/notifications";
+import { format } from "date-fns";
 
 export default function NotificationsDrawer({ open, onClose }) {
-  const { data: unseenCount = 0 } = useListUnseenNotificationsCountQuery()
+  const { data: unseenCount = 0 } = useListUnseenNotificationsCountQuery();
   const { data = [] } = useListNotificationsQuery(undefined, {
-    skip: !open
-  })
+    skip: !open,
+  });
 
   return (
     <Drawer
@@ -21,7 +21,7 @@ export default function NotificationsDrawer({ open, onClose }) {
         <Notification key={notification.id} notification={notification} />
       ))}
     </Drawer>
-  )
+  );
 }
 
 function Notification({ notification }) {
@@ -38,16 +38,16 @@ function Notification({ notification }) {
       <Typography.Paragraph
         ellipsis={{
           rows: 3,
-          expandable: "collapsible"
+          expandable: "collapsible",
         }}
         style={{
           fontSize: "13px",
           color: "gray",
-          whiteSpace: "pre-wrap"
+          whiteSpace: "pre-wrap",
         }}
       >
         {notification.message}
       </Typography.Paragraph>
     </div>
-  )
+  );
 }

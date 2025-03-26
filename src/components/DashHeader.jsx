@@ -1,6 +1,6 @@
 import styled from "styled-components"
 import Logo from "../assets/images/logo.png"
-import { Badge, Button, Layout, Popover, Tag, theme } from "antd"
+import { Alert, Badge, Button, Layout, Popover, Tag, theme } from "antd"
 import { Link } from "react-router-dom"
 import { RiMoneyDollarCircleLine } from "react-icons/ri"
 import { useGetSessionQuery } from "../redux/apis/auth"
@@ -31,117 +31,136 @@ const DashHeader = () => {
   const dispatch = useDispatch()
 
   return (
-    <StyledHeader style={{ background: colorBgContainer }}>
-      <div className="logo">
-        <img src={Logo} alt="Logo" />
-      </div>
-      <NavLinks>
-        <NotificationsDrawer open={open} onClose={() => setOpen(false)} />
+    <>
+      <StyledHeader style={{ background: colorBgContainer }}>
+        <div className="logo">
+          <img src={Logo} alt="Logo" />
+        </div>
+        <NavLinks>
+          <NotificationsDrawer open={open} onClose={() => setOpen(false)} />
 
-        <Badge
-          count={count}
-          size="default"
-          style={{ fontSize: "8px", cursor: "pointer" }}
-          onClick={() => {
-            setOpen(true)
-            dispatch(
-              notificationUtil.updateQueryData(
-                "listUnseenNotificationsCount",
-                undefined,
-                () => 0
+          <Badge
+            count={count}
+            size="default"
+            style={{ fontSize: "8px", cursor: "pointer" }}
+            onClick={() => {
+              setOpen(true)
+              dispatch(
+                notificationUtil.updateQueryData(
+                  "listUnseenNotificationsCount",
+                  undefined,
+                  () => 0
+                )
               )
-            )
-          }}
-        >
-          <div
-            className="icon-border"
-            style={{
-              cursor: "pointer",
-              backgroundColor: "var(--bg-color)",
-              color: "var(--primary-color)",
-              borderRadius: "50%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "32px",
-              height: "32px"
             }}
           >
-            <LuBell size={18} />
-          </div>
-        </Badge>
+            <div
+              className="icon-border"
+              style={{
+                cursor: "pointer",
+                backgroundColor: "var(--bg-color)",
+                color: "var(--primary-color)",
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "32px",
+                height: "32px"
+              }}
+            >
+              <LuBell size={18} />
+            </div>
+          </Badge>
 
-        <Popover
-          content={
-            <div style={{ width: "250px" }}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: "20px"
-                }}
-              >
-                <p
+          <Popover
+            content={
+              <div style={{ width: "250px" }}>
+                <div
                   style={{
-                    fontSize: "16px",
-                    fontWeight: "600"
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: "20px"
                   }}
                 >
-                  Balance
-                </p>
+                  <p
+                    style={{
+                      fontSize: "16px",
+                      fontWeight: "600"
+                    }}
+                  >
+                    Balance
+                  </p>
 
-                <p
+                  <p
+                    style={{
+                      fontSize: "16px",
+                      fontWeight: "600"
+                    }}
+                  >
+                    {formatPrice(data.credits, 3)}
+                  </p>
+                </div>
+
+                <div
                   style={{
-                    fontSize: "16px",
-                    fontWeight: "600"
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: "20px"
                   }}
                 >
-                  {formatPrice(data.credits, 3)}
-                </p>
+                  <p
+                    style={{
+                      fontSize: "16px",
+                      fontWeight: "600"
+                    }}
+                  >
+                    Status
+                  </p>
+
+                  <Tag color={data.isSubscribed ? "green" : "blue"}>
+                    {data.isSubscribed ? "Subscribed" : "Normal"}
+                  </Tag>
+                </div>
+
+                <Link to="/payment">
+                  <Button type="primary" style={{ width: "100%" }}>
+                    Recharge
+                  </Button>
+                </Link>
               </div>
-
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: "20px"
-                }}
-              >
-                <p
-                  style={{
-                    fontSize: "16px",
-                    fontWeight: "600"
-                  }}
-                >
-                  Status
-                </p>
-
-                <Tag color={data.isSubscribed ? "green" : "blue"}>
-                  {data.isSubscribed ? "Subscribed" : "Normal"}
-                </Tag>
+            }
+          >
+            <div className="link">
+              <div className="icon-border">
+                <RiMoneyDollarCircleLine className="icon" />
               </div>
+              {formatPrice(data.credits, 3, "decimal")}
+            </div>
+          </Popover>
 
-              <Link to="/payment">
-                <Button type="primary" style={{ width: "100%" }}>
-                  Recharge
+          <UserMenu />
+        </NavLinks>
+      </StyledHeader>
+      {data?.suspended && (
+        <div style={{ padding: "16px 24px 0 24px" }}>
+          <Alert
+            message="Your account has been suspended."
+            description="Please contact support if you believe this is a mistake or need assistance."
+            type="error"
+            showIcon
+            action={
+              <Link to="/tickets">
+                <Button danger size="small">
+                  Contact Support
                 </Button>
               </Link>
-            </div>
-          }
-        >
-          <div className="link">
-            <div className="icon-border">
-              <RiMoneyDollarCircleLine className="icon" />
-            </div>
-            {formatPrice(data.credits, 3, "decimal")}
-          </div>
-        </Popover>
-
-        <UserMenu />
-      </NavLinks>
-    </StyledHeader>
+            }
+          />
+        </div>
+      )}
+    </>
   )
 }
 

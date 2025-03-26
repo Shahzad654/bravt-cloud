@@ -1,16 +1,16 @@
-import { configureStore } from "@reduxjs/toolkit"
+import { configureStore } from "@reduxjs/toolkit";
 
-import transactionsApi from "./apis/transactions"
-import firewallsApi from "./apis/firewalls"
-import authApi from "./apis/auth"
-import instancesApi from "./apis/instances"
-import sshApi from "./apis/ssh"
-import snapshotsApi from "./apis/snapshots"
-import isoApi from "./apis/iso"
-import apiErrorReducer, { apiErrorMiddleware } from "./apiError"
-import notificationsApi from "./apis/notifications"
-import ticketsApi from "./apis/tickets"
-import affiliateApi from "./apis/affiliate"
+import transactionsApi from "./apis/transactions";
+import firewallsApi from "./apis/firewalls";
+import authApi from "./apis/auth";
+import instancesApi from "./apis/instances";
+import sshApi from "./apis/ssh";
+import snapshotsApi from "./apis/snapshots";
+import isoApi from "./apis/iso";
+import apiErrorReducer, { apiErrorMiddleware } from "./apiError";
+import notificationsApi from "./apis/notifications";
+import ticketsApi from "./apis/tickets";
+import affiliateApi from "./apis/affiliate";
 
 const store = configureStore({
   reducer: {
@@ -24,7 +24,7 @@ const store = configureStore({
     [notificationsApi.reducerPath]: notificationsApi.reducer,
     [ticketsApi.reducerPath]: ticketsApi.reducer,
     [affiliateApi.reducerPath]: affiliateApi.reducer,
-    apiError: apiErrorReducer
+    apiError: apiErrorReducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware().concat(
@@ -38,9 +38,9 @@ const store = configureStore({
       notificationsApi.middleware,
       ticketsApi.middleware,
       affiliateApi.middleware,
-      apiErrorMiddleware
-    )
-  }
-})
+      apiErrorMiddleware,
+    );
+  },
+});
 
-export default store
+export default store;

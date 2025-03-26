@@ -30,8 +30,8 @@ const firewallsApi = createApi({
               undefined,
               (draft) => {
                 draft.push(data);
-              }
-            )
+              },
+            ),
           );
           // eslint-disable-next-line no-empty
         } catch {}
@@ -53,8 +53,8 @@ const firewallsApi = createApi({
               id,
               (draft) => {
                 Object.assign(draft.firewallGroup, data);
-              }
-            )
+              },
+            ),
           );
 
           dispatch(
@@ -67,8 +67,8 @@ const firewallsApi = createApi({
                     Object.assign(draft[i], data);
                   }
                 }
-              }
-            )
+              },
+            ),
           );
           // eslint-disable-next-line no-empty
         } catch {}
@@ -93,16 +93,16 @@ const firewallsApi = createApi({
                     draft.splice(i, 1);
                   }
                 }
-              }
-            )
+              },
+            ),
           );
 
           dispatch(
             firewallsApi.util.updateQueryData(
               "getFirewallRules",
               id,
-              () => null
-            )
+              () => null,
+            ),
           );
           // eslint-disable-next-line no-empty
         } catch {}

@@ -64,7 +64,7 @@ const FirewallRulesTable = ({ ipType }) => {
 
                 if (error) {
                   message.error(
-                    error.data.message || "Failed to delete firewall rule"
+                    error.data.message || "Failed to delete firewall rule",
                   );
                 } else {
                   message.success("Firewall rule deleted!");

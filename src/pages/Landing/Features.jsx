@@ -102,7 +102,7 @@ const Feature = ({ title, description, icon: Icon, index }) => {
       className={cn(
         "flex flex-col lg:border-r  py-10 relative group/feature",
         (index === 0 || index === 4) && "lg:border-l",
-        index < 4 && "lg:border-b"
+        index < 4 && "lg:border-b",
       )}
     >
       {index < 4 && (

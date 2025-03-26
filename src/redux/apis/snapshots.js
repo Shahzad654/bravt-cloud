@@ -1,6 +1,6 @@
-import { createApi } from "@reduxjs/toolkit/query/react"
-import { baseQueryWithReauth } from "../query"
-import { instancesUtil } from "./instances"
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQueryWithReauth } from "../query";
+import { instancesUtil } from "./instances";
 
 const snapshotsApi = createApi({
   reducerPath: "snapshots",
@@ -9,51 +9,51 @@ const snapshotsApi = createApi({
   endpoints: (builder) => ({
     getSnapshots: builder.query({
       query: () => "snapshot",
-      providesTags: () => [{ type: "Snapshots" }]
+      providesTags: () => [{ type: "Snapshots" }],
     }),
 
     getGlobalSnapshots: builder.query({
-      query: () => "snapshot/global"
+      query: () => "snapshot/global",
     }),
 
     getSnapshotCost: builder.query({
-      query: () => "snapshot/cost"
+      query: () => "snapshot/cost",
     }),
 
     createSnapshot: builder.mutation({
       query: (body) => ({
         url: "snapshot",
         method: "POST",
-        body
+        body,
       }),
       invalidatesTags: (_, __, { instanceId }) => [
         { type: "Snapshots" },
         { type: "AllInstances" },
-        { type: "Instance", id: instanceId }
+        { type: "Instance", id: instanceId },
       ],
       onQueryStarted: async ({ instanceId }, { dispatch, queryFulfilled }) => {
         try {
-          await queryFulfilled
+          await queryFulfilled;
           dispatch(
             instancesUtil.invalidateTags([
               { type: "AllInstances" },
-              { type: "Instance", id: instanceId }
-            ])
-          )
+              { type: "Instance", id: instanceId },
+            ]),
+          );
           // eslint-disable-next-line no-empty
         } catch {}
-      }
+      },
     }),
 
     deleteSnapshot: builder.mutation({
       query: (id) => ({
         url: `snapshot/${id}`,
-        method: "DELETE"
+        method: "DELETE",
       }),
-      invalidatesTags: () => [{ type: "Snapshots" }]
-    })
-  })
-})
+      invalidatesTags: () => [{ type: "Snapshots" }],
+    }),
+  }),
+});
 
 export const {
   util: snapshotsUtil,
@@ -61,7 +61,7 @@ export const {
   useGetGlobalSnapshotsQuery,
   useGetSnapshotCostQuery,
   useCreateSnapshotMutation,
-  useDeleteSnapshotMutation
-} = snapshotsApi
+  useDeleteSnapshotMutation,
+} = snapshotsApi;
 
-export default snapshotsApi
+export default snapshotsApi;

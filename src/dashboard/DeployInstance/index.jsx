@@ -21,14 +21,15 @@ import {
   useCreateInstanceMutation,
   useGetPlansQuery
 } from "../../redux/apis/instances"
-import ISOSelect from "./ISOSelect"
+// import ISOSelect from "./ISOSelect"
 import {
   calculateSavings,
   formatPrice,
   toMonthlyPrice
 } from "../../utils/helpers"
 import BackupsRadio from "./BackupsRadio"
-import SnapshotSelect from "./SnapshotsSelect"
+import GlobalSnapshotsSelect from "./GlobalSnapshotsSelect"
+import SnapshotSelect from "./SnapshotSelect"
 
 const { Content } = Layout
 
@@ -45,7 +46,7 @@ const DeployInstance = () => {
     snapshot_id: "",
     sshKeys: [],
     firewallGroup: "",
-    backups: "enabled"
+    backups: "disabled"
   })
 
   const [errors, setErrors] = useState({})
@@ -86,20 +87,20 @@ const DeployInstance = () => {
     }))
   }
 
-  const handleISOSelect = (value) => {
-    setFormState((prev) => ({
-      ...prev,
-      iso: value,
-      image: null,
-      snapshot_id: null
-    }))
-    setErrors((prev) => ({
-      ...prev,
-      image: null,
-      iso: null,
-      snapshot_id: null
-    }))
-  }
+  // const handleISOSelect = (value) => {
+  //   setFormState((prev) => ({
+  //     ...prev,
+  //     iso: value,
+  //     image: null,
+  //     snapshot_id: null
+  //   }))
+  //   setErrors((prev) => ({
+  //     ...prev,
+  //     image: null,
+  //     iso: null,
+  //     snapshot_id: null
+  //   }))
+  // }
 
   const handleSnapshotSelect = (value) => {
     setFormState((prev) => ({
@@ -207,16 +208,23 @@ const DeployInstance = () => {
                       label: "Operating System",
                       key: "os",
                       children: (
-                        <ImageSelect
-                          value={formState.image}
-                          onValueChange={handleImageSelect}
-                          error={errors.image}
-                        />
+                        <div className="grid-layout">
+                          <ImageSelect
+                            value={formState.image}
+                            onValueChange={handleImageSelect}
+                            error={errors.image}
+                          />
+                          <GlobalSnapshotsSelect
+                            value={formState.snapshot_id}
+                            onValueChange={handleSnapshotSelect}
+                            error={errors.snapshot_id}
+                          />
+                        </div>
                       )
                     },
                     {
-                      label: "Custom OS",
-                      key: "custom_os",
+                      key: "snapshot",
+                      label: "Snapshot",
                       children: (
                         <SnapshotSelect
                           value={formState.snapshot_id}
@@ -224,18 +232,18 @@ const DeployInstance = () => {
                           error={errors.snapshot_id}
                         />
                       )
-                    },
-                    {
-                      key: "iso",
-                      label: "ISO",
-                      children: (
-                        <ISOSelect
-                          value={formState.iso}
-                          onValueChange={handleISOSelect}
-                          error={errors.image}
-                        />
-                      )
                     }
+                    // {
+                    //   key: "iso",
+                    //   label: "ISO",
+                    //   children: (
+                    //     <ISOSelect
+                    //       value={formState.iso}
+                    //       onValueChange={handleSnapshotSelect}
+                    //       error={errors.iso}
+                    //     />
+                    //   )
+                    // },
                   ]}
                 />
 

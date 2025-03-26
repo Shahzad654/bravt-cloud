@@ -55,7 +55,7 @@ const SSHKeyTable = () => {
 
                   if (error) {
                     message.error(
-                      error.data.message || `Failed to delete ssh Key!`
+                      error.data.message || `Failed to delete ssh Key!`,
                     );
                   } else {
                     message.success(`SSH Key deleted successfully!`);

@@ -105,7 +105,7 @@ const RestoreSnapshot = () => {
 
                     if (error) {
                       message.error(
-                        error.data.message || "Failed to restore snapshot"
+                        error.data.message || "Failed to restore snapshot",
                       );
                     } else {
                       message.success("Snapshot Restored!");

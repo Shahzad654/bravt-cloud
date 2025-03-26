@@ -40,7 +40,7 @@ export const apiErrorMiddleware =
         setError({
           status: String(action.payload?.status),
           message: action.payload.data?.message,
-        })
+        }),
       );
     }
 

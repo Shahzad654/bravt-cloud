@@ -1,27 +1,27 @@
-import { Form, Input, Button, message } from "antd"
-import { useNavigate } from "react-router-dom"
+import { Form, Input, Button, message } from "antd";
+import { useNavigate } from "react-router-dom";
 import {
   useChangeEmailRequestMutation,
-  useGetSessionQuery
-} from "../redux/apis/auth"
-import DashHeader from "../components/DashHeader"
+  useGetSessionQuery,
+} from "../redux/apis/auth";
+import DashHeader from "../components/DashHeader";
 
 export default function ChangeEmailRequest() {
-  const navigate = useNavigate()
-  const [form] = Form.useForm()
-  const { data: user } = useGetSessionQuery()
-  const [changeEmail, { isLoading }] = useChangeEmailRequestMutation()
+  const navigate = useNavigate();
+  const [form] = Form.useForm();
+  const { data: user } = useGetSessionQuery();
+  const [changeEmail, { isLoading }] = useChangeEmailRequestMutation();
 
   const handleSubmit = async (values) => {
-    const { error } = await changeEmail(values)
+    const { error } = await changeEmail(values);
     if (error) {
-      message.error(error.data.message)
-      return
+      message.error(error.data.message);
+      return;
     }
 
-    message.success("Verification code sent successfully")
-    navigate(`/change-email/verify?email=${encodeURIComponent(values.email)}`)
-  }
+    message.success("Verification code sent successfully");
+    navigate(`/change-email/verify?email=${encodeURIComponent(values.email)}`);
+  };
 
   return (
     <>
@@ -46,13 +46,13 @@ export default function ChangeEmailRequest() {
                   if (value && value === user?.email) {
                     return Promise.reject(
                       new Error(
-                        "New email must be different from your current email!"
-                      )
-                    )
+                        "New email must be different from your current email!",
+                      ),
+                    );
                   }
-                  return Promise.resolve()
-                }
-              })
+                  return Promise.resolve();
+                },
+              }),
             ]}
           >
             <Input placeholder="Enter your new email" />
@@ -63,7 +63,7 @@ export default function ChangeEmailRequest() {
               name="password"
               label="Password"
               rules={[
-                { required: true, message: "Please input your password!" }
+                { required: true, message: "Please input your password!" },
               ]}
             >
               <Input type="password" placeholder="Enter your password" />
@@ -78,5 +78,5 @@ export default function ChangeEmailRequest() {
         </Form>
       </div>
     </>
-  )
+  );
 }

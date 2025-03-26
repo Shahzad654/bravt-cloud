@@ -1,21 +1,21 @@
-import DashHeader from "../components/DashHeader"
-import { useGetSessionQuery } from "../redux/apis/auth"
-import { LuTriangleAlert, LuShieldCheck } from "react-icons/lu"
-import Init2FA from "./Init2FA"
-import { Alert, Card, Space, Steps, Tag } from "antd"
-import styled from "styled-components"
-import { use2FAStore } from "../stores/use-2fa-store"
-import Enable2FA from "./Enable2FA"
-import Verify2FACode from "./Verify2FACode"
-import SaveRecoveryCodes from "./SaveRecoveryCodes"
-import Disable2FA from "./Disable2FA"
+import DashHeader from "../components/DashHeader";
+import { useGetSessionQuery } from "../redux/apis/auth";
+import { LuTriangleAlert, LuShieldCheck } from "react-icons/lu";
+import Init2FA from "./Init2FA";
+import { Alert, Card, Space, Steps, Tag } from "antd";
+import styled from "styled-components";
+import { use2FAStore } from "../stores/use-2fa-store";
+import Enable2FA from "./Enable2FA";
+import Verify2FACode from "./Verify2FACode";
+import SaveRecoveryCodes from "./SaveRecoveryCodes";
+import Disable2FA from "./Disable2FA";
 
 const Authentication = () => {
-  const { data: user } = useGetSessionQuery()
-  const { secret, step, recoveryCodes } = use2FAStore()
+  const { data: user } = useGetSessionQuery();
+  const { secret, step, recoveryCodes } = use2FAStore();
 
   if (user.twoFactorEnabled) {
-    return <Disable2FA />
+    return <Disable2FA />;
   }
 
   return (
@@ -64,10 +64,10 @@ const Authentication = () => {
         </StyledCard>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Authentication
+export default Authentication;
 
 const StyledCard = styled(Card)`
   width: 100%;
@@ -78,12 +78,12 @@ const StyledCard = styled(Card)`
   .ant-card-head {
     border-bottom: 1px solid #f0f0f0;
   }
-`
+`;
 
 const IconWrapper = styled.div`
   color: var(--primary-color);
-`
+`;
 
 const StatusTag = styled(Tag)`
   margin-left: 8px;
-`
+`;

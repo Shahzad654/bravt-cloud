@@ -1,55 +1,55 @@
-import { useState } from "react"
-import styled from "styled-components"
-import { Breadcrumb, Button, Layout, Input } from "antd"
-import { Flex } from "antd"
-import { BsCreditCard2FrontFill, BsCurrencyDollar } from "react-icons/bs"
-import { FaPaypal } from "react-icons/fa"
-import PaymentForm from "./PaymentForm"
-import Paypal from "./Paypal"
-import { PayPalScriptProvider } from "@paypal/react-paypal-js"
-import { useGetClientIdQuery } from "../redux/apis/transactions"
-import PageSpinner from "../components/PageSpinner"
+import { useState } from "react";
+import styled from "styled-components";
+import { Breadcrumb, Button, Layout, Input } from "antd";
+import { Flex } from "antd";
+import { BsCreditCard2FrontFill, BsCurrencyDollar } from "react-icons/bs";
+import { FaPaypal } from "react-icons/fa";
+import PaymentForm from "./PaymentForm";
+import Paypal from "./Paypal";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import { useGetClientIdQuery } from "../redux/apis/transactions";
+import PageSpinner from "../components/PageSpinner";
 
-const { Content } = Layout
+const { Content } = Layout;
 
 const MakePayment = () => {
-  const [value, setValue] = useState(10)
-  const [customValue, setCustomValue] = useState("")
-  const [paymentMethod, setPaymentMethod] = useState("stripe")
-  const [error, setError] = useState("")
+  const [value, setValue] = useState(10);
+  const [customValue, setCustomValue] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("stripe");
+  const [error, setError] = useState("");
 
-  const { data: clientId, isLoading } = useGetClientIdQuery("PAYPAL")
+  const { data: clientId, isLoading } = useGetClientIdQuery("PAYPAL");
 
   const handleCustomValueChange = (e) => {
-    const inputValue = e.target.value
-    setCustomValue(inputValue)
+    const inputValue = e.target.value;
+    setCustomValue(inputValue);
 
     if (inputValue === "") {
-      setError("")
-      return
+      setError("");
+      return;
     }
 
-    const numValue = parseFloat(inputValue)
+    const numValue = parseFloat(inputValue);
     if (isNaN(numValue)) {
-      setError("Please enter a valid number")
+      setError("Please enter a valid number");
     } else if (numValue < 10) {
-      setError("Minimum amount is $10")
+      setError("Minimum amount is $10");
     } else {
-      setError("")
-      setValue(numValue)
+      setError("");
+      setValue(numValue);
     }
-  }
+  };
 
   const handlePresetValue = (val) => {
-    setValue(val)
-    setCustomValue("")
-    setError("")
-  }
+    setValue(val);
+    setCustomValue("");
+    setError("");
+  };
 
-  if (isLoading) return <PageSpinner />
+  if (isLoading) return <PageSpinner />;
 
   if (!clientId) {
-    throw new Error("Something went wrong")
+    throw new Error("Something went wrong");
   }
 
   return (
@@ -61,7 +61,7 @@ const MakePayment = () => {
               margin: "16px 0",
               fontSize: "var(--m-heading)",
               color: "black",
-              fontWeight: "500"
+              fontWeight: "500",
             }}
           />
 
@@ -70,7 +70,7 @@ const MakePayment = () => {
               padding: 24,
               minHeight: 360,
               background: "white",
-              borderRadius: "8px"
+              borderRadius: "8px",
             }}
           >
             <PageContent>
@@ -85,7 +85,7 @@ const MakePayment = () => {
                       height: "40px",
                       justifyContent: "center",
                       alignItems: "center",
-                      display: "flex"
+                      display: "flex",
                     }}
                   >
                     ${val}
@@ -139,10 +139,10 @@ const MakePayment = () => {
         </Content>
       </Layout>
     </LayoutWrapper>
-  )
-}
+  );
+};
 
-export default MakePayment
+export default MakePayment;
 
 const LayoutWrapper = styled(Layout)`
   min-height: 100vh;
@@ -150,7 +150,7 @@ const LayoutWrapper = styled(Layout)`
   @media (max-width: 768px) {
     min-height: 60vh;
   }
-`
+`;
 
 const PageContent = styled.div`
   display: flex;
@@ -164,7 +164,7 @@ const PageContent = styled.div`
     flex-direction: column;
     align-items: flex-start;
   }
-`
+`;
 
 const PaymentMethodCard = styled.div`
   display: flex;
@@ -185,15 +185,15 @@ const PaymentMethodCard = styled.div`
     color: var(--primary-color);
     background-color: #f0f9ff;
   `}
-`
+`;
 
 const CustomInputWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
-`
+`;
 
 const ErrorText = styled.span`
   color: #ff4d4f;
   font-size: 12px;
-`
+`;

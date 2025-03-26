@@ -100,7 +100,7 @@ const BackupsTable = () => {
                     });
                     if (error) {
                       message.error(
-                        error.data.message || "Failed to restore backup"
+                        error.data.message || "Failed to restore backup",
                       );
                     } else {
                       message.success("Backup Restored!");

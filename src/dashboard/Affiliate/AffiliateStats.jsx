@@ -1,19 +1,19 @@
-import styled from "styled-components"
-import { useGetAffiliateStatsQuery } from "../../redux/apis/affiliate"
-import { Card, Typography } from "antd"
-import { LuUsers, LuDollarSign, LuUserCheck } from "react-icons/lu"
-import { formatPrice } from "../../utils/helpers"
-const { Title, Text } = Typography
+import styled from "styled-components";
+import { useGetAffiliateStatsQuery } from "../../redux/apis/affiliate";
+import { Card, Typography } from "antd";
+import { LuUsers, LuDollarSign, LuUserCheck } from "react-icons/lu";
+import { formatPrice } from "../../utils/helpers";
+const { Title, Text } = Typography;
 
 const StatsContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1rem;
   margin-bottom: 2rem;
-`
+`;
 
 export default function AffiliateStats() {
-  const { isLoading, data } = useGetAffiliateStatsQuery()
+  const { isLoading, data } = useGetAffiliateStatsQuery();
 
   return (
     <StatsContainer>
@@ -28,7 +28,7 @@ export default function AffiliateStats() {
               width: "80px",
               height: "32px",
               backgroundColor: "#f4f4f5",
-              borderRadius: "5px"
+              borderRadius: "5px",
             }}
           />
         ) : (
@@ -48,7 +48,7 @@ export default function AffiliateStats() {
               width: "80px",
               height: "32px",
               backgroundColor: "#f4f4f5",
-              borderRadius: "5px"
+              borderRadius: "5px",
             }}
           />
         ) : (
@@ -68,7 +68,7 @@ export default function AffiliateStats() {
               width: "80px",
               height: "32px",
               backgroundColor: "#f4f4f5",
-              borderRadius: "5px"
+              borderRadius: "5px",
             }}
           />
         ) : (
@@ -79,7 +79,7 @@ export default function AffiliateStats() {
         <Text type="secondary">Successful Referrals</Text>
       </StyledCard>
     </StatsContainer>
-  )
+  );
 }
 
 const StyledCard = styled(Card)`
@@ -89,7 +89,7 @@ const StyledCard = styled(Card)`
   .ant-card-body {
     padding: 24px;
   }
-`
+`;
 
 const IconWrapper = styled.div`
   width: 48px;
@@ -99,4 +99,4 @@ const IconWrapper = styled.div`
   align-items: center;
   justify-content: center;
   margin-bottom: 1rem;
-`
+`;

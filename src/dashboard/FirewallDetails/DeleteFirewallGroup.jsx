@@ -31,7 +31,7 @@ const DeleteFirewallGroup = () => {
               const { error } = await deleteFirewallGroup(firewallId);
               if (error) {
                 message.error(
-                  error.data.message || "Failed to delete firewall"
+                  error.data.message || "Failed to delete firewall",
                 );
               } else {
                 message.success("Firewall deleted!");

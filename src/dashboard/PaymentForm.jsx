@@ -1,73 +1,73 @@
-import { useMemo, useState } from "react"
-import { loadStripe } from "@stripe/stripe-js"
-import { CircularProgress } from "@mui/material"
-import { useDispatch } from "react-redux"
-import { useNavigate } from "react-router-dom"
-import { message } from "antd"
-import { authUtil, useGetSessionQuery } from "../redux/apis/auth"
+import { useMemo, useState } from "react";
+import { loadStripe } from "@stripe/stripe-js";
+import { CircularProgress } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { message } from "antd";
+import { authUtil, useGetSessionQuery } from "../redux/apis/auth";
 import {
   useGetClientIdQuery,
-  useGetStripePaymentIntentMutation
-} from "../redux/apis/transactions"
+  useGetStripePaymentIntentMutation,
+} from "../redux/apis/transactions";
 import {
   CardElement,
   Elements,
   useElements,
-  useStripe
-} from "@stripe/react-stripe-js"
-import PageSpinner from "../components/PageSpinner"
+  useStripe,
+} from "@stripe/react-stripe-js";
+import PageSpinner from "../components/PageSpinner";
 
 function Form({ credits }) {
-  const stripe = useStripe()
-  const elements = useElements()
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-  const [status, setStatus] = useState("idle")
+  const stripe = useStripe();
+  const elements = useElements();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [status, setStatus] = useState("idle");
 
-  const { data: user } = useGetSessionQuery()
-  const [getPaymentIntent] = useGetStripePaymentIntentMutation()
+  const { data: user } = useGetSessionQuery();
+  const [getPaymentIntent] = useGetStripePaymentIntentMutation();
 
   const handleSubmit = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
-    if (!stripe || !elements) return
+    if (!stripe || !elements) return;
 
-    setStatus("loading")
+    setStatus("loading");
 
-    const { data, error } = await getPaymentIntent({ credits })
+    const { data, error } = await getPaymentIntent({ credits });
 
     if (error) {
-      message.error(error.data.message)
-      setStatus("error")
-      return
+      message.error(error.data.message);
+      setStatus("error");
+      return;
     }
 
     const result = await stripe.confirmCardPayment(data.clientSecret, {
       payment_method: {
-        card: elements.getElement(CardElement)
-      }
-    })
+        card: elements.getElement(CardElement),
+      },
+    });
 
     if (result.error) {
-      setStatus("error")
-      message.error(result.error.message)
-      return
+      setStatus("error");
+      message.error(result.error.message);
+      return;
     }
 
-    setStatus("success")
+    setStatus("success");
 
     if (result.paymentIntent.status === "requires_capture") {
       dispatch(
         authUtil.updateQueryData("getSession", undefined, (draft) => {
           Object.assign(draft, {
-            credits: Number(user.credits) + Number(credits)
-          })
-        })
-      )
+            credits: Number(user.credits) + Number(credits),
+          });
+        }),
+      );
 
-      navigate("/instance")
+      navigate("/instance");
     }
-  }
+  };
 
   return (
     <form style={{ width: "100%" }} onSubmit={handleSubmit}>
@@ -79,8 +79,8 @@ function Form({ credits }) {
           classes: {
             base: "stripe-card-element",
             focus: "stripe-card-element-focused",
-            invalid: "stripe-card-element-invalid"
-          }
+            invalid: "stripe-card-element-invalid",
+          },
         }}
       />
       <button
@@ -95,22 +95,22 @@ function Form({ credits }) {
         )}
       </button>
     </form>
-  )
+  );
 }
 
 export default function PaymentForm({ credits }) {
-  const { data: clientId, isLoading } = useGetClientIdQuery("CREDIT_CARD")
+  const { data: clientId, isLoading } = useGetClientIdQuery("CREDIT_CARD");
 
   const stripePromise = useMemo(() => {
-    if (!clientId) return null
-    return loadStripe(clientId)
-  }, [clientId])
+    if (!clientId) return null;
+    return loadStripe(clientId);
+  }, [clientId]);
 
-  if (isLoading) return <PageSpinner />
+  if (isLoading) return <PageSpinner />;
 
   return (
     <Elements stripe={stripePromise}>
       <Form credits={credits} />
     </Elements>
-  )
+  );
 }

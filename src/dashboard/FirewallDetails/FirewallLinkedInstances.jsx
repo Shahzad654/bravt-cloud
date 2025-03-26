@@ -109,29 +109,33 @@ const FirewallLinkedInstances = () => {
       dataIndex: "power_status",
       render: (status, record) => {
         const isInstalling = isInstanceInstalling(record);
-        const isSuspended = record.status === "suspended";
+        const isSuspended = record.status === "suspended" || record.suspended;
         return (
           <Tag
             color={
-              isInstalling
-                ? "orange"
-                : status === "running"
-                  ? "success"
-                  : "error"
+              record.suspended
+                ? "error"
+                : isInstalling
+                  ? "orange"
+                  : status === "running"
+                    ? "success"
+                    : "error"
             }
           >
-            {isInstalling && !isSuspended && (
+            {!isSuspended && isInstalling && (
               <CircularProgress
                 size={10}
                 style={{ marginRight: "6px" }}
                 color="inherit"
               />
             )}
-            {isSuspended
-              ? "Under Maintenance"
-              : isInstalling
-                ? "Installing"
-                : toSentenceCase(status.toLowerCase())}
+            {record.suspended
+              ? "Suspended"
+              : isSuspended
+                ? "Under Maintenance"
+                : isInstalling
+                  ? "Installing"
+                  : toSentenceCase(status.toLowerCase())}
           </Tag>
         );
       },

@@ -1,10 +1,10 @@
-import styled from "styled-components"
-import { Card, Typography, Button, Input, message, Skeleton } from "antd"
-import { LuDollarSign, LuCopy } from "react-icons/lu"
-import { useGetSessionQuery } from "../../redux/apis/auth"
-import { useGetCommissionQuery } from "../../redux/apis/affiliate"
+import styled from "styled-components";
+import { Card, Typography, Button, Input, message, Skeleton } from "antd";
+import { LuDollarSign, LuCopy } from "react-icons/lu";
+import { useGetSessionQuery } from "../../redux/apis/auth";
+import { useGetCommissionQuery } from "../../redux/apis/affiliate";
 
-const { Title, Text } = Typography
+const { Title, Text } = Typography;
 
 const StyledCard = styled(Card)`
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -13,7 +13,7 @@ const StyledCard = styled(Card)`
   .ant-card-body {
     padding: 24px;
   }
-`
+`;
 
 const CommissionInfo = styled.div`
   display: flex;
@@ -23,16 +23,16 @@ const CommissionInfo = styled.div`
   background: #f8f9fa;
   border-radius: 8px;
   margin-top: 16px;
-`
+`;
 
 export default function AffiliateInput() {
-  const { data: user } = useGetSessionQuery()
-  const { data: commission, isLoading } = useGetCommissionQuery()
-  const affiliateLink = `${window.location.origin}/signup?ref=${user?.id}`
+  const { data: user } = useGetSessionQuery();
+  const { data: commission, isLoading } = useGetCommissionQuery();
+  const affiliateLink = `${window.location.origin}/signup?ref=${user?.id}`;
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(affiliateLink)
-    message.success("Affiliate link copied to clipboard!")
-  }
+    navigator.clipboard.writeText(affiliateLink);
+    message.success("Affiliate link copied to clipboard!");
+  };
 
   return (
     <StyledCard style={{ marginBottom: "2rem" }}>
@@ -67,5 +67,5 @@ export default function AffiliateInput() {
         </Skeleton>
       </CommissionInfo>
     </StyledCard>
-  )
+  );
 }

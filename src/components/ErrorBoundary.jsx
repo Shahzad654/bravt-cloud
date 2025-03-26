@@ -8,7 +8,7 @@ const ErrorBoundary = ({ children }) => {
     return children;
   }
 
-  return <ErrorFallback error={error} />;
+  return <ErrorFallback apiError={error} />;
 };
 
 export default ErrorBoundary;

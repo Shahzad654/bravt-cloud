@@ -106,7 +106,7 @@ const Snapshot = () => {
                 const { error } = await deleteSnapshot(record.id);
                 if (error) {
                   message.error(
-                    error.data.message || "Failed to delete snapshot"
+                    error.data.message || "Failed to delete snapshot",
                   );
                 } else {
                   message.success("Snapshot Deleted!");

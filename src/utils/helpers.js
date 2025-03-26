@@ -1,29 +1,29 @@
-import { clsx } from "clsx"
+import { clsx } from "clsx";
 import {
   differenceInCalendarDays,
   format,
   isToday,
-  isYesterday
-} from "date-fns"
-import { twMerge } from "tailwind-merge"
+  isYesterday,
+} from "date-fns";
+import { twMerge } from "tailwind-merge";
 
 export function formatPrice(
   amount,
   maximumFractionDigits = 7,
-  style = "currency"
+  style = "currency",
 ) {
   if (isNaN(Number(amount))) {
-    return ""
+    return "";
   }
 
   const formatter = new Intl.NumberFormat("en-US", {
     style,
     currency: "USD",
     minimumFractionDigits: 0,
-    maximumFractionDigits
-  })
+    maximumFractionDigits,
+  });
 
-  return formatter.format(amount)
+  return formatter.format(amount);
 }
 
 export function toSentenceCase(str) {
@@ -34,11 +34,11 @@ export function toSentenceCase(str) {
     .toLowerCase()
     .replace(/^\w/, (c) => c.toUpperCase())
     .replace(/\s+/g, " ")
-    .trim()
+    .trim();
 }
 
 export function cn(...inputs) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export function isInstanceInstalling(instance) {
@@ -48,59 +48,61 @@ export function isInstanceInstalling(instance) {
     instance?.status !== "active" ||
     !["running", "stopped"].includes(instance?.power_status)
   ) {
-    return true
+    return true;
   } else {
-    return false
+    return false;
   }
 }
 
 export function sortByCharacterPriority(data, nameKey, char) {
-  if (!data) return []
+  if (!data) return [];
 
-  const dataCopy = [...data]
+  const dataCopy = [...data];
 
   return dataCopy?.sort((a, b) => {
-    const nameA = a[nameKey].toLowerCase()
-    const nameB = b[nameKey].toLowerCase()
+    const nameA = a[nameKey].toLowerCase();
+    const nameB = b[nameKey].toLowerCase();
 
-    const startsWithA = nameA.startsWith(char)
-    const startsWithB = nameB.startsWith(char)
+    const startsWithA = nameA.startsWith(char);
+    const startsWithB = nameB.startsWith(char);
 
     if (startsWithA && !startsWithB) {
-      return -1
+      return -1;
     } else if (!startsWithA && startsWithB) {
-      return 1
+      return 1;
     } else {
-      return nameA.localeCompare(nameB)
+      return nameA.localeCompare(nameB);
     }
-  })
+  });
 }
 
 export function formatDate(date) {
-  return format(new Date(date), "PP")
+  return format(new Date(date), "PP");
 }
 
 export function getCountryName(countryCode) {
-  const regions = new Intl.DisplayNames(["en"], { type: "region" })
-  return regions.of(countryCode)
+  const regions = new Intl.DisplayNames(["en"], { type: "region" });
+  return regions.of(countryCode);
 }
 
 export function toMonthlyPrice(amount) {
   if (isNaN(Number(amount))) {
-    return ""
+    return "";
   }
 
-  return Number(amount) * 30 * 24
+  return Number(amount) * 30 * 24;
 }
 
 export function formatMsgDate(date) {
-  const today = new Date()
-  if (isToday(date)) return "Today"
-  if (isYesterday(date)) return "Yesterday"
-  if (differenceInCalendarDays(today, date) < 7) return format(date, "EEEE")
-  return format(date, "dd/MM/yyyy")
+  const today = new Date();
+  if (isToday(date)) return "Today";
+  if (isYesterday(date)) return "Yesterday";
+  if (differenceInCalendarDays(today, date) < 7) return format(date, "EEEE");
+  return format(date, "dd/MM/yyyy");
 }
 
 export const calculateSavings = (promotional, original) => {
-  return Math.round(((Number(original) - Number(promotional)) / original) * 100)
-}
+  return Math.round(
+    ((Number(original) - Number(promotional)) / original) * 100,
+  );
+};

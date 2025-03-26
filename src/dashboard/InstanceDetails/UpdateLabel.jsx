@@ -31,7 +31,7 @@ const UpdateLabel = ({ size = "sm" }) => {
         }}
         className={cn(
           "hover:text-primary transition-colors",
-          size === "lg" ? "text-3xl font-medium" : "text-sm"
+          size === "lg" ? "text-3xl font-medium" : "text-sm",
         )}
       >
         {data.label || "Server Information"}
@@ -68,7 +68,7 @@ const UpdateLabel = ({ size = "sm" }) => {
           "w-full !pb-0.5 px-0 border-b bg-transparent border-zinc-400 focus-visible:border-primary transition-[colors,opacity] rounded-none disabled:opacity-60",
           size === "sm"
             ? "max-w-[300px] text-sm h-[22px]"
-            : "max-w-[400px] text-2xl h-9"
+            : "max-w-[400px] text-2xl h-9",
         )}
       />
 

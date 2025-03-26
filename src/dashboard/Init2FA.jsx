@@ -1,31 +1,31 @@
-import styled from "styled-components"
-import { LuShieldCheck, LuShield } from "react-icons/lu"
-import { Button, message, Typography } from "antd"
-import { useGenerate2FASecretMutation } from "../redux/apis/auth"
-import { use2FAStore } from "../stores/use-2fa-store"
+import styled from "styled-components";
+import { LuShieldCheck, LuShield } from "react-icons/lu";
+import { Button, message, Typography } from "antd";
+import { useGenerate2FASecretMutation } from "../redux/apis/auth";
+import { use2FAStore } from "../stores/use-2fa-store";
 
-const { Title, Paragraph } = Typography
+const { Title, Paragraph } = Typography;
 
 export default function Init2FA() {
-  const [init2Fa, { isLoading }] = useGenerate2FASecretMutation()
-  const updateSecret = use2FAStore((s) => s.update)
+  const [init2Fa, { isLoading }] = useGenerate2FASecretMutation();
+  const updateSecret = use2FAStore((s) => s.update);
 
   const handleInit2Fa = async () => {
-    const { error, data } = await init2Fa()
+    const { error, data } = await init2Fa();
 
     if (error) {
-      message.error(error.data.message)
-      return
+      message.error(error.data.message);
+      return;
     }
 
-    console.log({ data })
+    console.log({ data });
 
     updateSecret({
       secret: data.secret,
       qrCodeUrl: data.otpauthUrl,
-      step: 0
-    })
-  }
+      step: 0,
+    });
+  };
 
   return (
     <CenteredContent>
@@ -50,7 +50,7 @@ export default function Init2FA() {
         Enable Two-Factor Authentication
       </Button>
     </CenteredContent>
-  )
+  );
 }
 
 const CenteredContent = styled.div`
@@ -60,11 +60,11 @@ const CenteredContent = styled.div`
   justify-content: center;
   text-align: center;
   padding: 48px 24px;
-`
+`;
 
 const IconWrapper = styled.div`
   display: inline-flex;
   align-items: center;
   margin-right: 8px;
   color: #1677ff;
-`
+`;

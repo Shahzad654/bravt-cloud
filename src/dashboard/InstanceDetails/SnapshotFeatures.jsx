@@ -1,9 +1,9 @@
-import { Skeleton } from "antd"
-import { useGetSnapshotCostQuery } from "../../redux/apis/snapshots"
-import { formatPrice } from "../../utils/helpers"
+import { Skeleton } from "antd";
+import { useGetSnapshotCostQuery } from "../../redux/apis/snapshots";
+import { formatPrice } from "../../utils/helpers";
 
 export default function SnapshotFeatures() {
-  const { data, isLoading } = useGetSnapshotCostQuery()
+  const { data, isLoading } = useGetSnapshotCostQuery();
 
   return (
     <Skeleton loading={isLoading}>
@@ -22,5 +22,5 @@ export default function SnapshotFeatures() {
         </li>
       </ul>
     </Skeleton>
-  )
+  );
 }

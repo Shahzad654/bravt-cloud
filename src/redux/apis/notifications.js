@@ -1,5 +1,5 @@
-import { createApi } from "@reduxjs/toolkit/query/react"
-import { baseQueryWithReauth } from "../query"
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQueryWithReauth } from "../query";
 
 const notificationsApi = createApi({
   reducerPath: "notifications",
@@ -8,20 +8,20 @@ const notificationsApi = createApi({
   endpoints: (builder) => ({
     listNotifications: builder.query({
       query: () => "notifications",
-      providesTags: () => [{ type: "NOTIFICATIONS" }]
+      providesTags: () => [{ type: "NOTIFICATIONS" }],
     }),
 
     listUnseenNotificationsCount: builder.query({
       query: () => "notifications/count",
-      providesTags: () => [{ type: "NOTIFICATIONS_COUNT" }]
-    })
-  })
-})
+      providesTags: () => [{ type: "NOTIFICATIONS_COUNT" }],
+    }),
+  }),
+});
 
 export const {
   util: notificationUtil,
   useListNotificationsQuery,
-  useListUnseenNotificationsCountQuery
-} = notificationsApi
+  useListUnseenNotificationsCountQuery,
+} = notificationsApi;
 
-export default notificationsApi
+export default notificationsApi;

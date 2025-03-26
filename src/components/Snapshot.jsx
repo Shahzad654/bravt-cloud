@@ -59,52 +59,59 @@ const SnapShots = () => {
     <div>
       <div style={{ padding: "20px" }}>
         <Alert
-          message='Please note:'
-          description='Your server may still be finishing installing and booting up during the first few minutes of activation. If the server does not ping, you can view the console to monitor progress.'
-          type='warning'
+          message="Please note:"
+          description="Your server may still be finishing installing and booting up during the first few minutes of activation. If the server does not ping, you can view the console to monitor progress."
+          type="warning"
           showIcon
         />
       </div>
       <div style={{ padding: "20px" }}>
         <div style={{ padding: "20px" }}>
           <h4>Take Snapshot</h4>
-          <div style={{ border: "1px solid #d3d3d3", width:"500px", padding:"20px", marginTop:"30px" }}>
-         <div
+          <div
             style={{
-              marginBottom: "20px",
-              display: "flex",
-              alignItems: "center",
+              border: "1px solid #d3d3d3",
+              width: "500px",
+              padding: "20px",
+              marginTop: "30px",
             }}
           >
-            <Input
-              placeholder='label'
-              value={labelInput}
-              onChange={(e) => setLabelInput(e.target.value)}
-              style={{ width: "300px", marginRight: "10px" }}
-            />
-            <Button
-              type='primary'
-              style={{ width: "250px", marginRight: "10px", height:"40px" }}
+            <div
+              style={{
+                marginBottom: "20px",
+                display: "flex",
+                alignItems: "center",
+              }}
             >
-              Take Snapshot
-            </Button>
+              <Input
+                placeholder="label"
+                value={labelInput}
+                onChange={(e) => setLabelInput(e.target.value)}
+                style={{ width: "300px", marginRight: "10px" }}
+              />
+              <Button
+                type="primary"
+                style={{ width: "250px", marginRight: "10px", height: "40px" }}
+              >
+                Take Snapshot
+              </Button>
+            </div>
+            <ul style={{ fontSize: "12px", color: "grey" }}>
+              <li>
+                Stored snapshots will cost $0.05/GB per month - pricing subject
+                to change.
+              </li>
+              <li>
+                Stored snapshots will cost $0.05/GB per month - pricing subject
+                to change.
+              </li>
+              <li>
+                Stored snapshots will cost $0.05/GB per month - pricing subject
+                to change.
+              </li>
+            </ul>
           </div>
-          <ul style={{ fontSize: "12px", color: "grey" }}>
-            <li>
-              Stored snapshots will cost $0.05/GB per month - pricing subject to
-              change.
-            </li>
-            <li>
-              Stored snapshots will cost $0.05/GB per month - pricing subject to
-              change.
-            </li>
-            <li>
-              Stored snapshots will cost $0.05/GB per month - pricing subject to
-              change.
-            </li>
-          </ul>
-         </div>
-          <h4 style={{marginTop:"40px"}}>Restore Snapshot</h4>
+          <h4 style={{ marginTop: "40px" }}>Restore Snapshot</h4>
           <div style={{ padding: "20px" }}>
             <Table
               dataSource={dataSource}

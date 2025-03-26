@@ -1,27 +1,27 @@
-import { useMemo, useRef } from "react"
-import { REGIONS } from "../../data/regions"
-import { BlurFade } from "./BlurFade"
-import { motion } from "motion/react"
-import { Tooltip } from "antd"
-import { getCountryName, sortByCharacterPriority } from "../../utils/helpers"
-import ReactCountryFlag from "react-country-flag"
-import WorldMapImage from "../../assets/images/world-map.svg"
-import { useGetRegionsQuery } from "../../redux/apis/instances"
+import { useMemo, useRef } from "react";
+import { REGIONS } from "../../data/regions";
+import { BlurFade } from "./BlurFade";
+import { motion } from "motion/react";
+import { Tooltip } from "antd";
+import { getCountryName, sortByCharacterPriority } from "../../utils/helpers";
+import ReactCountryFlag from "react-country-flag";
+import WorldMapImage from "../../assets/images/world-map.svg";
+import { useGetRegionsQuery } from "../../redux/apis/instances";
 
 const Locations = () => {
-  const svgRef = useRef(null)
+  const svgRef = useRef(null);
 
   const projectPoint = (lat, lng) => {
-    const x = (lng + 180) * (800 / 360)
-    const y = (90 - lat) * (400 / 180)
-    return { x, y }
-  }
+    const x = (lng + 180) * (800 / 360);
+    const y = (90 - lat) * (400 / 180);
+    return { x, y };
+  };
 
-  const { data, isLoading } = useGetRegionsQuery()
+  const { data, isLoading } = useGetRegionsQuery();
   const locations = useMemo(
     () => sortByCharacterPriority(data, "country", "u"),
-    [data]
-  )
+    [data],
+  );
 
   return (
     <section
@@ -100,19 +100,19 @@ const Locations = () => {
                   opacity: 1,
                   transition: {
                     staggerChildren: 0.1,
-                    delayChildren: 0.3
-                  }
-                }
+                    delayChildren: 0.3,
+                  },
+                },
               }}
             >
               {Object.values(REGIONS).map((dot, i) => {
-                const point = projectPoint(dot.coords.lat, dot.coords.lng)
+                const point = projectPoint(dot.coords.lat, dot.coords.lng);
                 return (
                   <motion.g
                     key={`points-group-${i}`}
                     variants={{
                       hidden: { opacity: 0, scale: 0 },
-                      show: { opacity: 1, scale: 1 }
+                      show: { opacity: 1, scale: 1 },
                     }}
                   >
                     <Tooltip
@@ -122,7 +122,7 @@ const Locations = () => {
                             color: "black",
                             display: "flex",
                             alignItems: "center",
-                            columnGap: "10px"
+                            columnGap: "10px",
                           }}
                         >
                           <ReactCountryFlag
@@ -131,13 +131,13 @@ const Locations = () => {
                             style={{
                               flexShrink: 0,
                               width: "28px",
-                              height: "28px"
+                              height: "28px",
                             }}
                           />
                           <div
                             style={{
                               display: "flex",
-                              flexDirection: "column"
+                              flexDirection: "column",
                             }}
                           >
                             <span style={{ margin: 0, padding: 0 }}>
@@ -148,7 +148,7 @@ const Locations = () => {
                                 color: "gray",
                                 fontSize: "10px",
                                 margin: 0,
-                                padding: 0
+                                padding: 0,
                               }}
                             >
                               ({getCountryName(dot.countryCode)})
@@ -175,23 +175,23 @@ const Locations = () => {
                       className="pointer-events-none"
                       animate={{
                         r: [2, 8],
-                        opacity: [0.5, 0]
+                        opacity: [0.5, 0],
                       }}
                       transition={{
                         duration: 1.5,
                         repeat: Infinity,
-                        ease: "linear"
+                        ease: "linear",
                       }}
                     />
                   </motion.g>
-                )
+                );
               })}
             </motion.g>
           </svg>
         </BlurFade>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default Locations
+export default Locations;

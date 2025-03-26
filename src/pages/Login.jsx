@@ -1,67 +1,67 @@
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { Link } from "react-router-dom"
-import styled from "styled-components"
-import { Snackbar, Alert, CircularProgress } from "@mui/material"
-import LoginImg from "../assets/images/login.jpg"
-import Logo from "../components/Logo"
-import SignInWithoutEmail from "../components/SignInwithoutEmail"
-import { useLoginMutation } from "../redux/apis/auth"
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
+import { Snackbar, Alert, CircularProgress } from "@mui/material";
+import LoginImg from "../assets/images/login.jpg";
+import Logo from "../components/Logo";
+import SignInWithoutEmail from "../components/SignInwithoutEmail";
+import { useLoginMutation } from "../redux/apis/auth";
 
 export default function Login() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     email: "",
-    password: ""
-  })
+    password: "",
+  });
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
-    severity: "success"
-  })
+    severity: "success",
+  });
 
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
-    })
-  }
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const handleClose = () => {
-    setSnackbar({ ...snackbar, open: false })
-  }
+    setSnackbar({ ...snackbar, open: false });
+  };
 
-  const [login, { isLoading }] = useLoginMutation()
+  const [login, { isLoading }] = useLoginMutation();
 
   const handleSignIn = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!formData.email || !formData.password) {
       setSnackbar({
         open: true,
         message: "Please fill in all fields",
-        severity: "error"
-      })
-      return
+        severity: "error",
+      });
+      return;
     }
 
-    const { error } = await login(formData)
+    const { error } = await login(formData);
 
     if (error) {
       setSnackbar({
         open: true,
         message: error.data.message || "Login failed",
-        severity: "error"
-      })
+        severity: "error",
+      });
     } else {
       setSnackbar({
         open: true,
         message: "Login successful!",
-        severity: "success"
-      })
+        severity: "success",
+      });
     }
-  }
+  };
 
   return (
     <Main>
@@ -107,7 +107,7 @@ export default function Login() {
                 marginLeft: "auto",
                 marginTop: "1rem",
                 cursor: "pointer",
-                fontSize: "14px"
+                fontSize: "14px",
               }}
             >
               Forget Password?
@@ -144,7 +144,7 @@ export default function Login() {
         </Alert>
       </Snackbar>
     </Main>
-  )
+  );
 }
 
 const Main = styled.div`
@@ -162,7 +162,7 @@ const Main = styled.div`
   @media (max-width: 640px) {
     height: 100vh;
   }
-`
+`;
 
 const StyledSignUp = styled.div`
   width: 70%;
@@ -218,4 +218,4 @@ const StyledSignUp = styled.div`
   @media (max-width: 768px) {
     width: 90%;
   }
-`
+`;

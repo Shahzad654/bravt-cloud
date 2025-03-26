@@ -48,7 +48,7 @@ const Header = () => {
                     const offset =
                       4.5 *
                       parseFloat(
-                        getComputedStyle(document.documentElement).fontSize
+                        getComputedStyle(document.documentElement).fontSize,
                       );
                     window.scrollTo({
                       top: window.scrollY + sectionTop - offset,
@@ -59,7 +59,7 @@ const Header = () => {
               >
                 {toSentenceCase(item)}
               </button>
-            )
+            ),
           )}
         </div>
 

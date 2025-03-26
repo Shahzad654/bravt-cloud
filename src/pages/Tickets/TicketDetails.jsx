@@ -1,13 +1,13 @@
-import { Badge, Spin } from "antd"
-import { format } from "date-fns"
-import { useParams } from "react-router-dom"
-import { useGetTicketByIdQuery } from "../../redux/apis/tickets"
-import ComposeTicketForm from "./ComposeTicketForm"
-import TicketMessages from "./TicketMessages"
+import { Badge, Spin } from "antd";
+import { format } from "date-fns";
+import { useParams } from "react-router-dom";
+import { useGetTicketByIdQuery } from "../../redux/apis/tickets";
+import ComposeTicketForm from "./ComposeTicketForm";
+import TicketMessages from "./TicketMessages";
 
 export default function TicketDetails() {
-  const { ticketId } = useParams()
-  const { data: ticket, isLoading } = useGetTicketByIdQuery(ticketId)
+  const { ticketId } = useParams();
+  const { data: ticket, isLoading } = useGetTicketByIdQuery(ticketId);
 
   if (isLoading) {
     return (
@@ -16,7 +16,7 @@ export default function TicketDetails() {
           <Spin />
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -40,5 +40,5 @@ export default function TicketDetails() {
         <ComposeTicketForm />
       </div>
     </div>
-  )
+  );
 }

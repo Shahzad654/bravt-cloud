@@ -1,7 +1,7 @@
-import cookies from "js-cookie"
-import { createApi } from "@reduxjs/toolkit/query/react"
-import { baseQueryWithReauth } from "../query"
-import { setAccessToken } from "../../utils/api"
+import cookies from "js-cookie";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQueryWithReauth } from "../query";
+import { setAccessToken } from "../../utils/api";
 
 const authApi = createApi({
   reducerPath: "auth",
@@ -10,228 +10,228 @@ const authApi = createApi({
   endpoints: (builder) => ({
     getSession: builder.query({
       query: () => "auth/session",
-      providesTags: () => [{ type: "Session" }]
+      providesTags: () => [{ type: "Session" }],
     }),
 
     login: builder.mutation({
       query: (body) => ({
         url: "auth/login",
         method: "POST",
-        body
+        body,
       }),
       onQueryStarted: async (_, { queryFulfilled }) => {
         try {
-          const { data } = await queryFulfilled
+          const { data } = await queryFulfilled;
 
           if (data.tempToken) {
-            window.location.href = `/verify-2fa/${data.tempToken}`
+            window.location.href = `/verify-2fa/${data.tempToken}`;
           } else {
-            setAccessToken(data.token)
+            setAccessToken(data.token);
 
             window.location.href =
               data.user?.role === "ADMIN"
                 ? process.env.REACT_APP_ADMIN_URL
-                : "/instance"
+                : "/instance";
           }
           // eslint-disable-next-line no-empty
         } catch {}
-      }
+      },
     }),
 
     sendVerification: builder.mutation({
       query: (body) => ({
         url: "auth/send-verification",
         method: "POST",
-        body
-      })
+        body,
+      }),
     }),
 
     verifyCode: builder.mutation({
       query: (body) => ({
         url: "auth/verify-code",
         method: "POST",
-        body
+        body,
       }),
       onQueryStarted: async (_, { queryFulfilled }) => {
         try {
-          const { data } = await queryFulfilled
-          setAccessToken(data.token)
-          window.location.href = "/setup-password"
+          const { data } = await queryFulfilled;
+          setAccessToken(data.token);
+          window.location.href = "/setup-password";
           // eslint-disable-next-line no-empty
         } catch {}
-      }
+      },
     }),
 
     setupPassword: builder.mutation({
       query: (body) => ({
         url: "auth/setup-password",
         method: "PATCH",
-        body
+        body,
       }),
       onQueryStarted: async (_, { queryFulfilled }) => {
         try {
-          const { data } = await queryFulfilled
-          setAccessToken(data.token)
-          window.location.href = "/instance"
+          const { data } = await queryFulfilled;
+          setAccessToken(data.token);
+          window.location.href = "/instance";
           // eslint-disable-next-line no-empty
         } catch {}
-      }
+      },
     }),
 
     changePassword: builder.mutation({
       query: (body) => ({
         url: "auth/change-password",
         method: "PATCH",
-        body
+        body,
       }),
       onQueryStarted: async (_, { queryFulfilled }) => {
         try {
-          const { data } = await queryFulfilled
-          setAccessToken(data.token)
+          const { data } = await queryFulfilled;
+          setAccessToken(data.token);
           // eslint-disable-next-line no-empty
         } catch {}
-      }
+      },
     }),
 
     sendPasswordResetVerification: builder.mutation({
       query: (body) => ({
         url: "auth/reset-password",
         method: "POST",
-        body
-      })
+        body,
+      }),
     }),
 
     resetPassword: builder.mutation({
       query: ({ token, ...body }) => ({
         url: `auth/reset-password/${token}`,
         method: "PATCH",
-        body
-      })
+        body,
+      }),
     }),
 
     updateProfile: builder.mutation({
       query: (body) => ({
         url: "auth/change-profile",
         method: "PATCH",
-        body
+        body,
       }),
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         try {
-          const { data } = await queryFulfilled
-          setAccessToken(data.token)
+          const { data } = await queryFulfilled;
+          setAccessToken(data.token);
           dispatch(
             authApi.util.updateQueryData("getSession", undefined, (draft) => {
-              Object.assign(draft, data.user)
-            })
-          )
+              Object.assign(draft, data.user);
+            }),
+          );
           // eslint-disable-next-line no-empty
         } catch {}
-      }
+      },
     }),
 
     logout: builder.mutation({
       query: () => ({
         url: "auth/logout",
-        method: "POST"
+        method: "POST",
       }),
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         try {
-          await queryFulfilled
-          cookies.remove("access_token")
+          await queryFulfilled;
+          cookies.remove("access_token");
           dispatch(
-            authApi.util.updateQueryData("getSession", undefined, () => null)
-          )
+            authApi.util.updateQueryData("getSession", undefined, () => null),
+          );
           // eslint-disable-next-line no-empty
         } catch {}
-      }
+      },
     }),
 
     stopImpersonate: builder.mutation({
       query: () => ({
         url: "auth/impersonate/stop",
-        method: "POST"
+        method: "POST",
       }),
       onQueryStarted: async (_, { queryFulfilled }) => {
         try {
-          const { data } = await queryFulfilled
-          setAccessToken(data.token)
-          window.location.href = process.env.REACT_APP_ADMIN_URL
+          const { data } = await queryFulfilled;
+          setAccessToken(data.token);
+          window.location.href = process.env.REACT_APP_ADMIN_URL;
           // eslint-disable-next-line no-empty
         } catch {}
-      }
+      },
     }),
 
     changeEmailRequest: builder.mutation({
       query: (body) => ({
         url: "auth/change-email",
         method: "POST",
-        body
-      })
+        body,
+      }),
     }),
 
     changeEmail: builder.mutation({
       query: (body) => ({
         url: "auth/change-email/verify",
         method: "PATCH",
-        body
+        body,
       }),
       onQueryStarted: async ({ email }, { dispatch }) => {
         try {
           dispatch(
             authApi.util.updateQueryData("getSession", undefined, (draft) => {
-              Object.assign(draft, { email })
-            })
-          )
+              Object.assign(draft, { email });
+            }),
+          );
           // eslint-disable-next-line no-empty
         } catch {}
-      }
+      },
     }),
 
     generate2FASecret: builder.mutation({
       query: () => ({
         url: "auth/2fa",
-        method: "POST"
-      })
+        method: "POST",
+      }),
     }),
 
     enable2FA: builder.mutation({
       query: (body) => ({
         url: "auth/2fa",
         method: "PATCH",
-        body
-      })
+        body,
+      }),
     }),
 
     disable2FA: builder.mutation({
       query: (body) => ({
         url: "auth/2fa/disable",
         method: "PATCH",
-        body
-      })
+        body,
+      }),
     }),
 
     verify2FALogin: builder.mutation({
       query: (body) => ({
         url: "auth/2fa/verify",
         method: "POST",
-        body
+        body,
       }),
       onQueryStarted: async (_, { queryFulfilled }) => {
         try {
-          const { data } = await queryFulfilled
+          const { data } = await queryFulfilled;
 
-          setAccessToken(data.token)
+          setAccessToken(data.token);
           window.location.href =
             data.user?.role === "ADMIN"
               ? process.env.REACT_APP_ADMIN_URL
-              : "/instance"
+              : "/instance";
 
           // eslint-disable-next-line no-empty
         } catch {}
-      }
-    })
-  })
-})
+      },
+    }),
+  }),
+});
 
 export const {
   util: authUtil,
@@ -251,7 +251,7 @@ export const {
   useVerify2FALoginMutation,
   useStopImpersonateMutation,
   useChangeEmailRequestMutation,
-  useChangeEmailMutation
-} = authApi
+  useChangeEmailMutation,
+} = authApi;
 
-export default authApi
+export default authApi;
