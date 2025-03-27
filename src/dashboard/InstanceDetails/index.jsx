@@ -100,7 +100,20 @@ const InstanceDetails = () => {
             </Link>
 
             <div className="flex items-center gap-3">
-              {Icon ? <Icon color={color} size={42} /> : null}
+              {data.iconUrl ? (
+                <img
+                  src={data.iconUrl}
+                  alt={data.os}
+                  style={{
+                    width: "42px",
+                    height: "42px",
+                    objectFit: "contain",
+                    objectPosition: "center"
+                  }}
+                />
+              ) : (
+                <Icon color={color} size={42} />
+              )}
               <div className="space-y-1.5">
                 <div className="flex items-center gap-4">
                   <UpdateLabel size="lg">

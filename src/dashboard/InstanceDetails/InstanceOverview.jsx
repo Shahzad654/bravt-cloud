@@ -1,25 +1,27 @@
-import { useParams } from "react-router-dom";
-import { useGetInstanceByIdQuery } from "../../redux/apis/instances";
-import { REGIONS } from "../../data/regions";
-import ReactCountryFlag from "react-country-flag";
-import useCopyToClipboard from "../../hooks/useCopyToClipboard";
-import { TbCopy, TbCopyCheckFilled } from "react-icons/tb";
-import BandwidthUsage from "./BandwidthUsage";
-import CreditsUsage from "./CreditsUsage";
-import UpdateLabel from "./UpdateLabel";
-import { useState } from "react";
-import { VscEye, VscEyeClosed } from "react-icons/vsc";
-import { Tooltip } from "antd";
+import { useParams, useSearchParams } from "react-router-dom"
+import { useGetInstanceByIdQuery } from "../../redux/apis/instances"
+import { REGIONS } from "../../data/regions"
+import ReactCountryFlag from "react-country-flag"
+import useCopyToClipboard from "../../hooks/useCopyToClipboard"
+import { TbCopy, TbCopyCheckFilled } from "react-icons/tb"
+import BandwidthUsage from "./BandwidthUsage"
+import CreditsUsage from "./CreditsUsage"
+import UpdateLabel from "./UpdateLabel"
+import { useState } from "react"
+import { VscEye, VscEyeClosed } from "react-icons/vsc"
+import { Tooltip } from "antd"
 
 const InstanceOverview = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const { instanceId } = useParams();
-  const { data } = useGetInstanceByIdQuery(instanceId);
-  const { isCopied, copyToClipboard } = useCopyToClipboard();
-  const { isCopied: isPwCopied, copyToClipboard: copyPw } =
-    useCopyToClipboard();
+  const [showPassword, setShowPassword] = useState(false)
+  const { instanceId } = useParams()
+  const { data } = useGetInstanceByIdQuery(instanceId)
+  const { isCopied, copyToClipboard } = useCopyToClipboard()
+  const [searchParams] = useSearchParams()
+  const { isCopied: isPwCopied, copyToClipboard: copyPw } = useCopyToClipboard()
 
-  const region = REGIONS[data.region];
+  const region = REGIONS[data.region]
+
+  const isInitial = searchParams.get("initial") === "true"
 
   return (
     <div className="w-full mt-4 bg-white">
@@ -114,43 +116,49 @@ const InstanceOverview = () => {
         </div>
 
         <div className="pl-8 space-y-3 font-medium">
-          <table className="w-full">
-            <tbody>
-              <tr>
-                <td className="w-2/3 py-2 text-sm text-zinc-500">Label:</td>
-                <td className="py-2">
-                  <UpdateLabel />
-                </td>
-              </tr>
-              <tr>
-                <td className="w-2/3 py-2 text-sm text-zinc-500">OS:</td>
-                <td className="py-2">
-                  <div className="text-sm whitespace-pre">{data.os}</div>
-                </td>
-              </tr>
-              <tr>
-                <td className="w-2/3 py-2 text-sm text-zinc-500">Password:</td>
-                <td className="flex items-center gap-2 py-2">
-                  <Tooltip
-                    title={isPwCopied ? "Password copied" : "Click to copy"}
-                  >
-                    <button
-                      onClick={() => copyPw(data.password)}
-                      className="text-sm whitespace-pre cursor-pointer"
-                    >
-                      {showPassword ? data.password : "••••••••••••••••"}
-                    </button>
-                  </Tooltip>
+          <div className="w-full">
+            <div className="flex py-2">
+              <div className="w-2/3 text-sm text-zinc-500">Label:</div>
+              <div className="py-2">
+                <UpdateLabel />
+              </div>
+            </div>
+            <div className="flex py-2">
+              <div className="w-2/3 text-sm text-zinc-500">OS:</div>
+              <div className="py-2 text-sm whitespace-pre">{data.os}</div>
+            </div>
+            <div className="flex py-2 items-center">
+              <div className="w-2/3 text-sm text-zinc-500">Password:</div>
+              <div className="flex items-center gap-2">
+                <Tooltip
+                  title={isPwCopied ? "Password copied" : "Click to copy"}
+                >
                   <button
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    className="flex items-center justify-center text-zinc-500 hover:text-black transition-colors rounded-md size-6 focus-visible:bg-zinc-200 focus-visible:outline-none hover:bg-zinc-200 [&>_svg]:size-5"
+                    onClick={() => copyPw(data.password)}
+                    className="text-sm whitespace-pre cursor-pointer"
                   >
-                    {showPassword ? <VscEyeClosed /> : <VscEye />}
+                    {showPassword
+                      ? data.password
+                      : Array.from({
+                          length: Math.max(data.password.length, 6)
+                        }).fill("•")}
                   </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                </Tooltip>
+                <button
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="flex items-center justify-center text-zinc-500 hover:text-black transition-colors rounded-md size-6 focus-visible:bg-zinc-200 focus-visible:outline-none hover:bg-zinc-200 [&>_svg]:size-5"
+                >
+                  {showPassword ? <VscEyeClosed /> : <VscEye />}
+                </button>
+              </div>
+            </div>
+
+            {isInitial && (
+              <div className="px-3 py-2 border mt-2 !border-amber-600 bg-amber-100 text-amber-600 rounded-lg">
+                Change your password immediately after creating the instance
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -159,7 +167,7 @@ const InstanceOverview = () => {
         <CreditsUsage />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default InstanceOverview;
+export default InstanceOverview

@@ -1,30 +1,30 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { useGetAllInstancesQuery } from "../../redux/apis/instances";
-import { isInstanceInstalling, toSentenceCase } from "../../utils/helpers";
-import { CircularProgress } from "@mui/material";
-import { Table, Tag } from "antd";
-import ReactCountryFlag from "react-country-flag";
-import { REGIONS } from "../../data/regions";
-import { getIcon } from "../../components/Icons";
-import styled from "styled-components";
-import { TbCopy, TbCopyCheckFilled } from "react-icons/tb";
-import useCopyToClipboard from "../../hooks/useCopyToClipboard";
+import { useNavigate, useParams } from "react-router-dom"
+import { useGetAllInstancesQuery } from "../../redux/apis/instances"
+import { isInstanceInstalling, toSentenceCase } from "../../utils/helpers"
+import { CircularProgress } from "@mui/material"
+import { Table, Tag } from "antd"
+import ReactCountryFlag from "react-country-flag"
+import { REGIONS } from "../../data/regions"
+import { getIcon } from "../../components/Icons"
+import styled from "styled-components"
+import { TbCopy, TbCopyCheckFilled } from "react-icons/tb"
+import useCopyToClipboard from "../../hooks/useCopyToClipboard"
 
 const FirewallLinkedInstances = () => {
-  const { firewallId } = useParams();
-  const { isLoading, data } = useGetAllInstancesQuery(firewallId);
+  const { firewallId } = useParams()
+  const { isLoading, data } = useGetAllInstancesQuery(firewallId)
 
-  const { isCopied, copyToClipboard } = useCopyToClipboard();
-  const navigate = useNavigate();
+  const { isCopied, copyToClipboard } = useCopyToClipboard()
+  const navigate = useNavigate()
 
-  const CopyIcon = isCopied ? TbCopyCheckFilled : TbCopy;
+  const CopyIcon = isCopied ? TbCopyCheckFilled : TbCopy
 
   const columns = [
     {
       title: "Name",
       dataIndex: "label",
       showSorterTooltip: {
-        target: "full-header",
+        target: "full-header"
       },
       render: (val, record) => (
         <div style={{ display: "flex", flexDirection: "column" }}>
@@ -32,7 +32,7 @@ const FirewallLinkedInstances = () => {
             style={{
               fontSize: "15px",
               fontWeight: "600",
-              whiteSpace: "pre",
+              whiteSpace: "pre"
             }}
           >
             {val || "Cloud Instance"}
@@ -44,7 +44,7 @@ const FirewallLinkedInstances = () => {
               style={{
                 fontSize: "12px",
                 fontWeight: "500",
-                color: "#a1a1aa",
+                color: "#a1a1aa"
               }}
             >
               {record.ram} MB Regular Cloud Compute -
@@ -52,9 +52,9 @@ const FirewallLinkedInstances = () => {
             <button
               className="group text-xs font-medium gap-0.5 text-zinc-400 whitespace-pre cursor-pointer bg-transparent inline-flex items-center relative m-0 p-0 border-0 hover:text-primary outline-none transition-colors"
               onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                copyToClipboard(record.main_ip);
+                e.stopPropagation()
+                e.preventDefault()
+                copyToClipboard(record.main_ip)
               }}
             >
               {record.main_ip}
@@ -66,24 +66,41 @@ const FirewallLinkedInstances = () => {
           </div>
         </div>
       ),
-      sorter: (a, b) => a.label.localeCompare(b.label),
+      sorter: (a, b) => a.label.localeCompare(b.label)
     },
     {
       title: "OS",
       dataIndex: "os",
-      render: (val) => {
-        const { Icon, color } = getIcon(val);
-        return Icon ? <Icon color={color} size={25} /> : val;
-      },
+      render: (val, record) => {
+        const { Icon, color } = getIcon(val)
+        return (
+          <>
+            {record.iconUrl ? (
+              <img
+                src={record.iconUrl}
+                alt={record.os}
+                style={{
+                  width: "30px",
+                  height: "30px",
+                  objectFit: "contain",
+                  objectPosition: "center"
+                }}
+              />
+            ) : (
+              <Icon color={color} size={30} />
+            )}
+          </>
+        )
+      }
     },
     {
       title: "Region",
       dataIndex: "region",
       showSorterTooltip: {
-        target: "full-header",
+        target: "full-header"
       },
       render: (region) => {
-        const item = REGIONS[region];
+        const item = REGIONS[region]
 
         return item ? (
           <div
@@ -100,16 +117,16 @@ const FirewallLinkedInstances = () => {
           </div>
         ) : (
           region.toUpperCase()
-        );
+        )
       },
-      sorter: (a, b) => a.region.localeCompare(b.region),
+      sorter: (a, b) => a.region.localeCompare(b.region)
     },
     {
       title: "Status",
       dataIndex: "power_status",
       render: (status, record) => {
-        const isInstalling = isInstanceInstalling(record);
-        const isSuspended = record.status === "suspended" || record.suspended;
+        const isInstalling = isInstanceInstalling(record)
+        const isSuspended = record.status === "suspended" || record.suspended
         return (
           <Tag
             color={
@@ -137,21 +154,21 @@ const FirewallLinkedInstances = () => {
                   ? "Installing"
                   : toSentenceCase(status.toLowerCase())}
           </Tag>
-        );
+        )
       },
       filters: [
         {
           text: "Active",
-          value: "running",
+          value: "running"
         },
         {
           text: "Stopped",
-          value: "stopped",
-        },
+          value: "stopped"
+        }
       ],
-      onFilter: (value, record) => record.power_status.indexOf(value) === 0,
-    },
-  ];
+      onFilter: (value, record) => record.power_status.indexOf(value) === 0
+    }
+  ]
 
   return (
     <StyledTable
@@ -161,16 +178,16 @@ const FirewallLinkedInstances = () => {
       style={{ marginTop: "25px" }}
       rowClassName="cursor-pointer"
       onRow={(record) => ({
-        onClick: () => navigate(`/instance/${record.id}`),
+        onClick: () => navigate(`/instance/${record.id}`)
       })}
       showSorterTooltip={{
-        target: "sorter-icon",
+        target: "sorter-icon"
       }}
     />
-  );
-};
+  )
+}
 
-export default FirewallLinkedInstances;
+export default FirewallLinkedInstances
 
 const StyledTable = styled(Table)`
   .ant-table-thead > tr > th {
@@ -183,4 +200,4 @@ const StyledTable = styled(Table)`
       overflow-x: auto;
     }
   }
-`;
+`

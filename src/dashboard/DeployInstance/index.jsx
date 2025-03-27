@@ -156,7 +156,7 @@ const DeployInstance = () => {
         return
       }
 
-      navigate(`/instance/${data.id}`)
+      navigate(`/instance/${data.id}?initial=true`)
       notification.success({
         message: "Instance created successfully!",
         description: "Your instance will be ready within 3 to 5 minutes"

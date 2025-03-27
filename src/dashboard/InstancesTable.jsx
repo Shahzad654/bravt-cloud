@@ -1,72 +1,72 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Button, Dropdown, Table, Tag, App } from "antd";
-import { HiEllipsisHorizontal } from "react-icons/hi2";
-import { MdInstallDesktop } from "react-icons/md";
-import { BsDatabaseCheck, BsDatabaseSlash } from "react-icons/bs";
+import { useEffect, useMemo, useRef, useState } from "react"
+import { Button, Dropdown, Table, Tag, App } from "antd"
+import { HiEllipsisHorizontal } from "react-icons/hi2"
+import { MdInstallDesktop } from "react-icons/md"
+import { BsDatabaseCheck, BsDatabaseSlash } from "react-icons/bs"
 import {
   TbCopyCheckFilled,
   TbRefreshDot,
   TbServerCog,
-  TbTrash,
-} from "react-icons/tb";
-import styled from "styled-components";
+  TbTrash
+} from "react-icons/tb"
+import styled from "styled-components"
 import {
   formatPrice,
   isInstanceInstalling,
-  toSentenceCase,
-} from "../utils/helpers";
-import { getIcon } from "../components/Icons";
-import ReactCountryFlag from "react-country-flag";
-import { REGIONS } from "../data/regions";
-import { useNavigate } from "react-router-dom";
-import { TbCopy } from "react-icons/tb";
-import useCopyToClipboard from "../hooks/useCopyToClipboard";
-import { RiTerminalBoxLine } from "react-icons/ri";
-import NewWindow from "react-new-window";
-import { CircularProgress } from "@mui/material";
+  toSentenceCase
+} from "../utils/helpers"
+import { getIcon } from "../components/Icons"
+import ReactCountryFlag from "react-country-flag"
+import { REGIONS } from "../data/regions"
+import { useNavigate } from "react-router-dom"
+import { TbCopy } from "react-icons/tb"
+import useCopyToClipboard from "../hooks/useCopyToClipboard"
+import { RiTerminalBoxLine } from "react-icons/ri"
+import NewWindow from "react-new-window"
+import { CircularProgress } from "@mui/material"
 import {
   useGetAllInstancesQuery,
   useStartOrStopInstanceMutation,
   useRebootInstanceMutation,
   useReinstallInstanceMutation,
-  useDeleteInstanceMutation,
-} from "../redux/apis/instances";
+  useDeleteInstanceMutation
+} from "../redux/apis/instances"
 
 const InstancesTable = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const { columns, isConsoleOpen, setIsConsoleOpen } =
-    useInstancesTableColumns();
+    useInstancesTableColumns()
 
-  const [pollingInterval, setPollingInterval] = useState(0);
-  const previousDataRef = useRef();
+  const [pollingInterval, setPollingInterval] = useState(0)
+  const previousDataRef = useRef()
 
   const { data: instances, isLoading } = useGetAllInstancesQuery(undefined, {
     pollingInterval,
     selectFromResult: ({ data, isLoading, ...rest }) => ({
       data: data ?? previousDataRef.current,
       isLoading: previousDataRef.current ? false : isLoading,
-      ...rest,
-    }),
-  });
+      ...rest
+    })
+  })
 
   const isAnyInstanceInstalling = useMemo(() => {
-    return instances?.some((instance) => isInstanceInstalling(instance));
-  }, [instances]);
+    return instances?.some((instance) => isInstanceInstalling(instance))
+  }, [instances])
 
   useEffect(() => {
     if (instances) {
-      previousDataRef.current = instances;
+      previousDataRef.current = instances
     }
-  }, [instances]);
+  }, [instances])
 
   useEffect(() => {
     if (isAnyInstanceInstalling) {
-      setPollingInterval(5000);
+      setPollingInterval(5000)
     } else {
-      setPollingInterval(0);
+      setPollingInterval(0)
     }
-  }, [isAnyInstanceInstalling]);
+  }, [isAnyInstanceInstalling])
 
   return (
     <>
@@ -85,34 +85,34 @@ const InstancesTable = () => {
         style={{ marginTop: "25px" }}
         rowClassName="cursor-pointer"
         onRow={(record) => ({
-          onClick: () => navigate(`/instance/${record.id}`),
+          onClick: () => navigate(`/instance/${record.id}`)
         })}
         showSorterTooltip={{
-          target: "sorter-icon",
+          target: "sorter-icon"
         }}
       />
     </>
-  );
-};
+  )
+}
 
-export default InstancesTable;
+export default InstancesTable
 
 function useInstancesTableColumns() {
-  const { modal, message } = App.useApp();
-  const { isCopied, copyToClipboard } = useCopyToClipboard();
-  const [isConsoleOpen, setIsConsoleOpen] = useState(null);
+  const { modal, message } = App.useApp()
+  const { isCopied, copyToClipboard } = useCopyToClipboard()
+  const [isConsoleOpen, setIsConsoleOpen] = useState(null)
 
-  const [startOrStopInstance] = useStartOrStopInstanceMutation();
-  const [rebootInstance] = useRebootInstanceMutation();
-  const [reinstallInstance] = useReinstallInstanceMutation();
-  const [deleteInstance] = useDeleteInstanceMutation();
+  const [startOrStopInstance] = useStartOrStopInstanceMutation()
+  const [rebootInstance] = useRebootInstanceMutation()
+  const [reinstallInstance] = useReinstallInstanceMutation()
+  const [deleteInstance] = useDeleteInstanceMutation()
 
   const columns = [
     {
       title: "Name",
       dataIndex: "label",
       showSorterTooltip: {
-        target: "full-header",
+        target: "full-header"
       },
       render: (val, record) => (
         <div style={{ display: "flex", flexDirection: "column" }}>
@@ -120,7 +120,7 @@ function useInstancesTableColumns() {
             style={{
               fontSize: "15px",
               fontWeight: "600",
-              whiteSpace: "pre",
+              whiteSpace: "pre"
             }}
           >
             {val || "Cloud Instance"}
@@ -132,16 +132,16 @@ function useInstancesTableColumns() {
               style={{
                 fontSize: "12px",
                 fontWeight: "500",
-                color: "#a1a1aa",
+                color: "#a1a1aa"
               }}
             >
               {record.ram} MB Regular Cloud Compute -
             </span>
             <IPButton
               onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                copyToClipboard(record.main_ip);
+                e.stopPropagation()
+                e.preventDefault()
+                copyToClipboard(record.main_ip)
               }}
             >
               {record.main_ip}
@@ -152,24 +152,42 @@ function useInstancesTableColumns() {
           </div>
         </div>
       ),
-      sorter: (a, b) => a.label.localeCompare(b.label),
+      sorter: (a, b) => a.label.localeCompare(b.label)
     },
     {
       title: "OS",
       dataIndex: "os",
-      render: (val) => {
-        const { Icon, color } = getIcon(val);
-        return Icon ? <Icon color={color} size={25} /> : val;
-      },
+      render: (val, record) => {
+        const { Icon, color } = getIcon(val)
+
+        return (
+          <>
+            {record.iconUrl ? (
+              <img
+                src={record.iconUrl}
+                alt={record.os}
+                style={{
+                  width: "30px",
+                  height: "30px",
+                  objectFit: "contain",
+                  objectPosition: "center"
+                }}
+              />
+            ) : (
+              <Icon color={color} size={30} />
+            )}
+          </>
+        )
+      }
     },
     {
       title: "Region",
       dataIndex: "region",
       showSorterTooltip: {
-        target: "full-header",
+        target: "full-header"
       },
       render: (region) => {
-        const item = REGIONS[region];
+        const item = REGIONS[region]
 
         return item ? (
           <div
@@ -186,16 +204,16 @@ function useInstancesTableColumns() {
           </div>
         ) : (
           region.toUpperCase()
-        );
+        )
       },
-      sorter: (a, b) => a.region.localeCompare(b.region),
+      sorter: (a, b) => a.region.localeCompare(b.region)
     },
     {
       title: "Status",
       dataIndex: "power_status",
       render: (status, record) => {
-        const isInstalling = isInstanceInstalling(record);
-        const isSuspended = record.status === "suspended" || record.suspended;
+        const isInstalling = isInstanceInstalling(record)
+        const isSuspended = record.status === "suspended" || record.suspended
         return (
           <Tag
             color={
@@ -223,32 +241,32 @@ function useInstancesTableColumns() {
                   ? "Installing"
                   : toSentenceCase(status.toLowerCase())}
           </Tag>
-        );
+        )
       },
       filters: [
         {
           text: "Active",
-          value: "running",
+          value: "running"
         },
         {
           text: "Stopped",
-          value: "stopped",
-        },
+          value: "stopped"
+        }
       ],
-      onFilter: (value, record) => record.power_status.indexOf(value) === 0,
+      onFilter: (value, record) => record.power_status.indexOf(value) === 0
     },
     {
       title: "Charges",
       dataIndex: "creditsConsumed",
       showSorterTooltip: {
-        target: "full-header",
+        target: "full-header"
       },
       render: (val) => (
         <span style={{ fontWeight: "500", color: "gray" }}>
           {formatPrice(val || 0)}
         </span>
       ),
-      sorter: (a, b) => a.creditsConsumed - b.creditsConsumed,
+      sorter: (a, b) => a.creditsConsumed - b.creditsConsumed
     },
     {
       title: "Actions",
@@ -265,7 +283,7 @@ function useInstancesTableColumns() {
                     <TbServerCog size={16} style={{ marginRight: "8px" }} />
                     Server Details
                   </>
-                ),
+                )
               },
               {
                 key: "console",
@@ -279,10 +297,10 @@ function useInstancesTableColumns() {
                   </>
                 ),
                 onClick: ({ domEvent }) => {
-                  domEvent.stopPropagation();
-                  domEvent.preventDefault();
-                  setIsConsoleOpen(record.kvm);
-                },
+                  domEvent.stopPropagation()
+                  domEvent.preventDefault()
+                  setIsConsoleOpen(record.kvm)
+                }
               },
               {
                 key: record.power_status === "running" ? "stop" : "start",
@@ -305,10 +323,10 @@ function useInstancesTableColumns() {
                   </>
                 ),
                 onClick: ({ domEvent }) => {
-                  domEvent.stopPropagation();
-                  domEvent.preventDefault();
+                  domEvent.stopPropagation()
+                  domEvent.preventDefault()
                   const action =
-                    record.power_status === "running" ? "stop" : "start";
+                    record.power_status === "running" ? "stop" : "start"
                   modal.confirm({
                     title: "Are you sure?",
                     content: `This will ${action} your instance!`,
@@ -317,23 +335,23 @@ function useInstancesTableColumns() {
                     onOk: async () => {
                       const { error } = await startOrStopInstance({
                         id: record.id,
-                        action,
-                      });
+                        action
+                      })
 
                       if (error) {
                         message.error(
-                          error.data.message || `Failed to ${action} instance!`,
-                        );
+                          error.data.message || `Failed to ${action} instance!`
+                        )
                       } else {
                         message.success(
                           `Instance ${action}${
                             action === "stop" ? "p" : ""
-                          }ed successfully!`,
-                        );
+                          }ed successfully!`
+                        )
                       }
-                    },
-                  });
-                },
+                    }
+                  })
+                }
               },
               {
                 key: "restart",
@@ -344,26 +362,26 @@ function useInstancesTableColumns() {
                   </>
                 ),
                 onClick: ({ domEvent }) => {
-                  domEvent.stopPropagation();
-                  domEvent.preventDefault();
+                  domEvent.stopPropagation()
+                  domEvent.preventDefault()
                   modal.confirm({
                     title: "Are you sure?",
                     content: `This will restart your instance!`,
                     okText: "Confirm",
                     okCancel: true,
                     onOk: async () => {
-                      const { error } = await rebootInstance({ id: record.id });
+                      const { error } = await rebootInstance({ id: record.id })
 
                       if (error) {
                         message.error(
-                          error.data.message || `Failed to reboot instance!`,
-                        );
+                          error.data.message || `Failed to reboot instance!`
+                        )
                       } else {
-                        message.success(`Instance restarted successfully!`);
+                        message.success(`Instance restarted successfully!`)
                       }
-                    },
-                  });
-                },
+                    }
+                  })
+                }
               },
               {
                 key: "reinstall",
@@ -377,8 +395,8 @@ function useInstancesTableColumns() {
                   </>
                 ),
                 onClick: ({ domEvent }) => {
-                  domEvent.stopPropagation();
-                  domEvent.preventDefault();
+                  domEvent.stopPropagation()
+                  domEvent.preventDefault()
                   modal.confirm({
                     title: "Are you sure?",
                     content: `This will reinstall your instance!`,
@@ -386,22 +404,22 @@ function useInstancesTableColumns() {
                     okCancel: true,
                     onOk: async () => {
                       const { error } = await reinstallInstance({
-                        id: record.id,
-                      });
+                        id: record.id
+                      })
 
                       if (error) {
                         message.error(
-                          error.data.message || `Failed to reinstall instance!`,
-                        );
+                          error.data.message || `Failed to reinstall instance!`
+                        )
                       } else {
-                        message.success(`Instance reinstalled successfully!`);
+                        message.success(`Instance reinstalled successfully!`)
                       }
-                    },
-                  });
-                },
+                    }
+                  })
+                }
               },
               {
-                type: "divider",
+                type: "divider"
               },
               {
                 key: "destroy",
@@ -413,8 +431,8 @@ function useInstancesTableColumns() {
                   </>
                 ),
                 onClick: ({ domEvent }) => {
-                  domEvent.stopPropagation();
-                  domEvent.preventDefault();
+                  domEvent.stopPropagation()
+                  domEvent.preventDefault()
                   modal.error({
                     title: "Are you absolutely sure?",
                     content: `${
@@ -427,21 +445,21 @@ function useInstancesTableColumns() {
                     okButtonProps: { color: "danger" },
                     onOk: async () => {
                       const { error } = await deleteInstance({
-                        id: record.id,
-                      });
+                        id: record.id
+                      })
 
                       if (error) {
                         message.error(
-                          error.data.message || `Failed to delete instance!`,
-                        );
+                          error.data.message || `Failed to delete instance!`
+                        )
                       } else {
-                        message.success(`Instance deleted successfully!`);
+                        message.success(`Instance deleted successfully!`)
                       }
-                    },
-                  });
-                },
-              },
-            ],
+                    }
+                  })
+                }
+              }
+            ]
           }}
         >
           <Button
@@ -451,11 +469,11 @@ function useInstancesTableColumns() {
             onClick={(e) => e.stopPropagation()}
           />
         </Dropdown>
-      ),
-    },
-  ];
+      )
+    }
+  ]
 
-  return { columns, isConsoleOpen, setIsConsoleOpen };
+  return { columns, isConsoleOpen, setIsConsoleOpen }
 }
 
 const StyledTable = styled(Table)`
@@ -469,7 +487,7 @@ const StyledTable = styled(Table)`
       overflow-x: auto;
     }
   }
-`;
+`
 
 const IPButton = styled.button`
   font-size: 12px;
@@ -489,7 +507,7 @@ const IPButton = styled.button`
   &:hover {
     color: var(--primary-color);
   }
-`;
+`
 
 const CopyIcon = styled.span`
   opacity: 0;
@@ -504,4 +522,4 @@ const CopyIcon = styled.span`
     width: 14px;
     height: 14px;
   }
-`;
+`
