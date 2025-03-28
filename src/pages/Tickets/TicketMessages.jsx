@@ -1,24 +1,27 @@
-import { useState, useEffect, useRef, useCallback, useMemo } from "react"
-import { LuTriangleAlert, LuArrowDown, LuRefreshCw } from "react-icons/lu"
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+  useLayoutEffect
+} from "react"
+import { LuArrowDown } from "react-icons/lu"
 import { useTicketMessagesQuery } from "../../queries/useTicketMessagesQuery"
 import { formatMsgDate } from "../../utils/helpers"
 import { CircularProgress } from "@mui/material"
-import { Spin } from "antd"
 import { MessageBubble } from "./MessageBubble"
+import { useParams } from "react-router-dom"
 
 const TicketMessages = () => {
-  const {
-    data,
-    status,
-    refetch,
-    isFetchingNextPage,
-    hasNextPage,
-    fetchNextPage
-  } = useTicketMessagesQuery()
+  const { data, rawData, isFetchingNextPage, hasNextPage, fetchNextPage } =
+    useTicketMessagesQuery()
 
+  const { ticketId } = useParams()
   const containerRef = useRef(null)
   const sentinelRef = useRef(null)
-  const initialLoad = useRef(true)
+  const prevScrollHeightRef = useRef(0)
+  const isFetchingMore = useRef(false)
   const [isAtBottom, setIsAtBottom] = useState(true)
 
   const handleScroll = useCallback(() => {
@@ -41,6 +44,41 @@ const TicketMessages = () => {
     })
   }, [])
 
+  useLayoutEffect(() => {
+    requestAnimationFrame(() => {
+      if (containerRef.current) {
+        containerRef.current.scrollTop = containerRef.current.scrollHeight
+      }
+    })
+  }, [ticketId])
+
+  useLayoutEffect(() => {
+    if (!isFetchingMore.current) setTimeout(scrollToBottom, 100)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rawData?.pages?.[0].messages.length])
+
+  useEffect(() => {
+    if (isFetchingNextPage) {
+      const container = containerRef.current
+      if (container) {
+        prevScrollHeightRef.current = container.scrollHeight
+      }
+      isFetchingMore.current = true
+    }
+  }, [isFetchingNextPage])
+
+  useLayoutEffect(() => {
+    if (isFetchingMore.current) {
+      const container = containerRef.current
+      if (container) {
+        const newScrollHeight = container.scrollHeight
+        const scrollDiff = newScrollHeight - prevScrollHeightRef.current
+        container.scrollTop = container.scrollTop + scrollDiff
+      }
+      isFetchingMore.current = false
+    }
+  }, [data])
+
   useEffect(() => {
     const container = containerRef.current
     const sentinel = sentinelRef.current
@@ -50,15 +88,7 @@ const TicketMessages = () => {
       (entries) => {
         const entry = entries[0]
         if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
-          const previousScrollHeight = container.scrollHeight
-          fetchNextPage().then(() => {
-            requestAnimationFrame(() => {
-              if (containerRef.current) {
-                container.scrollTop =
-                  container.scrollHeight - previousScrollHeight
-              }
-            })
-          })
+          fetchNextPage()
         }
       },
       { root: container, rootMargin: "100px" }
@@ -68,20 +98,6 @@ const TicketMessages = () => {
     return () => observer.disconnect()
   }, [hasNextPage, isFetchingNextPage, fetchNextPage])
 
-  useEffect(() => {
-    if (initialLoad.current && containerRef.current) {
-      requestAnimationFrame(() => {
-        containerRef.current.scrollTop = containerRef.current.scrollHeight
-        initialLoad.current = false
-      })
-
-      setTimeout(() => scrollToBottom(), 50)
-    } else {
-      setTimeout(() => scrollToBottom(), 50)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data])
-
   const groupedMessages = useMemo(() => {
     return data.reduce((grouped, msg) => {
       const date = formatMsgDate(msg.createdAt)
@@ -90,32 +106,6 @@ const TicketMessages = () => {
       return grouped
     }, {})
   }, [data])
-
-  if (status === "pending") {
-    return (
-      <div className="flex items-center justify-center flex-1 text-center size-full">
-        <Spin tip="Loading messages..." />
-      </div>
-    )
-  }
-
-  if (status === "error") {
-    return (
-      <div className="flex flex-col items-center justify-center flex-1 gap-1 space-y-2 overflow-hidden text-center size-full">
-        <LuTriangleAlert size={20} />
-        <p className="text-sm text-muted-foreground">
-          Failed to fetch messages! Please try again
-        </p>
-        <button
-          onClick={() => refetch()}
-          className="flex items-center justify-center gap-2 px-3 py-2 text-white rounded-md h-9 bg-primary"
-        >
-          <LuRefreshCw />
-          Retry
-        </button>
-      </div>
-    )
-  }
 
   return (
     <div className="relative overflow-y-hidden size-full">
