@@ -23,6 +23,8 @@ const InstanceOverview = () => {
 
   const isInitial = searchParams.get("initial") === "true"
 
+  console.log(data)
+
   return (
     <div className="w-full mt-4 bg-white">
       <div className="grid w-full grid-cols-3 gap-8 divide-x divide-zinc-300">
@@ -39,10 +41,14 @@ const InstanceOverview = () => {
                         style={{ width: "25px", height: "25px" }}
                         countryCode={region.countryCode}
                       />
-                      <span className="text-sm">{region.city}</span>
+                      <span className="text-sm whitespace-nowrap">
+                        {region.city}
+                      </span>
                     </div>
                   ) : (
-                    <span className="text-sm">{data.region.toUpperCase()}</span>
+                    <span className="text-sm whitespace-nowrap">
+                      {data.region.toUpperCase()}
+                    </span>
                   )}
                 </td>
               </tr>

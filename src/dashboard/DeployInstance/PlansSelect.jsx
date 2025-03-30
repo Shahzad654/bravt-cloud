@@ -1,33 +1,33 @@
-import { useEffect, useMemo } from "react";
-import { Table } from "antd";
+import { useEffect, useMemo } from "react"
+import { Table } from "antd"
 
-import { calculateSavings, formatPrice } from "../../utils/helpers";
-import { useGetPlansQuery } from "../../redux/apis/instances";
-import { useQueryState } from "nuqs";
+import { calculateSavings, formatPrice } from "../../utils/helpers"
+import { useGetPlansQuery } from "../../redux/apis/instances"
+import { useQueryState } from "nuqs"
 
 const PlansSelect = ({ value, onValueChange, region }) => {
-  const [queryPlan] = useQueryState("selected_plan");
-  const { data, isLoading } = useGetPlansQuery(region);
+  const [queryPlan] = useQueryState("selected_plan")
+  const { data, isLoading } = useGetPlansQuery(region)
 
   const plan = useMemo(() => {
-    return data?.find((p) => p.plan === value);
-  }, [data, value]);
+    return data?.find((p) => p.plan === value)
+  }, [data, value])
 
   useEffect(() => {
-    if (!data?.length || value) return;
+    if (!data?.length || value) return
 
     if (queryPlan) {
-      const qPlan = data?.find((p) => p.id === queryPlan);
+      const qPlan = data?.find((p) => p.id === queryPlan)
       if (qPlan) {
-        onValueChange(qPlan.plan);
-        return;
+        onValueChange(qPlan.plan)
+        return
       }
     }
 
     if (!plan) {
-      onValueChange(data[0]?.plan);
+      onValueChange(data[0]?.plan)
     }
-  }, [data, plan, queryPlan, value, onValueChange]);
+  }, [data, plan, queryPlan, value, onValueChange])
 
   const columns = [
     {
@@ -35,7 +35,7 @@ const PlansSelect = ({ value, onValueChange, region }) => {
       dataIndex: "plan",
       render: (val) => (
         <span style={{ fontSize: "14px", fontWeight: "500" }}>{val}</span>
-      ),
+      )
     },
     {
       title: "Cores",
@@ -44,7 +44,7 @@ const PlansSelect = ({ value, onValueChange, region }) => {
         <span style={{ fontSize: "14px", color: "#71717a", fontWeight: "500" }}>
           {record.vcpu_count} {val}
         </span>
-      ),
+      )
     },
     {
       title: "Memory",
@@ -53,7 +53,7 @@ const PlansSelect = ({ value, onValueChange, region }) => {
         <span style={{ fontSize: "14px", color: "#71717a", fontWeight: "500" }}>
           {val / 1024} GB
         </span>
-      ),
+      )
     },
     {
       title: "Disk",
@@ -62,28 +62,28 @@ const PlansSelect = ({ value, onValueChange, region }) => {
         <span style={{ fontSize: "14px", color: "#71717a", fontWeight: "500" }}>
           {val} GB NVMe
         </span>
-      ),
+      )
     },
     {
       title: "Bandwidth",
       dataIndex: "bandwidth",
       render: (val) => (
         <span style={{ fontSize: "14px", color: "#71717a", fontWeight: "500" }}>
-          {val / 1024} TB
+          {val / 1024} TB/mo
         </span>
-      ),
+      )
     },
     {
       title: "Price",
       dataIndex: "price",
       render: (_, record) => (
         <div>
-          <strong>{formatPrice(record.monthlyCost)}/mon</strong>
+          <strong>{formatPrice(record.monthlyCost)}/mo</strong>
           <p style={{ fontSize: "14px" }}>
             {formatPrice(record.hourlyCost)}/hr
           </p>
         </div>
-      ),
+      )
     },
     {
       title: "Sale",
@@ -97,21 +97,21 @@ const PlansSelect = ({ value, onValueChange, region }) => {
               padding: "2px 8px",
               borderRadius: "12px",
               fontSize: "12px",
-              fontWeight: "600",
+              fontWeight: "600"
             }}
           >
             Save {calculateSavings(record.hourlyCost, value)}%
           </span>
-        ) : null,
-    },
-  ];
+        ) : null
+    }
+  ]
 
   const plansWithKey = useMemo(() => {
     return data?.map((item, index) => ({
       key: index,
-      ...item,
-    }));
-  }, [data]);
+      ...item
+    }))
+  }, [data])
 
   return (
     <>
@@ -127,14 +127,14 @@ const PlansSelect = ({ value, onValueChange, region }) => {
           onSelect: (row) => onValueChange(row.plan),
           selectedRowKeys: plan
             ? [data.findIndex((row) => row.plan === plan.plan)]
-            : [],
+            : []
         }}
         onRow={(record) => ({
-          onClick: () => onValueChange(record.plan),
+          onClick: () => onValueChange(record.plan)
         })}
       />
     </>
-  );
-};
+  )
+}
 
-export default PlansSelect;
+export default PlansSelect

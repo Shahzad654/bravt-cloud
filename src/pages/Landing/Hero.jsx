@@ -1,10 +1,9 @@
-import { OrbEffect } from "./OrbEffect";
-import { Link } from "react-router-dom";
-import { BlurFade } from "./BlurFade";
-import { useGetSessionQuery } from "../../redux/apis/auth";
+import { OrbEffect } from "./OrbEffect"
+import { BlurFade } from "./BlurFade"
+import { useGetSessionQuery } from "../../redux/apis/auth"
 
 export default function Hero() {
-  const { daza: user } = useGetSessionQuery();
+  const { data: user } = useGetSessionQuery()
 
   return (
     <section
@@ -33,12 +32,18 @@ export default function Hero() {
               delay={0.75}
               className="relative z-10 flex flex-col items-center w-full mt-6 space-y-3 lg:mt-8"
             >
-              <Link
-                to={user ? "/instance" : "/login"}
+              <a
+                href={
+                  user
+                    ? user.role === "ADMIN"
+                      ? process.env.REACT_APP_ADMIN_URL
+                      : "/instance"
+                    : "/login"
+                }
                 className="px-4 py-2 text-white rounded-md bg-gradient-to-b from-brand to-brand/80 hover:from-brand/90 hover:to-brand/70"
               >
                 Get Started
-              </Link>
+              </a>
             </BlurFade>
 
             <OrbEffect />
@@ -46,5 +51,5 @@ export default function Hero() {
         </div>
       </div>
     </section>
-  );
+  )
 }
