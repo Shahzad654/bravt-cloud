@@ -1,6 +1,5 @@
 import { useGetGlobalSnapshotsQuery } from "../../redux/apis/snapshots"
 import { getIcon } from "../../components/Icons"
-import { TbDiscOff } from "react-icons/tb"
 
 const GlobalSnapshotsSelect = ({ value, onValueChange }) => {
   const { isLoading, data } = useGetGlobalSnapshotsQuery()
@@ -18,23 +17,6 @@ const GlobalSnapshotsSelect = ({ value, onValueChange }) => {
       </>
     )
   }
-
-  if (!data?.length)
-    return (
-      <div
-        style={{
-          padding: "40px 0",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexDirection: "column",
-          rowGap: "8px"
-        }}
-      >
-        <TbDiscOff size={28} color="gray" />
-        <span style={{ fontSize: "16px" }}>No custom OS found!</span>
-      </div>
-    )
 
   return (
     <>

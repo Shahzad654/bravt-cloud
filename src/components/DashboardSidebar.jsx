@@ -56,7 +56,8 @@ const menuItems = [
     label: "Financial",
     icon: <FiDollarSign size={20} />,
     children: [
-      { label: "Payment", path: "/payment" }
+      { label: "Payment", path: "/payment" },
+      { label: "Billing History", path: "/billing-history" }
       // { label: "Resource Record", path: "/resource-record" },
       // { label: "Billing", path: "/billing" },
     ]
