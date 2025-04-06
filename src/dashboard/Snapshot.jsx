@@ -1,53 +1,53 @@
-import styled from "styled-components";
-import { App, Breadcrumb, Button, Layout, message, Tag } from "antd";
-import { TbPlus, TbTrash } from "react-icons/tb";
+import styled from "styled-components"
+import { App, Breadcrumb, Button, Layout, message, Tag } from "antd"
+import { TbPlus, TbTrash } from "react-icons/tb"
 
-import DashHeader from "../components/DashHeader";
-import { Table } from "antd";
-import { Link } from "react-router-dom";
-import { formatDate, toSentenceCase } from "../utils/helpers";
+import DashHeader from "../components/DashHeader"
+import { Table } from "antd"
+import { Link } from "react-router-dom"
+import { formatDate, formatPrice, toSentenceCase } from "../utils/helpers"
 import {
   useDeleteSnapshotMutation,
-  useGetSnapshotsQuery,
-} from "../redux/apis/snapshots";
-import { useEffect, useMemo, useRef, useState } from "react";
+  useGetSnapshotsQuery
+} from "../redux/apis/snapshots"
+import { useEffect, useMemo, useRef, useState } from "react"
 
-const { Content } = Layout;
+const { Content } = Layout
 
 const Snapshot = () => {
-  const { modal } = App.useApp();
+  const { modal } = App.useApp()
 
-  const previousDataRef = useRef();
-  const [pollingInterval, setPollingInterval] = useState(0);
+  const previousDataRef = useRef()
+  const [pollingInterval, setPollingInterval] = useState(0)
 
   const { data, isLoading } = useGetSnapshotsQuery(undefined, {
     pollingInterval,
     selectFromResult: ({ data, isLoading, ...rest }) => ({
       data: data ?? previousDataRef.current,
       isLoading: previousDataRef.current ? false : isLoading,
-      ...rest,
-    }),
-  });
+      ...rest
+    })
+  })
 
   const isAnySnapshotPending = useMemo(() => {
-    return data?.some((snapshot) => snapshot.status === "pending");
-  }, [data]);
+    return data?.some((snapshot) => snapshot.status === "pending")
+  }, [data])
 
   useEffect(() => {
     if (data) {
-      previousDataRef.current = data;
+      previousDataRef.current = data
     }
-  }, [data]);
+  }, [data])
 
   useEffect(() => {
     if (isAnySnapshotPending) {
-      setPollingInterval(5000);
+      setPollingInterval(5000)
     } else {
-      setPollingInterval(0);
+      setPollingInterval(0)
     }
-  }, [isAnySnapshotPending]);
+  }, [isAnySnapshotPending])
 
-  const [deleteSnapshot] = useDeleteSnapshotMutation();
+  const [deleteSnapshot] = useDeleteSnapshotMutation()
 
   const columns = [
     {
@@ -55,26 +55,26 @@ const Snapshot = () => {
       dataIndex: "description",
       sorter: (a, b) => a.description?.localeCompare(b.description),
       showSorterTooltip: {
-        target: "full-header",
-      },
+        target: "full-header"
+      }
     },
     {
       title: "Size",
       dataIndex: "compressed_size",
       render: (val) => `${(val / 1024 / 1024 / 1024).toFixed(2)} GB`,
       showSorterTooltip: {
-        target: "full-header",
-      },
+        target: "full-header"
+      }
     },
     {
       title: "Date",
       dataIndex: "date_created",
-      render: formatDate,
+      render: formatDate
     },
     {
       title: "Charges",
       key: "creditsConsumed",
-      render: (_, record) => `${record.creditsConsumed}/GB`,
+      render: (_, record) => formatPrice(record.creditsConsumed)
     },
     {
       title: "Status",
@@ -87,7 +87,7 @@ const Snapshot = () => {
         >
           {toSentenceCase(val)}
         </Tag>
-      ),
+      )
     },
     {
       title: "Actions",
@@ -103,23 +103,23 @@ const Snapshot = () => {
               okCancel: true,
               okButtonProps: { color: "danger" },
               onOk: async () => {
-                const { error } = await deleteSnapshot(record.id);
+                const { error } = await deleteSnapshot(record.id)
                 if (error) {
                   message.error(
-                    error.data.message || "Failed to delete snapshot",
-                  );
+                    error.data.message || "Failed to delete snapshot"
+                  )
                 } else {
-                  message.success("Snapshot Deleted!");
+                  message.success("Snapshot Deleted!")
                 }
-              },
-            });
+              }
+            })
           }}
         >
           <TbTrash size={18} />
         </DelButton>
-      ),
-    },
-  ];
+      )
+    }
+  ]
 
   return (
     <LayoutWrapper>
@@ -131,7 +131,7 @@ const Snapshot = () => {
               padding: 24,
               minHeight: 360,
               background: "white",
-              borderRadius: "8px",
+              borderRadius: "8px"
             }}
           >
             <PageContent>
@@ -139,7 +139,7 @@ const Snapshot = () => {
                 style={{
                   fontSize: "var(--m-heading)",
                   color: "black",
-                  fontWeight: "500",
+                  fontWeight: "500"
                 }}
               >
                 Snapshots
@@ -156,7 +156,7 @@ const Snapshot = () => {
               dataSource={data}
               loading={isLoading}
               showSorterTooltip={{
-                target: "sorter-icon",
+                target: "sorter-icon"
               }}
               style={{ marginTop: "25px" }}
             />
@@ -164,10 +164,10 @@ const Snapshot = () => {
         </Content>
       </Layout>
     </LayoutWrapper>
-  );
-};
+  )
+}
 
-export default Snapshot;
+export default Snapshot
 
 const StyledTable = styled(Table)`
   .ant-table-thead > tr > th {
@@ -180,7 +180,7 @@ const StyledTable = styled(Table)`
       overflow-x: auto;
     }
   }
-`;
+`
 
 const LayoutWrapper = styled(Layout)`
   min-height: 100vh;
@@ -188,7 +188,7 @@ const LayoutWrapper = styled(Layout)`
   @media (max-width: 768px) {
     min-height: 60vh;
   }
-`;
+`
 
 const PageContent = styled.div`
   display: flex;
@@ -201,7 +201,7 @@ const PageContent = styled.div`
     flex-direction: column;
     align-items: flex-start;
   }
-`;
+`
 
 const DelButton = styled.button`
   color: black;
@@ -213,4 +213,4 @@ const DelButton = styled.button`
   &:hover {
     color: red;
   }
-`;
+`
