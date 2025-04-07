@@ -2,32 +2,49 @@ import { Breadcrumb, Layout, Table } from "antd"
 import DashHeader from "../components/DashHeader"
 import styled from "styled-components"
 import { formatDate } from "date-fns"
-import { formatPrice } from "../utils/helpers"
+import { formatBytes, formatPrice } from "../utils/helpers"
 import { useGetBillingHistoryQuery } from "../redux/apis/transactions"
 
 const columns = [
   {
     title: "Date",
     dataIndex: "billedAt",
-    render: (val) => formatDate(val, "PPP hh:mm aa"),
+    render: (val) => (
+      <span style={{ whiteSpace: "nowrap", fontSize: 13 }}>
+        {formatDate(val, "PP - p")}
+      </span>
+    ),
     showSorterTooltip: { target: "full-header" },
     sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
   },
   {
     title: "Details",
     render: (_, record) => (
-      <span style={{ whiteSpace: "nowrap" }}>
+      <span style={{ whiteSpace: "nowrap", fontSize: 14 }}>
         {formatBillingDescription(record)}
       </span>
-    ),
-    showSorterTooltip: { target: "full-header" },
-    sorter: (a, b) => a.description.localeCompare(b.description)
+    )
   },
   {
     title: "Amount",
     dataIndex: "amount",
-    render: (amt) => (
-      <span style={{ fontWeight: "600" }}>{formatPrice(amt)}</span>
+    render: (amt, item) => (
+      <div style={{ whiteSpace: "nowrap", paddingRight: 24 }}>
+        <span style={{ fontWeight: 600, fontSize: 14 }}>
+          {formatPrice(amt)}
+        </span>
+        <br />
+        {item.type === "INSTANCE" &&
+          typeof item.details?.backupsCost === "number" &&
+          item.details.backupsCost > 0 && (
+            <span style={{ fontSize: 12, color: "#888", whiteSpace: "nowrap" }}>
+              <strong>Backups:</strong> {formatPrice(item.details?.backupsCost)}
+              <br />
+              <strong>Instance:</strong>{" "}
+              {formatPrice(amt - item.details?.backupsCost)}
+            </span>
+          )}
+      </div>
     ),
     showSorterTooltip: { target: "full-header" },
     sorter: (a, b) => a.amount - b.amount
@@ -44,10 +61,11 @@ export default function BillingHistory() {
         <Layout.Content style={{ margin: "0 16px" }}>
           <Breadcrumb
             style={{
-              margin: "16px 0",
+              marginTop: "16px",
               fontSize: "var(--m-heading)",
               color: "black",
-              fontWeight: "500"
+              fontWeight: "500",
+              padding: "0 24px"
             }}
           >
             Billing History
@@ -55,19 +73,20 @@ export default function BillingHistory() {
 
           <div
             style={{
-              padding: 24,
-              minHeight: 360,
-              // background: "#f0f2f5",
-              background: "white",
-              borderRadius: "8px"
+              padding: "0 24px",
+              maxWidth: "calc(100vw - 300px)",
+              overflowX: "auto",
+              WebkitOverflowScrolling: "touch"
             }}
           >
-            <Table
+            <StyledTable
+              bordered
               columns={columns}
               dataSource={data}
               loading={isLoading}
               showSorterTooltip={{ target: "sorter-icon" }}
-              style={{ marginTop: "25px" }}
+              style={{ marginTop: "25px", width: "100%" }}
+              scroll={{ x: "max-content" }}
             />
           </div>
         </Layout.Content>
@@ -75,6 +94,12 @@ export default function BillingHistory() {
     </LayoutWrapper>
   )
 }
+
+const StyledTable = styled(Table)`
+  .ant-table-thead > tr > th {
+    background-color: var(--bg-color);
+  }
+`
 
 const LayoutWrapper = styled(Layout)`
   min-height: 100vh;
